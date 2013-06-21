@@ -12,11 +12,10 @@ public class ClientLauncher{
 	private static MainFrame frame;
 	
 	public static void main(String[] args) {
-		//connector = new Connector();
-		//if(connector.getSocket()!=null) {
+		connector = new Connector();
+		if(connector.getSocket()!=null) {
 			frame = new MainFrame();
-			frame.initialize();
-		//}
+		}
 	}
 	public static void exit()
 	{

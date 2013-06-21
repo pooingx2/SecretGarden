@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
 
 import com.sg.main.Constants;
@@ -12,6 +13,9 @@ public class Connector implements Runnable{
 	Socket socket;
 	DataInputStream dis;
 	DataOutputStream dos;
+	Thread client;
+	boolean runable;
+	PacketMgr pkMgr;
 
 	public Connector(){
 
@@ -20,7 +24,8 @@ public class Connector implements Runnable{
 			dis = new DataInputStream(socket.getInputStream());
 			dos = new DataOutputStream(socket.getOutputStream());
 			
-			Thread client;
+			pkMgr = new PacketMgr();
+			runable = true;
 			client = new Thread(this);
 			client.start();
 
@@ -46,32 +51,39 @@ public class Connector implements Runnable{
 	public DataOutputStream getDos() {
 		return dos;
 	}
-
+	
+	public void disconnect(){
+		runable = false;
+		try {
+			dis.close();
+			dos.close();
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void run() {
-
-		while(true) {
-			 
-			/*
-			byte[] out = new byte[100];
-			String s = "someStr"; 
-			out = s.getBytes();
-			dos.write(out); 
-			dos.flush();
-			*/
-			String input;
-			
+		String pk;
+		
+		while(runable) {
 			try {
-				byte[] temp = new byte[100]; 
+				//msg = dis.readUTF();
+				byte[] temp = new byte[100];
 				dis.read(temp);
-				input = new String(temp); 
-				input = input.trim();
+				pk = new String(temp); 
+				pk = pk.trim();
 				
-				if(!(input.equals("")))
-					System.out.println(input);
+				if(!(pk.equals("")))
+					System.out.println("receive from : " + pk);
+				
+				pkMgr.managePacket(pk);
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-	}	
+	}
 }

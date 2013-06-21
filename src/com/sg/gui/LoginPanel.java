@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,60 +25,55 @@ public class LoginPanel extends JPanel {
 	private int height;
 	
 	// Components
+	private JLabel bgImg;
+	private Font inputFont;
 	private ActionHandler handler;
 	private JLabel idLabel;
 	private JLabel pwdLabel;
 	private JButton loginBtn;
 	private JTextField inputID;
 	private JPasswordField inputPwd;
-	private Font inputFont;
-
-	private JLabel backImg;
 	
 	public LoginPanel(int w, int h) {
-		super();
 		
+		super();
 		this.width = w;
 		this.height = h;
-		handler = new ActionHandler();
-		
-		this.setBackground(Color.WHITE);
 		this.setLayout(null);
 		
-		inputFont = new Font(null,Font.CENTER_BASELINE,15);
+		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.loginBG.getPath()));
+		bgImg.setBounds(0,0,width,height);
+
+		inputFont = Constants.Font1;
 		
 		idLabel = new JLabel("ID");
 		idLabel.setFont(inputFont);
-		idLabel.setBounds(520,220,200,30);
+		idLabel.setBounds(520,250,200,30);
 		
 		inputID = new JTextField();
-		inputID.setBounds(520,250,200,30);
+		inputID.setBounds(520,280,200,30);
 		inputID.setFont(inputFont);
 		
 		pwdLabel = new JLabel("Password");
 		pwdLabel.setFont(inputFont);
-		pwdLabel.setBounds(520,300,200,30);
+		pwdLabel.setBounds(520,320,200,30);
 		
 		inputPwd = new JPasswordField();
-		inputPwd.setBounds(520,330,200,30);
+		inputPwd.setBounds(520,350,200,30);
 		inputPwd.setFont(inputFont);
-		
-		loginBtn = new JButton();
-		loginBtn.setBounds(570,400,150,50);
-		loginBtn.setIcon(new ImageIcon(Constants.loginImgPath));
-		loginBtn.addActionListener(handler);
-		//loginBtn.setActionCommand(eToolBarButton.getClassName());
 
-		backImg = new JLabel(new ImageIcon(Constants.backImgPath));
-		backImg.setBounds(0,0,width,height);
+		handler = new ActionHandler();
+		loginBtn = new JButton(new ImageIcon(Constants.ButtonPath.loginBtn1.getPath()));
+		loginBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.loginBtn2.getPath()));
+		loginBtn.setBounds(630,400,100,45);
+		loginBtn.addActionListener(handler);
 
 		this.add(idLabel);
 		this.add(inputID);
 		this.add(pwdLabel);
 		this.add(inputPwd);
 		this.add(loginBtn);
-		
-		this.add(backImg);
+		this.add(bgImg);
 			
 	}
 
@@ -94,13 +91,15 @@ public class LoginPanel extends JPanel {
 			
 			if(event.getSource()==loginBtn){
 				try {
-					System.out.println("send");
 					byte[] out = new byte[100];
-					String temp = "id : "+ id + ", pwd : "+pwd;
+					String temp = Constants.PacketCmd.LoginRequest.getCmd() + "\t"+ id + "\t"+pwd;
 					temp.trim();
 					out = temp.getBytes();
+					System.out.println("send to : "+ temp);
 					ClientLauncher.getConnector().getDos().write(out); 
 					ClientLauncher.getConnector().getDos().flush();
+					inputID.setText("");
+					inputPwd.setText("");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
