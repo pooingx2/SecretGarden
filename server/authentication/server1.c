@@ -12,7 +12,7 @@
 #define HEADERSIZE 8
 #define DATASIZE 1024
 
-#define Error 0
+#define Error 123432
 #define LoginRequest 1
 #define LoginResponse 2
 #define LogoutRequest 3
@@ -29,12 +29,15 @@ typedef unsigned char byte;
 
 void *fThread(void *);
 void databaseErr(MYSQL *con);
-void readHeader(int cSocket, unsigned char *headerBuf, int headrSize);
-void readData(int cSocket, char *dataBuf, int dataSize);
-int byteToInt(unsigned char *buf, int offset);
-void packetMgr(int type, int length, char *dataBuf, Client *client, MYSQL *con);
+void readHeader(int cSocket, byte *headerBuf, int headrSize);
+void readData(int cSocket, byte *dataBuf, int dataSize);
+int byteToInt(byte *buf, int offset);
+void packetMgr(int type, int length, byte *dataBuf, Client *client, MYSQL *con);
 void login(Client *client, MYSQL *con, char *id, char *pwd); 
-void sendTo(Client *client, char *buf); 
+void sendTo(Client *client, int type, int length, byte *buf); 
+void writeHeader(Client *client,int type, int length);
+void writeData(Client *client, int length, byte *dataBuf);
+void intToByte(int n, byte *buf, int offset);
 
 int main(int argc, char **argv) {
 		int sSocket;	// server Socket
@@ -123,16 +126,16 @@ void *fThread(void *data) {
 		mysql_query(con, "set session character_set_results=utf8");
 		mysql_query(con, "set session character_set_client=utf8");
 
-		memset(headerBuf,0,HEADERSIZE);
-		memset(dataBuf,0,DATASIZE);
-		readHeader(cSocket,headerBuf,HEADERSIZE);
-
-		type = byteToInt(headerBuf,0);
-		length = byteToInt(headerBuf,4);
-
-		readData(cSocket,dataBuf,length);
-
-		packetMgr(type,length,dataBuf,client,con);
+		while(1) {
+			memset(headerBuf,0,HEADERSIZE);
+			memset(dataBuf,0,DATASIZE);
+			readHeader(cSocket,headerBuf,HEADERSIZE);
+			type = byteToInt(headerBuf,0);
+			length = byteToInt(headerBuf,4);
+			readData(cSocket,dataBuf,length);
+			printf("[ from %s ] type : %d, length : %d, data : %s \n", client->ip, type, length, dataBuf);
+			packetMgr(type,length,dataBuf,client,con);
+		}
 
 		mysql_close(con);
 		close(cSocket);
@@ -154,10 +157,9 @@ void readHeader(int cSocket, byte *headerBuf, int headerSize){
 				readSize+=read(cSocket, headerBuf, needSize);
 				needSize=needSize-readSize;
 		}
-		printf("header read end...\n");
 }
 
-void readData(int cSocket, char *dataBuf, int dataSize){
+void readData(int cSocket, byte *dataBuf, int dataSize){
 		int	readSize;
 		int needSize;
 
@@ -167,7 +169,6 @@ void readData(int cSocket, char *dataBuf, int dataSize){
 				readSize+=read(cSocket, dataBuf, needSize);
 				needSize=needSize-readSize;
 		}
-		printf("data read end...\n");
 }
 
 int byteToInt(byte *buf, int offset) {
@@ -177,18 +178,17 @@ int byteToInt(byte *buf, int offset) {
 		ten_digit = buf[offset+1] << 16;
 		hund_digit = buf[offset+2] << 8;
 		thos_digit = buf[offset+3] << 0;
-		printf("test : %d %d %d %d\n",unit_digit,ten_digit,hund_digit,thos_digit);
 
 		return (unit_digit+ten_digit+hund_digit+thos_digit);
 }
 
-void packetMgr(int type, int length, char *dataBuf, Client *client, MYSQL *con) {
+
+void packetMgr(int type, int length, byte *dataBuf, Client *client, MYSQL *con) {
 		char *str;
 		char *token[DATASIZE];
 		int i=0;
 		int j=0;
 		str = dataBuf;
-		printf("[ from %s ] type : %d, length : %d, data : %s \n", client->ip, type, length, str);
 
 		str = strtok(str,"\t");		// \t 단위로 토큰을 나움
 		while(str !=NULL) {
@@ -200,12 +200,23 @@ void packetMgr(int type, int length, char *dataBuf, Client *client, MYSQL *con) 
 		}
 		if(type == LogoutRequest) {
 				// delete
-				sendTo(client,"4");
+				//sendTo(client,"4");
+				type = LogoutResponse;
+				strcpy(dataBuf,"");
+				length = strlen(dataBuf);
+				sendTo(client, type, length, dataBuf);
 		}
 }
 
 void login(Client *client, MYSQL *con, char *id, char *pwd) {
+
+		int type;
+		int length;
+		byte dataBuf[DATASIZE];
+
 		char query[255];
+		MYSQL_ROW row;
+		
 		sprintf(query,"SELECT * FROM User WHERE user_id='%s' && pwd='%s'",id,pwd);
 		if (mysql_query(con, query)) {
 				databaseErr(con);
@@ -220,18 +231,19 @@ void login(Client *client, MYSQL *con, char *id, char *pwd) {
 
 		int num_fields = mysql_num_fields(result);
 
-		char buf[DATASIZE]="";
-		MYSQL_ROW row;
 		row = mysql_fetch_row(result);
 
 		if(row == NULL){
-				sprintf(buf,"%d\tIncoorect ID or Password",Error);
-				sendTo(client, buf);
+				type = Error;
+				strcpy(dataBuf,"Incorrect ID or Password");
+				length = strlen(dataBuf);
+				sendTo(client, type, length, dataBuf);
 		}
 		else {
-				//sprintf(buf,"%d\t%s",LoginResponse,row[2]);
-				sprintf(buf,"%d\t%s",345,row[2]);
-				sendTo(client, buf);
+				type = LoginResponse;
+				strcpy(dataBuf,row[2]);
+				length = strlen(dataBuf);
+				sendTo(client, type, length, dataBuf);
 		}
 		/*
 		while ((row = mysql_fetch_row(result))) { 
@@ -243,8 +255,29 @@ void login(Client *client, MYSQL *con, char *id, char *pwd) {
 
 }
 
-void sendTo(Client *client, char *buf) {
-		printf("[  to  %s ] : %s\n", client->ip, buf);
-		write(client->socket,buf,strlen(buf));
+void sendTo(Client *client, int type, int length, byte *buf) {
+		byte headerBuf[HEADERSIZE];
+		byte dataBuf[DATASIZE];
+		writeHeader(client,type,length);
+		writeData(client,length,buf);
+		printf("[  to  %s ] type : %d, length : %d, data : %s \n", client->ip, type, length, buf);
 }
 
+void writeHeader(Client *client, int type, int length){
+		byte headerBuf[HEADERSIZE];
+		intToByte(type,headerBuf,0);
+		intToByte(length,headerBuf,4);
+		write(client->socket,headerBuf,HEADERSIZE);
+}
+
+void writeData(Client *client, int length, byte *dataBuf){
+		byte headerBuf[DATASIZE];
+		write(client->socket,dataBuf,length);
+}
+
+void intToByte(int n, byte *buf, int offset){
+		buf[offset+0] = n>>24;
+		buf[offset+1] = n>>16;
+		buf[offset+2] = n>>8;
+		buf[offset+3] = n>>0;
+}
