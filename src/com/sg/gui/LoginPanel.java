@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import com.sg.controller.Connector;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 
@@ -90,19 +91,17 @@ public class LoginPanel extends JPanel {
 			pwd=inputPwd.getText();
 			
 			if(event.getSource()==loginBtn){
-				try {
-					byte[] out = new byte[100];
-					String temp = Constants.PacketCmd.LoginRequest.getCmd() + "\t"+ id + "\t"+pwd;
-					temp.trim();
-					out = temp.getBytes();
-					System.out.println("send to : "+ temp);
-					ClientLauncher.getConnector().getDos().write(out); 
-					ClientLauncher.getConnector().getDos().flush();
-					inputID.setText("");
-					inputPwd.setText("");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+
+				String data = id + "\t"+pwd;
+				int type = Constants.PacketType.LoginRequest.getType();
+				int length = data.length();
+				ClientLauncher.getConnector().sendHeader(type, length);
+				ClientLauncher.getConnector().sendData(data);
+				ClientLauncher.getConnector().receiveHeader();
+				ClientLauncher.getConnector().receiveData();
+				inputID.setText("");
+				inputPwd.setText("");
+
 			}
 		}
 

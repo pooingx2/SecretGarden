@@ -2,14 +2,20 @@ package com.sg.main;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class Constants {
 
 	public static final int frameW = 800;
 	public static final int frameH = 600;
 	
-	public static final String serverIP= "112.108.39.191";
-	public static final int serverPort = 5555;
+	public static final String serverIP= "112.108.39.160";
+	public static final int serverPort = 5551;
+	
+//	public static final String serverIP= "112.108.39.185";
+//	public static final int serverPort = 13000;
+	
 	
 	public static final Color backColor = Color.WHITE;
 	public static final Font Font1 = new Font(null,Font.CENTER_BASELINE,15);
@@ -82,16 +88,20 @@ public class Constants {
 		public String getPath() { return path; }
 	}
 	
-	public static enum PacketCmd {
+	public static enum PacketType {
+
+		Error(0),
+		LoginRequest(1), 
+		LoginSuccess(2), 
+		LoginFailure(3), 
+		LogoutRequest(4), 
+		LogoutResponse(5); 
 		
-		LoginRequest("0001"), 
-		LoginSuccess("0002"), 
-		LoginFailure("0003"), 
-		LogoutRequest("0004"), 
-		LogoutResponse("0005"); 
-		
-		final private String cmd;
-		private PacketCmd(String cmd) { this.cmd = cmd; }
-		public String getCmd() { return cmd; }
+		final private int type;
+		private PacketType(int type) {
+
+			this.type = type;
+		}
+		public int getType() { return type; }
 	}
 }
