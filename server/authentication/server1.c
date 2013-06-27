@@ -12,13 +12,15 @@
 #define HEADERSIZE 8
 #define DATASIZE 1024
 
-#define Error 123432
+#define Error 0
 #define LoginRequest 1
 #define LoginResponse 2
 #define LogoutRequest 3
 #define LogoutResponse 4
-#define DirectoryRequest 5
-#define DirectoryResponse 6
+#define SignupRequest 5
+#define SignupResponse 6
+#define DirectoryRequest 7
+#define DirectoryResponse 8
 
 typedef struct Client {
 		int socket;
@@ -34,6 +36,7 @@ void readData(int cSocket, byte *dataBuf, int dataSize);
 int byteToInt(byte *buf, int offset);
 void packetMgr(int type, int length, byte *dataBuf, Client *client, MYSQL *con);
 void login(Client *client, MYSQL *con, char *id, char *pwd); 
+void signup(Client *client, MYSQL *con, char *id, char *pwd, char *name, char *email);
 void sendTo(Client *client, int type, int length, byte *buf); 
 void writeHeader(Client *client,int type, int length);
 void writeData(Client *client, int length, byte *dataBuf);
@@ -112,13 +115,12 @@ void *fThread(void *data) {
 		// DB connection 초기화
 		MYSQL *con = mysql_init(NULL);
 		if(con == NULL) {
-			databaseErr(con);
+			fprintf(stderr,"%s\n",mysql_error(con));
 		}
 		
 		// DB 연결
-		if(mysql_real_connect(con,"localhost",
-								"pooingx2","SSM2013","SecretGarden",0,NULL,0) == NULL) {
-			databaseErr(con);
+		if(mysql_real_connect(con,"localhost","pooingx2","SSM2013","SecretGarden",0,NULL,0) == NULL) {
+			fprintf(stderr,"%s\n",mysql_error(con));
 		}
 	
 		// DB 인코딩
@@ -139,12 +141,6 @@ void *fThread(void *data) {
 
 		mysql_close(con);
 		close(cSocket);
-}
-
-void databaseErr(MYSQL *con) {
-		fprintf(stderr,"%s\n",mysql_error(con));
-		mysql_close(con);
-		exit(1);
 }
 
 void readHeader(int cSocket, byte *headerBuf, int headerSize){
@@ -189,7 +185,6 @@ void packetMgr(int type, int length, byte *dataBuf, Client *client, MYSQL *con) 
 		int i=0;
 		int j=0;
 		str = dataBuf;
-
 		str = strtok(str,"\t");		// \t 단위로 토큰을 나움
 		while(str !=NULL) {
 				token[i++] = str;
@@ -199,9 +194,33 @@ void packetMgr(int type, int length, byte *dataBuf, Client *client, MYSQL *con) 
 				login(client,con,token[0],token[1]);
 		}
 		if(type == LogoutRequest) {
-				// delete
-				//sendTo(client,"4");
 				type = LogoutResponse;
+				strcpy(dataBuf,"");
+				length = strlen(dataBuf);
+				sendTo(client, type, length, dataBuf);
+		}
+		if(type == SignupRequest) {
+				signup(client,con,token[0],token[1],token[2],token[3]);
+		}
+}
+
+void signup(Client *client, MYSQL *con, char *id, char *pwd, char *name, char *email){
+		char query[255];
+		byte dataBuf[DATASIZE];
+		int type;
+		int length;
+
+		sprintf(query,"INSERT INTO SecretGarden.User (user_id, pwd, name, email) VALUES ('%s', '%s', '%s', '%s')",id,pwd,name,email);
+
+		if (mysql_query(con, query)) {
+				fprintf(stderr,"%s\n",mysql_error(con));
+				type = Error;
+				strcpy(dataBuf,"This ID is already taken");
+				length = strlen(dataBuf);
+				sendTo(client, type, length, dataBuf);
+		}
+		else{
+				type = SignupResponse;
 				strcpy(dataBuf,"");
 				length = strlen(dataBuf);
 				sendTo(client, type, length, dataBuf);
@@ -219,14 +238,17 @@ void login(Client *client, MYSQL *con, char *id, char *pwd) {
 		
 		sprintf(query,"SELECT * FROM User WHERE user_id='%s' && pwd='%s'",id,pwd);
 		if (mysql_query(con, query)) {
-				databaseErr(con);
+				fprintf(stderr,"%s\n",mysql_error(con));
+				type = Error;
+				strcpy(dataBuf,mysql_error(con));
+				length = strlen(dataBuf);
+				sendTo(client, type, length, dataBuf);
 		}
 
 		MYSQL_RES *result = mysql_store_result(con);
 
 		if (result == NULL) {
-				databaseErr(con);
-				printf("null\n");
+				fprintf(stderr,"%s\n",mysql_error(con));
 		}
 
 		int num_fields = mysql_num_fields(result);
@@ -241,7 +263,7 @@ void login(Client *client, MYSQL *con, char *id, char *pwd) {
 		}
 		else {
 				type = LoginResponse;
-				strcpy(dataBuf,row[2]);
+				strcpy(dataBuf,"");
 				length = strlen(dataBuf);
 				sendTo(client, type, length, dataBuf);
 		}

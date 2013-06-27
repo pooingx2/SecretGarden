@@ -36,22 +36,24 @@ CREATE TABLE File (
 )DEFAULT CHARSET=utf8;
 
 CREATE TABLE Share (
-    idUser VARCHAR(20) NOT NULL,
-    idRoot INTEGER NOT NULL,
-    FOREIGN KEY (idUser)
-        REFERENCES User (idUser),
-    FOREIGN KEY (idRoot)
-        REFERENCES Root (idRoot)
+    share_id INTEGER NOT NULL AUTO_INCREMENT,
+    status VARCHAR(20) NOT NULL,
+    dir INTEGER NOT NULL,
+    target VARCHAR(20) NOT NULL,
+
+    PRIMARY KEY (share_id)
+   
 )DEFAULT CHARSET=utf8;
 
-CREATE TABLE Root_File (
-    idRoot INTEGER NOT NULL,
-    idFile INTEGER NOT NULL,
-    FOREIGN KEY (idRoot)
-        REFERENCES Root (idRoot),
-    FOREIGN KEY (idFile)
-        REFERENCES File (idFile)
-)DEFAULT CHARSET=utf8;
+ALTER TABLE Share
+ADD FOREIGN KEY (target) REFERENCES User (user_id);
+ALTER TABLE Share
+ADD FOREIGN KEY (dir) REFERENCES Directory (dir_id);
+
+drop table User;
+SELECT * FROM User;
+INSERT INTO `SecretGarden`.`User` (`user_id`, `pwd`, `name`, `email`) VALUES ('test', 'test', '테스트', 'test@gmail.com');
+
 
 /*
 ALTER TABLE User_Root
