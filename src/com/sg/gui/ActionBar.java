@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -50,17 +52,10 @@ public class ActionBar extends JMenuBar{
 		public void actionPerformed(ActionEvent event) {
 			
 			if(event.getSource()==logoutBtn){
-				try {
-					byte[] out = new byte[100];
-					String temp = Constants.PacketCmd.LogoutRequest.getCmd();
-					temp.trim();
-					out = temp.getBytes();
-					System.out.println("send to : "+ temp);
-					ClientLauncher.getConnector().getDos().write(out); 
-					ClientLauncher.getConnector().getDos().flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				String data = "";
+				int type = Constants.PacketType.LogoutRequest.getType();
+				int length = data.length();
+				ClientLauncher.getConnector().sendHeader(type,length);
 			}	
 		}
 	}

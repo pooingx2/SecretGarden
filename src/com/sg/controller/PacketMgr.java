@@ -24,16 +24,16 @@ public class PacketMgr {
 			i++;
 		}
 
-		if(token[0].equals(Constants.PacketCmd.LoginFailure.getCmd())){
+		if(token[0].equals(Constants.PacketType.LoginFailure.getType())){
 			JOptionPane.showMessageDialog(null, token[1]);
 		}
 		
-		if(token[0].equals(Constants.PacketCmd.LoginSuccess.getCmd())){
+		if(token[0].equals(Constants.PacketType.LoginSuccess.getType())){
 			JOptionPane.showMessageDialog(null, token[1]+" 님 환영합니다.");
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getConnectionPanel());
 		}
 		
-		if(token[0].equals(Constants.PacketCmd.LogoutResponse.getCmd())){
+		if(token[0].equals(Constants.PacketType.LogoutResponse.getType())){
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
 		}
 	}
