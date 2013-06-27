@@ -75,7 +75,6 @@ public class Connector implements Runnable{
 		out = data.getBytes();
 		
 		try {
-			System.out.println(out);
 			dos.write(out);
 			dos.flush();
 		} catch (IOException e) {
@@ -84,7 +83,7 @@ public class Connector implements Runnable{
 		}
 	}
 	
-	public void receiveHeader(){
+	public int[] receiveHeader(){
 		byte[] headerBuf = new byte[8];
 		int n1,n2,n3,n4;
 		int type;
@@ -106,25 +105,22 @@ public class Connector implements Runnable{
 			
 			length = n1+n2+n3+n4;
 
-			System.out.println("type "+type);
-			System.out.println("length "+length);
-			
+			return new int[]{type,length};
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
-//	public void receiveData(int length){
-	public void receiveData(){
-		byte[] dataBuf = new byte[1024];
-//		byte[] dataBuf = new byte[length];
+	public void receiveData(int type, int length){
+		byte[] dataBuf = new byte[length];
 		try {
 			dis.read(dataBuf);
 			String data = new String(dataBuf);
-			System.out.println("data " +data);
-		
+			pkMgr.managePacket(type, length, data);
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -149,29 +145,11 @@ public class Connector implements Runnable{
 	
 	@Override
 	public void run() {
-		String pk;
-		
+
 		while(runable) {
-//			try {
-//				msg = dis.readUTF();
-//				byte[] temp = new byte[1024];
-//				dis.read(temp);
-//				pk = new String(temp); 
-//				pk = pk.trim();
-//				System.out.println(temp[0]);
-//				System.out.println(temp[1]);
-//				System.out.println(temp[2]);
-//				System.out.println(temp[3]);
-//				if(!(pk.equals(""))){
-//					System.out.println("receive from : " + pk);
-//					System.out.println(pk.getBytes().length);
-//				}
-//
-//				pkMgr.managePacket(pk);
-//				
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
+			int[] header;
+			header = receiveHeader();
+			receiveData(header[0], header[1]);
 		}
 	}
 }

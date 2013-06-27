@@ -23,7 +23,7 @@ public class MainFrame extends JFrame  {
 	private ConnectionPanel connectionPanel;
 	private DirectoryListPanel directoryListPanel;
 	
-	public MainFrame() {
+	public MainFrame(int w, int h) {
 		
 		super();
 		
@@ -38,8 +38,8 @@ public class MainFrame extends JFrame  {
 		}
 
 		
-		this.width = Constants.frameW;
-		this.height = Constants.frameH;
+		this.width = w;
+		this.height = h;
 		
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		

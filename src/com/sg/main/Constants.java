@@ -10,7 +10,7 @@ public class Constants {
 	public static final int frameW = 800;
 	public static final int frameH = 600;
 	
-	public static final String serverIP= "112.108.39.160";
+	public static final String serverIP= "112.108.39.156";
 	public static final int serverPort = 5551;
 	
 //	public static final String serverIP= "112.108.39.185";
@@ -23,7 +23,8 @@ public class Constants {
 	
 	public static enum BackgroudPath {
 		
-		loginBG("img/background/loginBG.jpg"), 
+		loginBG("img/background/loginBG.jpg"),
+		signupBG("img/background/signupBG.jpg"),
 		barBG("img/background/barBG.jpg"), 
 		connectionBG("img/background/connectionBG.jpg"),
 		settingsBG("img/background/settingsBG.jpg"),
@@ -46,6 +47,8 @@ public class Constants {
 
 		loginBtn1("img/button/loginBtn1.jpg"), 
 		loginBtn2("img/button/loginBtn2.jpg"), 
+		signupBtn1("img/button/signupBtn1.jpg"), 
+		signupBtn2("img/button/signupBtn2.jpg"), 
 		logoutBtn1("img/button/logoutBtn1.jpg"), 
 		logoutBtn2("img/button/logoutBtn2.jpg"),
 		connectBtn1("img/button/connectBtn1.jpg"), 
@@ -92,10 +95,11 @@ public class Constants {
 
 		Error(0),
 		LoginRequest(1), 
-		LoginSuccess(2), 
-		LoginFailure(3), 
-		LogoutRequest(4), 
-		LogoutResponse(5); 
+		LoginResponse(2), 
+		LogoutRequest(3), 
+		LogoutResponse(4),
+		SignupRequest(5), 
+		SignupResponse(6); 
 		
 		final private int type;
 		private PacketType(int type) {

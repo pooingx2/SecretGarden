@@ -12,29 +12,39 @@ public class PacketMgr {
 	private String token[];
 	
 	public PacketMgr(){
-		token = new String[100];
+		
 	}
-	public void managePacket(String pk){
-		tokenizer = new StringTokenizer(pk,"\t");
+	public void managePacket(int type, int length, String data){
+		tokenizer = new StringTokenizer(data,"\t");
+		token = new String[length];
 		int i =0;
 
+		System.out.println("type : " + type);
+		System.out.println("length : " + length);
+		System.out.println("data : " + data);
+		
 		while(tokenizer.hasMoreTokens()) {
 			token[i] = tokenizer.nextToken();
-			System.out.println("teken : "+token[i]);
 			i++;
 		}
-
-		if(token[0].equals(Constants.PacketType.LoginFailure.getType())){
-			JOptionPane.showMessageDialog(null, token[1]);
+			
+		if(type==Constants.PacketType.Error.getType()){
+			JOptionPane.showMessageDialog(null, token[0]);
 		}
 		
-		if(token[0].equals(Constants.PacketType.LoginSuccess.getType())){
-			JOptionPane.showMessageDialog(null, token[1]+" 님 환영합니다.");
+		if(type==Constants.PacketType.LoginResponse.getType()){
+			JOptionPane.showMessageDialog(null, "Welcome");
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getConnectionPanel());
 		}
 		
-		if(token[0].equals(Constants.PacketType.LogoutResponse.getType())){
+		if(type==Constants.PacketType.LogoutResponse.getType()){
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
+		}
+		
+		if(type==Constants.PacketType.SignupResponse.getType()){
+			JOptionPane.showMessageDialog(null, "Thank you");
+			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().initForm();
+			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().dispose();
 		}
 	}
 }

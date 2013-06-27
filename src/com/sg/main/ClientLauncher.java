@@ -14,7 +14,7 @@ public class ClientLauncher{
 	public static void main(String[] args) {
 		connector = new Connector();
 		if(connector.getSocket()!=null) {
-			frame = new MainFrame();
+			frame = new MainFrame(Constants.frameW,Constants.frameH);
 		}
 	}
 	public static void exit()
