@@ -14,12 +14,13 @@ public class PacketMgr {
 	public PacketMgr(){
 		
 	}
-	public void managePacket(int type, int length, String data){
+	public void managePacket(int type, int desc ,int length, String data){
 		tokenizer = new StringTokenizer(data,"\t");
 		token = new String[length];
 		int i =0;
 
 		System.out.println("type : " + type);
+		System.out.println("desc : " + desc);
 		System.out.println("length : " + length);
 		System.out.println("data : " + data);
 		

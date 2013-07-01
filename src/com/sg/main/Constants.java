@@ -10,8 +10,11 @@ public class Constants {
 	public static final int frameW = 800;
 	public static final int frameH = 600;
 	
-	public static final String serverIP= "112.108.39.156";
-	public static final int serverPort = 5551;
+	public static final String serverIP= "127.0.0.1";
+	public static final int serverPort = 12500;
+	
+	//public static final String serverIP= "112.108.39.156";
+	//public static final int serverPort = 5551;
 	
 //	public static final String serverIP= "112.108.39.185";
 //	public static final int serverPort = 13000;
