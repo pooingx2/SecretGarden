@@ -57,10 +57,11 @@ public class Connector implements Runnable {
 	public void sendPacket(int type, int redesc, int length, String data) {
 		byte[] sendbuf = new byte[length + 12];
 
-		byte[] bytes = new byte[] { (byte) (type >>> 24), (byte) (type >>> 16),
+		byte[] bytes = new byte[] { 
+				(byte) (type >>> 24), (byte) (type >>> 16),
 				(byte) (type >>> 8), (byte) (type >>> 0),
+				
 				(byte) (redesc >>> 24), (byte) (redesc >>> 16),
-
 				(byte) (redesc >>> 8), (byte) (redesc >>> 0),
 
 				(byte) (length >>> 24), (byte) (length >>> 16),
