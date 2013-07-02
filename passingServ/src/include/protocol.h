@@ -11,7 +11,7 @@
 // 프로토콜 구성도
 /*  
  *   ||  타입  ||  데이터 길이 ||  파일 디스크립터 ||  데이터 ||
- *
+ *   
  */ 
 
 // 기본 프로토콜 타입 지정(0~50)
@@ -34,6 +34,10 @@
 #define AUTH_BINDING 		 101
 #define DIR_BINDING		 102
 #define HDFS_BINDING		 103
+#define AUTH_BINDING_RESPONSE	 104
+#define DIR_BINDING_RESPONSE	 105
+#define HDFS_BINDING_RESPONSE	 106
+
 
 // 프로토콜에 정의된 헤더와 데이터 사이즈
 #define HEADERSIZE   		 12
@@ -94,7 +98,11 @@ byteToInt(byte *buf, int offset);
 //Client join to Serv 
 //File Descriptor join
 int
-joinToPassingServ(char *servIP, char *servPort);
+joinToPassingServ(char *servIP, char *servPort, int servType);
+
+// Peer Condition Check
+int 
+isRunning(int socket);
 
 
 //암호화 알고리즘

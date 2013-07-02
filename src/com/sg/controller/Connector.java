@@ -60,14 +60,16 @@ public class Connector implements Runnable {
 		byte[] bytes = new byte[] { (byte) (type >>> 24), (byte) (type >>> 16),
 				(byte) (type >>> 8), (byte) (type >>> 0),
 				(byte) (redesc >>> 24), (byte) (redesc >>> 16),
+
 				(byte) (redesc >>> 8), (byte) (redesc >>> 0),
+
 				(byte) (length >>> 24), (byte) (length >>> 16),
 				(byte) (length >>> 8), (byte) (length >>> 0) };
 
 		byte out[];
 		data.trim();
 		out = data.getBytes();
-		
+
 		int i = 0;
 		for (i = 0; i < 12; i++) {
 			sendbuf[i] = bytes[i];
@@ -76,63 +78,80 @@ public class Connector implements Runnable {
 		for (i = 12; i < length + 12; i++) {
 			sendbuf[i] = out[i - 12];
 		}
-		System.out.println("전송 데이터 : " + i);
 
 		try {
-			dos.write(sendbuf, 0, length+12);
+			dos.write(sendbuf, 0, length + 12);
+			System.out.println("전송 데이터 길이 : " + i);
+			System.out.println("전송 데이터 타입 : " + type);
+			System.out.println("전송 데이터 디스크립터 : " + redesc);
+			System.out.println("전송 데이터 : " + data);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	public void recvPacket(byte[] buf)
-	{
+
+	public void recvPacket(byte[] buf) {
 		byte[] headerBuf = new byte[12];
-		
+
 		int n1, n2, n3, n4;
+		int h_length = 0;
 		int type = 0;
 		int desc = 0;
 		int length = 0;
 		try {
-			dis.read(headerBuf, 0, 12);
-
-			n1 = (headerBuf[0] & (int) 0xFF) << 24;
-			n2 = (headerBuf[1] & (int) 0xFF) << 16;
-			n3 = (headerBuf[2] & (int) 0xFF) << 8;
-			n4 = (headerBuf[3] & (int) 0xFF);
-
-			type = n1 + n2 + n3 + n4;
-
-			n1 = (headerBuf[4] & (int) 0xFF) << 24;
-			n2 = (headerBuf[5] & (int) 0xFF) << 16;
-			n3 = (headerBuf[6] & (int) 0xFF) << 8;
-			n4 = (headerBuf[7] & (int) 0xFF);
-
-			desc = n1 + n2 + n3 + n4;
+			h_length = dis.read(headerBuf, 0, 12);
+			if(h_length == 0){
+				System.out.println("수신데이터 제로 ");
+				return;
+			}
 			
-			n1 = (headerBuf[8] & (int) 0xFF) << 24;
-			n2 = (headerBuf[9] & (int) 0xFF) << 16;
-			n3 = (headerBuf[10] & (int) 0xFF) << 8;
-			n4 = (headerBuf[11] & (int) 0xFF);
+			if (h_length != 0) {
+				n1 = (headerBuf[0] & (int) 0xFF) << 24;
+				n2 = (headerBuf[1] & (int) 0xFF) << 16;
+				n3 = (headerBuf[2] & (int) 0xFF) << 8;
+				n4 = (headerBuf[3] & (int) 0xFF);
 
-			length = n1 + n2 + n3 + n4;
+				type = n1 + n2 + n3 + n4;
 
-		
+				n1 = (headerBuf[4] & (int) 0xFF) << 24;
+				n2 = (headerBuf[5] & (int) 0xFF) << 16;
+				n3 = (headerBuf[6] & (int) 0xFF) << 8;
+				n4 = (headerBuf[7] & (int) 0xFF);
+
+				desc = n1 + n2 + n3 + n4;
+
+				n1 = (headerBuf[8] & (int) 0xFF) << 24;
+				n2 = (headerBuf[9] & (int) 0xFF) << 16;
+				n3 = (headerBuf[10] & (int) 0xFF) << 8;
+				n4 = (headerBuf[11] & (int) 0xFF);
+
+				length = n1 + n2 + n3 + n4;
+			}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//return null;
-		
-		
+		// return null;
+
+		System.out.println("수신 데이터 타입 : " + type);
+		System.out.println("수신 데이터 디스크립터 : " + desc);
+		System.out.println("수신 데이터 길이: " + length);
+
 		byte[] dataBuf = new byte[length];
 		try {
-			
-			dis.read(dataBuf);
-			String data = new String(dataBuf);
-			pkMgr.managePacket(type, desc, length, data);
+
+			if (length != 0) {
+				dis.read(dataBuf);
+				String data = new String(dataBuf);
+				System.out.println("수신 데이터 : " + data);
+				pkMgr.managePacket(type, desc, length, data);
+			} else {
+				String data = new String();
+				System.out.println("수신 데이터 : NULL ");
+				pkMgr.managePacket(type, desc, length, "");
+			}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -250,11 +269,16 @@ public class Connector implements Runnable {
 	@Override
 	public void run() {
 
+		System.out.println("Test");
 		while (runable) {
 			byte[] header = null;
-			//header = receiveHeader();
-			//receiveData(header[0], header[1]);
+
+			System.out.println("recv before");
+			// header = receiveHeader();
+			// receiveData(header[0], header[1]);
 			recvPacket(header);
+			System.out.println("recv after");
 		}
+		System.out.println("while end");
 	}
 }

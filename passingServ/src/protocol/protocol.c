@@ -42,6 +42,7 @@ readData
 		return readSize;
 }
 
+// 프로토콜을 해석하기 위해  TCP버퍼에서 데이터를 읽어들여  header와 data로 분리하여 저장한다.
 int 
 recvFrom
 (Peer *peer, byte *headerBuf, byte *dataBuf)
@@ -151,7 +152,7 @@ writeData(Peer *peer, int length, byte *buf,byte *dataBuf)
 
 
 int
-joinToPassingServ(char *servIP, char *servPort)
+joinToPassingServ(char *servIP, char *servPort, int servType)
 {
 
 		int    serv_sockfd;
@@ -182,7 +183,7 @@ joinToPassingServ(char *servIP, char *servPort)
 			printf("connect error\n");
 		}
 		
-		strcpy(dataBuf, "TEST");		
+		strcpy(dataBuf, "Binding");		
 		data_len = strlen(dataBuf);		
 
 		//Write
@@ -190,15 +191,17 @@ joinToPassingServ(char *servIP, char *servPort)
 		passingServ.socket = client_sockfd;
 		printf("sock_fd : %d, %d", passingServ.socket, serv_sockfd);
 
-		sendTo(&passingServ, 101, 0, data_len, dataBuf);
+		sendTo(&passingServ, servType, 0, data_len, dataBuf);
 	
 		//Read
 		recvFrom(&passingServ, headerBuf, dataBuf);		
-		
-
-                
 		
 		return passingServ.socket;
 }
 
 
+int
+isRunning(int socket)
+{
+	
+}

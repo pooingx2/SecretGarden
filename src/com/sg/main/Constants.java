@@ -12,14 +12,7 @@ public class Constants {
 	
 	public static final String serverIP= "127.0.0.1";
 	public static final int serverPort = 12500;
-	
-	//public static final String serverIP= "112.108.39.156";
-	//public static final int serverPort = 5551;
-	
-//	public static final String serverIP= "112.108.39.185";
-//	public static final int serverPort = 13000;
-	
-	
+		
 	public static final Color backColor = Color.WHITE;
 	public static final Font Font1 = new Font(null,Font.CENTER_BASELINE,15);
 	public static final Font Font2 = new Font(null,Font.CENTER_BASELINE,20);

@@ -22,6 +22,7 @@ import com.sg.main.Constants;
 
 
 public class DirectoryListPanel extends JPanel {
+	
 	// Attribute
 	private int width;
 	private int height;
