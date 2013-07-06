@@ -56,6 +56,10 @@ public class PacketMgr {
 		
 		if(type==Constants.PacketType.DirectoryListResponse.getType())
 		{
+			//이전에 저장된 정보들(디렉토리 및 파일 이름) 초기화
+			DirectoryListPanel.initList();
+			
+			//수신한 데이터를 Panel에 뿌려준다.
 			for(int tokenNum=0;tokenNum<i;tokenNum = tokenNum + 4){
 				DirectoryListPanel.addList(token[tokenNum],token[tokenNum+1],token[tokenNum+2],token[tokenNum+3]);
 			}

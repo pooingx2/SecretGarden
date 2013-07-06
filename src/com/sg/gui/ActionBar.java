@@ -56,12 +56,8 @@ public class ActionBar extends JMenuBar{
 				int type = Constants.PacketType.LogoutRequest.getType();
 				int length = data.length();	
 				
-//				int[] header;
-				
 				ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-				//ientLauncher.getConnector().sendHeader(type,length);
-				//ClientLauncher.getConnector().sendData(data);
-				//ClientLauncher.getConnector().receiveData(header[0], header[1]);
+				
 			}	
 		}
 	}

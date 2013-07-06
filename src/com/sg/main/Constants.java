@@ -97,7 +97,9 @@ public class Constants {
 		SignupRequest(5), 
 		SignupResponse(6),
 		DirectoryListRequset(7), 
-		DirectoryListResponse(8); 
+		DirectoryListResponse(8),
+		DirectoryCreateRequset(9), 
+		DirectoryCreateResponse(10); 
 		
 		final private int type;
 		private PacketType(int type) {

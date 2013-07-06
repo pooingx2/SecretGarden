@@ -44,9 +44,8 @@ public class DirectoryListPanel extends JPanel {
 	private ActionHandler handler;
 	private DirectoryMngPanel dirMngPanel;
 
+	
 	/* 디렉토리 리스트 관련 변수 */ 
-	
-	
 	// PacketMgr에서 받아온 파일 및 폴더 정보를 저장하기 위한 변수 
 	static Vector<String> dirList;
 	// 파일 및 폴더 추가시 사용할 부모 및 루트 정보를 보관한다
@@ -68,10 +67,7 @@ public class DirectoryListPanel extends JPanel {
 
 		dirList = new Vector<>();
 		nameTo_ParentandRoot = new HashMap<String, String>();
-		//for(int i=0;i<30;i++){
-		//	dirList.addElement("Directory Name "+i);
-		//}
-
+		
 		list = new JList<String>(dirList);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setFixedCellHeight(30);
@@ -90,6 +86,7 @@ public class DirectoryListPanel extends JPanel {
 		btnGroupPanel.setLayout(null);
 
 		btn = new JButton[3];
+		
 		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.createBtn1.getPath()));
 		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2.getPath()));
 
@@ -119,9 +116,9 @@ public class DirectoryListPanel extends JPanel {
 		String data = "directory list request" + "\t" + "endif";
 		int type = Constants.PacketType.DirectoryListRequset.getType();
 		int length = data.length();
-//		
+		
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-		//list.add("Test");
+		
 	}
 
 	public void initialize() { }
@@ -134,6 +131,7 @@ public class DirectoryListPanel extends JPanel {
 		this.isSelected = isSelected;
 	}
 
+	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
 		this.remove(bgImg);
 		dirMngPanel.changetPanel();
@@ -142,10 +140,29 @@ public class DirectoryListPanel extends JPanel {
 		this.repaint();
 	}
 	
+	
 	//디렉토리 추가 버튼 클릭시 발생하는 이벤트
 	public void create(String dir){
-		dirList.addElement(dir);
-		list.setSelectedIndex(dirList.size()-1);
+		
+		// 디렉토리 생성을 반영하기 위한 패널 새로고침
+		changePanel();
+		
+		// 디렉토리 추가 패킷 전송
+		// 초기 로드시 디렉토리 조회 패킷 전송
+		// 부분마다 추가를 위해 parent, root를 해쉬맵에서 조회하는 부분이 필요하다 
+		String data = "NULL" + "\t" + "folder" + "\t" + dir + "\t" + "1" + "\t" + "mydir" + "\t" + "1";
+		int type = Constants.PacketType.DirectoryCreateRequset.getType();
+		int length = data.length();
+			
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+		
+		// 추가된 Component를 반영하기 위해 조회 패킷 전송
+		data = "directory list request" + "\t" + "endif";
+		type = Constants.PacketType.DirectoryListRequset.getType();
+		length = data.length();
+	
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+		
 	}
 	
 	public void access(){
@@ -187,10 +204,12 @@ public class DirectoryListPanel extends JPanel {
 			}
 
 			if(event.getSource()==btn[2]){
+				
 				if(isSelected) {
 					dirMngPanel.setStatus(4);
 					changePanel();
 				}
+				
 				else {
 					dirMngPanel.setStatus(0);
 					changePanel();
@@ -240,13 +259,21 @@ public class DirectoryListPanel extends JPanel {
 		}
 	}
 	
-	// 외부 클래스(PacketMgr)에서 리스트에 디렉토리 목록을 추가하기 위한 함수
+	// 외부 클래스(PacketMgr)에서 리스트에 디렉토리 목록을 갱신하기 위한 함수
 	public static void addList(String type, String name, String parent, String rootInt){
 			
 			dirList.addElement(type+ "  " + name);
 			nameTo_ParentandRoot.put(name, parent);
-			nameTo_ParentandRoot.put(name, rootInt);
+			nameTo_ParentandRoot.put(name, rootInt);	
 			
+	}
+	
+	// 리스트 초기화 함수 
+	// 디렉토리 삽입,삭제,파일 업/다운로드시에 리스트를 갱신해야한다
+	public static void initList()
+	{
+		dirList.clear();
+		nameTo_ParentandRoot.clear();
 	}
 }
 
