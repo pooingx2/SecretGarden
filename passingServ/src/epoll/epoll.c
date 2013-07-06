@@ -278,12 +278,45 @@ void client_recv(int event_fd, Peer *peer)
 		
 		printf("dir list request  : %d, %d, %s \n", dirServ.socket,
 					   strlen(dataBuf), dataBuf);
-		sendTo(&dirServ, 4, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&dirServ, 7, event_fd, strlen(dataBuf), dataBuf);
 	}
 	case 8 :
 	{
-				
+		Peer peer;
+		peer.socket = byteToInt(headerBuf, 4);
+		printf(" dir list response to client from dirServ \n");
 
+		printf("dir list request  : %d, %d, %s \n", peer.socket,
+					   strlen(dataBuf), dataBuf);
+		sendTo(&peer, 8, event_fd, strlen(dataBuf), dataBuf);		
+		break;
+	}
+	case 9:
+	{
+		Peer dirServ;
+		dirServ.socket = g_epoll_dir;
+
+		if(g_epoll_dir == 0)
+		{
+			printf("dir server not running \n");
+			break;
+		}
+		
+		printf("dir create request  : %d, %d, %s \n", dirServ.socket,
+					   strlen(dataBuf), dataBuf);
+		sendTo(&dirServ, 9, event_fd, strlen(dataBuf), dataBuf);
+		break;
+	}
+	case 10:
+	{
+		Peer peer;
+		peer.socket = byteToInt(headerBuf, 4);
+		printf(" dir create response to client from dirServ \n");
+
+		printf("dir create  request  : %d, %d, %s \n", peer.socket,
+					   strlen(dataBuf), dataBuf);
+		sendTo(&peer, 10, event_fd, strlen(dataBuf), dataBuf);
+		break;
 	}
 	case 101 :
 	{
