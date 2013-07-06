@@ -147,8 +147,9 @@ public class SignupFrame extends JFrame  {
 					int type = Constants.PacketType.SignupRequest.getType();
 					int length = data.length();
 					
-					ClientLauncher.getConnector().sendHeader(type, length);
-					ClientLauncher.getConnector().sendData(data);
+					//ClientLauncher.getConnector().sendHeader(type, length);
+					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+					//ClientLauncher.getConnector().sendData(data);
 				}
 			}
 			

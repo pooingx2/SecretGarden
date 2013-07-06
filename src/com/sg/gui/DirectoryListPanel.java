@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -18,10 +20,14 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 
 
+
+
 public class DirectoryListPanel extends JPanel {
+	
 	// Attribute
 	private int width;
 	private int height;
@@ -32,12 +38,21 @@ public class DirectoryListPanel extends JPanel {
 	private JLabel bgImg;
 	private JList<String> list;
 	private JScrollPane scroll;
-	private Vector<String> data;
+	
 	private JPanel btnGroupPanel;
 	private JButton btn[];
 	private ActionHandler handler;
 	private DirectoryMngPanel dirMngPanel;
 
+	/* 디렉토리 리스트 관련 변수 */ 
+	
+	
+	// PacketMgr에서 받아온 파일 및 폴더 정보를 저장하기 위한 변수 
+	static Vector<String> dirList;
+	// 파일 및 폴더 추가시 사용할 부모 및 루트 정보를 보관한다
+	static Map<String, String> nameTo_ParentandRoot;
+	
+	
 	public DirectoryListPanel(int w, int h) {
 
 		super();
@@ -51,13 +66,13 @@ public class DirectoryListPanel extends JPanel {
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryListBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 
-		data = new Vector<>();
+		dirList = new Vector<>();
+		nameTo_ParentandRoot = new HashMap<String, String>();
+		//for(int i=0;i<30;i++){
+		//	dirList.addElement("Directory Name "+i);
+		//}
 
-//		for(int i=0;i<30;i++){
-//			data.addElement("Directory Name "+i);
-//		}
-
-		list = new JList<String>(data);
+		list = new JList<String>(dirList);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setFixedCellHeight(30);
 		list.setFont(Constants.Font2);
@@ -99,6 +114,14 @@ public class DirectoryListPanel extends JPanel {
 		this.add(btnGroupPanel);
 		this.add(dirMngPanel);
 		this.add(bgImg);
+		
+		//초기 로드시 디렉토리 조회 패킷 전송
+		String data = "directory list request" + "\t" + "endif";
+		int type = Constants.PacketType.DirectoryListRequset.getType();
+		int length = data.length();
+//		
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+		//list.add("Test");
 	}
 
 	public void initialize() { }
@@ -119,9 +142,10 @@ public class DirectoryListPanel extends JPanel {
 		this.repaint();
 	}
 	
+	//디렉토리 추가 버튼 클릭시 발생하는 이벤트
 	public void create(String dir){
-		data.addElement(dir);
-		list.setSelectedIndex(data.size()-1);
+		dirList.addElement(dir);
+		list.setSelectedIndex(dirList.size()-1);
 	}
 	
 	public void access(){
@@ -129,9 +153,9 @@ public class DirectoryListPanel extends JPanel {
 	}
 	
 	public void delete(){
-		data.removeElementAt(list.getSelectedIndex());
+		dirList.removeElementAt(list.getSelectedIndex());
 		flag = false;
-		list.setListData(data);
+		list.setListData(dirList);
 		list.repaint();
 		flag = true;
 		isSelected = false;
@@ -214,6 +238,15 @@ public class DirectoryListPanel extends JPanel {
 		public void mouseReleased(MouseEvent e) {
 			// TODO Auto-generated method stub
 		}
+	}
+	
+	// 외부 클래스(PacketMgr)에서 리스트에 디렉토리 목록을 추가하기 위한 함수
+	public static void addList(String type, String name, String parent, String rootInt){
+			
+			dirList.addElement(type+ "  " + name);
+			nameTo_ParentandRoot.put(name, parent);
+			nameTo_ParentandRoot.put(name, rootInt);
+			
 	}
 }
 

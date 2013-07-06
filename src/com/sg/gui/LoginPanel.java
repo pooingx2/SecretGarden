@@ -113,13 +113,9 @@ public class LoginPanel extends JPanel {
 				String data = id + "\t"+pwd;
 				int type = Constants.PacketType.LoginRequest.getType();
 				int length = data.length();
-//				int[] header;
-				
-				ClientLauncher.getConnector().sendHeader(type, length);
-				ClientLauncher.getConnector().sendData(data);
-//				header = ClientLauncher.getConnector().receiveHeader();
-//				ClientLauncher.getConnector().receiveData(header[0], header[1]);
-				
+//				
+				ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+//				
 				inputID.setText("");
 				inputPwd.setText("");
 

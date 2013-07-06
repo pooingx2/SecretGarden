@@ -52,14 +52,16 @@ public class ActionBar extends JMenuBar{
 		public void actionPerformed(ActionEvent event) {
 			
 			if(event.getSource()==logoutBtn){
-				String data = "";
+				String data = "logout reqeust";
 				int type = Constants.PacketType.LogoutRequest.getType();
-				int length = data.length();
+				int length = data.length();	
+				
 //				int[] header;
 				
-				ClientLauncher.getConnector().sendHeader(type,length);
-				ClientLauncher.getConnector().sendData(data);
-//				Launcher.getConnector().receiveData(header[0], header[1]);
+				ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+				//ientLauncher.getConnector().sendHeader(type,length);
+				//ClientLauncher.getConnector().sendData(data);
+				//ClientLauncher.getConnector().receiveData(header[0], header[1]);
 			}	
 		}
 	}

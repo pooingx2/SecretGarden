@@ -29,9 +29,11 @@ public class DirectoryMngPanel extends JPanel {
 	// Attribute
 	private int width;
 	private int height;
+	
 	/* 	status
-	0 : Default			1 : Information		2 : Create	
+	0 : Default		1 : Information		2 : Create	
 	3 : Access			4: Delete	*/
+	
 	private int status;
 	private File file;
 	private String filePath;
