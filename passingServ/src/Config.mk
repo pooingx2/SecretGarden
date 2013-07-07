@@ -1,10 +1,8 @@
 CC		:= gcc
 LD		:= ld
 INCLUDES	:= -I. -I$(TOPDIR)/include 
-INCXML		:= -I/usr/local/xml/include/libxml2
-OPTXML		:= -lxml2
 DEFINES		:= -DDEBUG
-CFLAGS		:= -O2 -W -Wall $(INCLUDES) $(INCXML) $(OPTXML) $(DEFINES)
+CFLAGS		:= -O2 -W -Wall $(INCLUDES) $(DEFINES)
 
 ######################################################
 

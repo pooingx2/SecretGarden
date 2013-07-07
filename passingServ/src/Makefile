@@ -2,16 +2,14 @@
 
 TARGET	:= passingServ
 TOPDIR	:= $(shell /bin/pwd)
-SUBDIRS	:= main xmlHandler epoll protocol
-EXLIB	:= -I/usr/local/xml/include/libxml2
-OPTX    := -lxml2
+SUBDIRS	:= main epoll protocol
 
 ##################################################
 
 include $(TOPDIR)/Config.mk
 
 all : compile $(OBJS)
-	$(CC) $(OBJS) $(addsuffix /built-in.o,$(SUBDIRS)) -o $(TARGET) $(EXLIB) $(OPTX)
+	$(CC) $(OBJS) $(addsuffix /built-in.o,$(SUBDIRS)) -o $(TARGET) 
 
 include $(TOPDIR)/Rules.mk
 

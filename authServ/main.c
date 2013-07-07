@@ -30,7 +30,7 @@ int main(int argc, char **argv)
    int length = 0;
    Peer messagingServ;  
 
- 
+   printf("Test\n");
   
    messagingServ.socket =  joinToPassingServ("127.0.0.1", "12500", 101);	
         
