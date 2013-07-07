@@ -20,6 +20,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.sg.controller.KeyFileMgr;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 
@@ -33,6 +34,7 @@ public class DirectoryListPanel extends JPanel {
 	private int height;
 	private boolean isSelected;
 	private boolean flag;
+	private KeyFileMgr keyFileMgr;
 	
 	// Components
 	private JLabel bgImg;
@@ -62,6 +64,8 @@ public class DirectoryListPanel extends JPanel {
 		this.flag = true;
 		this.setBackground(Constants.backColor);
 		this.setLayout(null);
+		
+		keyFileMgr = new KeyFileMgr();
 		
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryListBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
@@ -118,8 +122,7 @@ public class DirectoryListPanel extends JPanel {
 		//초기 로드시 디렉토리 조회 패킷 전송
 		String data = "directory list request" + "\t" + "endif";
 		int type = Constants.PacketType.DirectoryListRequset.getType();
-		int length = data.length();
-//		
+		int length = data.length();		
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 		//list.add("Test");
 	}
@@ -146,6 +149,7 @@ public class DirectoryListPanel extends JPanel {
 	public void create(String dir){
 		dirList.addElement(dir);
 		list.setSelectedIndex(dirList.size()-1);
+		keyFileMgr.createKeyFile(dir);
 	}
 	
 	public void access(){
