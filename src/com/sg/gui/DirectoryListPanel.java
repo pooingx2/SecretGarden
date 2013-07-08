@@ -275,8 +275,7 @@ public class DirectoryListPanel extends JPanel {
 	
 	// 리스트 초기화 함수 
 	// 디렉토리 삽입,삭제,파일 업/다운로드시에 리스트를 갱신해야한다
-	public static void initList()
-	{
+	public static void initList() {
 		dirList.clear();
 		nameTo_ParentandRoot.clear();
 	}
