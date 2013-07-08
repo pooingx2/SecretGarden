@@ -7,7 +7,7 @@
 
 #include "auth.h"
 #include "protocol.h"
-#include "epoll.h"
+
 
 #define MAXLINE 1024
 
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 
  
   
-   messagingServ.socket =  joinToPassingServ("127.0.0.1", "12500", 101);	
+   messagingServ.socket =  joinToPassingServ("112.108.39.208", "12500", 101);	
         
 	// DB connection 초기화
 	con = mysql_init(NULL);
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 		
         // DB 연결
 	if(mysql_real_connect
-             (con,"localhost","root","32sm2u","SecretGarden", 0, NULL, 0) == NULL)
+             (con,"localhost","pooingx2","SSM2013","SecretGarden", 0, NULL, 0) == NULL)
  	 {
 		printf("DB Call \n");
 		fprintf(stderr,"%s\n",mysql_error(con));
