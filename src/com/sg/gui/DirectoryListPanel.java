@@ -20,7 +20,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-//import com.sg.controller.KeyFileMgr;
+
+import com.sg.controller.KeyFileMgr;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 
@@ -34,7 +35,8 @@ public class DirectoryListPanel extends JPanel {
 	private int height;
 	private boolean isSelected;
 	private boolean flag;
-	//private KeyFileMgr keyFileMgr;
+
+	private KeyFileMgr keyFileMgr;
 	
 	// Components
 	private JLabel bgImg;
@@ -64,8 +66,11 @@ public class DirectoryListPanel extends JPanel {
 		this.setBackground(Constants.backColor);
 		this.setLayout(null);
 		
+
 		//keyFileMgr = new KeyFileMgr();
-		
+
+		//keyFileMgr = new KeyFileMgr();
+
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryListBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 
@@ -148,9 +153,9 @@ public class DirectoryListPanel extends JPanel {
 	//디렉토리 추가 버튼 클릭시 발생하는 이벤트
 	public void create(String dir){
 		
-		
-		//keyFileMgr.createKeyFile(dir);
-		
+
+		list.setSelectedIndex(dirList.size()-1);
+		keyFileMgr.createKeyFile(dir);
 		// 디렉토리 생성을 반영하기 위한 패널 새로고침
 		changePanel();
 	
