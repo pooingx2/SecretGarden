@@ -1,15 +1,15 @@
 <main>
-original  message = This is the sample message for a coursework of Network Security, Spring 2010. It is for testing AES cipher in OpenSSL.
+original  message = dir_id	public id	public pwd	private id	private pwd
 
 	* Generation Secret Key 
 	Secret key len : 16 bytes
-	Secret key : DB803373941463D37FBF0000B205F32B
+	Secret key : E15CE9FA9D61A78EC8A229FE73F9E529
 
 * AES encryption OK.
-Encyrpted message = 9FDD30D86693A914582559EC9058C7FC6FC182897B8E6267EBC2B70E0EDEC8709DB1B5974C021496FA44653F2126F4A13C4DE88304183BC0C862A5D9BC5790EDFBF02165FDEDC1D1DE1AC8A899283CBAA31CB680653D0720B5587717352C338DFA35A8292BD472A411EBDC9D60BE32AF38BE2DD1C4CBF7
-Encrypted message len = 119
+Encyrpted message = EFA3432F2B82E3B86D99E4A8E92178AA275805B1BAC11DE6B8315D586F73635BC081201341D25B0001910A796DF7B6169B6D72
+Encrypted message len = 51
 
 * AES decryption OK.
-Decrypted message = This is the sample message for a coursework of Network Security, Spring 2010. It is for testing AES cipher in OpenSSL.
-Decrypted message len = 119
+Decrypted message = dir_id	public id	public pwd	private id	private pwd
+Decrypted message len = 51
 ++++++++++++ END of PROGRAM ++++++++++++

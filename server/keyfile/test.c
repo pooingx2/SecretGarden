@@ -28,7 +28,7 @@ int main(void)
 {
 		SSU_SEC_key Secret;
 
-		char message[128] = "This is the sample message for a coursework of Network Security, Spring 2010. It is for testing AES cipher in OpenSSL.";
+		char message[128] = "dir_id\tpublic id\tpublic pwd\tprivate id\tprivate pwd";
 
 		char *enc_data;
 		char *dec_data;
