@@ -66,9 +66,9 @@ public class MainFrame extends JFrame  {
 		directoryListPanel = new DirectoryListPanel(width, height-50);
 		directoryListPanel.setBounds(0, 50, width, height-50);
 		
-		this.add(actionBar);
-//		this.add(loginPanel);
-		this.add(directoryListPanel);
+//		this.add(actionBar);
+		this.add(loginPanel);
+//		this.add(directoryListPanel);
 		
 		// Initialize components functions
 		this.setVisible(true);
