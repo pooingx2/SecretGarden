@@ -7,7 +7,6 @@
 
 #include "dirs.h"
 #include "protocol.h"
-#include "epoll.h"
 
 #define MAXLINE 1024
 
@@ -77,8 +76,11 @@ int main(int argc, char **argv)
 			{
 			
 			     // 디렉토리 조회를 위하여 폴더이름으로 조회
-			     getElements(&dataBuf, '\t', tokenBuf);		     
-			     state = getdirectoryList(con, "Test", directoryList);
+			     getElements(&dataBuf, '\t', tokenBuf);	
+			 
+			     // User가 가진 Haddop 
+	     		     // User id, Public, Private
+			     state = getdirectoryList(con, "Test", "hadoop","ktclout",directoryList);
 				
 			     if(state == 1)
 			     {
@@ -87,7 +89,7 @@ int main(int argc, char **argv)
 			     }
 			     else
 			     {
-				 sendTo(&messagingServ, 8,
+				 sendTo(&messagingServ, 0,
                              		    desc, strlen(NoneMs), NoneMs);
 			     }
                              break;
@@ -96,7 +98,9 @@ int main(int argc, char **argv)
 			{
 			     // 디렉토리 생성
 			     getElements(dataBuf, '\t', tokenBuf);
-			     state = createDirectory(con, tokenBuf[0],tokenBuf[1],tokenBuf[2],tokenBuf[3],tokenBuf[4],tokenBuf[5]);
+			     state = createRootDir(con, tokenBuf[0], "hadoop", "ktclout", "Test");
+			     //createRootDir(con, "mytest", "hadoop", "ktclout", "Test");
+			     //state = createDirectory(con, tokenBuf[0],tokenBuf[1],tokenBuf[2],tokenBuf[3],tokenBuf[4],tokenBuf[5]);
 
 			     if(state == 1)
 			     {
@@ -106,11 +110,13 @@ int main(int argc, char **argv)
 
 			     else
 			     {
-				sendTo(&messagingServ, 10, 
+				sendTo(&messagingServ, 0, 
 				    desc, strlen(NoneMs), NoneMs);
 			     }
 
 			}
+			// 디렉토리 엑세스
+			// 하위 폴더 생성
 			default  :
 			{
 			     break;
