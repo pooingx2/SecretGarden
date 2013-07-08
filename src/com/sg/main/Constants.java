@@ -10,21 +10,12 @@ public class Constants {
 	public static final int frameW = 800;
 	public static final int frameH = 600;
 	
-<<<<<<< HEAD
-	/*
-	public static final String serverIP= "112.108.39.185";
-	public static final int serverPort = 5555;
-	*/
-	
-	public static final String serverIP= "127.0.0.1";
-	public static final int serverPort = 12500;
-=======
+//	public static final String serverIP= "127.0.0.1";
+//	public static final int serverPort = 12500;
+
 	public static final String serverIP= "112.108.39.208";
 	public static final int serverPort = 12500;
-		
-//	public static final String serverIP= "112.108.39.186";
-//	public static final int serverPort = 5551;
->>>>>>> d837ccc3bcc6d94e2b94a4e04c78272d54a81202
+
 	
 	public static final Color backColor = Color.WHITE;
 	public static final Font Font1 = new Font(null,Font.CENTER_BASELINE,15);

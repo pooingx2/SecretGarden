@@ -66,10 +66,6 @@ public class MainFrame extends JFrame  {
 		directoryListPanel = new DirectoryListPanel(width, height-50);
 		directoryListPanel.setBounds(0, 50, width, height-50);
 		
-<<<<<<< HEAD
-=======
-
->>>>>>> d837ccc3bcc6d94e2b94a4e04c78272d54a81202
 //		this.add(actionBar);
 		this.add(loginPanel);
 //		this.add(directoryListPanel);
