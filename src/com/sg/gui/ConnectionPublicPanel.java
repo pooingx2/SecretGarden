@@ -165,6 +165,7 @@ public class ConnectionPublicPanel extends JPanel {
 				connection = true;
 				changeStatusPanel();
 				
+				//test
 				if(isConnection() && ClientLauncher.getFrame().
 						getConnectionPanel().getPublicPanel().isConnection()){
 					

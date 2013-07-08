@@ -144,6 +144,7 @@ public class ConnectionPrivatePanel extends JPanel {
 		this.repaint();
 	}
 
+
 	private class ActionHandler implements ActionListener {
 
 		@Override
@@ -164,6 +165,7 @@ public class ConnectionPrivatePanel extends JPanel {
 				connection = true;
 				changeStatusPanel();
 				
+				//test
 				if(isConnection() && ClientLauncher.getFrame().
 						getConnectionPanel().getPublicPanel().isConnection()){
 					
