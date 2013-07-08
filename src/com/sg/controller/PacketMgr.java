@@ -64,5 +64,11 @@ public class PacketMgr {
 				DirectoryListPanel.addList(token[tokenNum],token[tokenNum+1],token[tokenNum+2],token[tokenNum+3]);
 			}
 		}
+		
+		if(type==Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()){
+			//ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
+		}
+		
+		
 	}
 }

@@ -128,6 +128,7 @@ public class DirectoryMngPanel extends JPanel {
 	public void setSelectedValue(String value){
 		label[1].setText(value);
 	}
+	
 	public void selectkeyFile(){
 		JFileChooser fileDialog = new JFileChooser(new File("."));
 		int isSelected = fileDialog.showOpenDialog(null);

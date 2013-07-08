@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Map;
 
+import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 
 public class Connector implements Runnable {
@@ -257,14 +258,11 @@ public class Connector implements Runnable {
 
 	public void disconnect() {
 		runable = false;
-		try {
-			dis.close();
-			dos.close();
-			socket.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		String data = "EXIT";
+		int type = Constants.PacketType.PROGRAM_EXIT_REQUEST.getType();
+		int length = data.length();
+			
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 	}
 
 	@Override
@@ -275,11 +273,10 @@ public class Connector implements Runnable {
 			byte[] header = null;
 
 			System.out.println("recv before");
-			// header = receiveHeader();
-			// receiveData(header[0], header[1]);
 			recvPacket(header);
 			System.out.println("recv after");
 		}
 		System.out.println("while end");
 	}
+	
 }
