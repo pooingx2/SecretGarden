@@ -23,7 +23,7 @@ public class MainFrame extends JFrame  {
 	private ConnectionPanel connectionPanel;
 	private DirectoryListPanel directoryListPanel;
 	
-	public MainFrame() {
+	public MainFrame(int w, int h) {
 		
 		super();
 		
@@ -38,8 +38,8 @@ public class MainFrame extends JFrame  {
 		}
 
 		
-		this.width = Constants.frameW;
-		this.height = Constants.frameH;
+		this.width = w;
+		this.height = h;
 		
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		
@@ -66,6 +66,10 @@ public class MainFrame extends JFrame  {
 		directoryListPanel = new DirectoryListPanel(width, height-50);
 		directoryListPanel.setBounds(0, 50, width, height-50);
 		
+<<<<<<< HEAD
+=======
+
+>>>>>>> d837ccc3bcc6d94e2b94a4e04c78272d54a81202
 //		this.add(actionBar);
 		this.add(loginPanel);
 //		this.add(directoryListPanel);
@@ -98,6 +102,14 @@ public class MainFrame extends JFrame  {
 
 	public void setConnectionPanel(ConnectionPanel connectionPanel) {
 		this.connectionPanel = connectionPanel;
+	}
+
+	public DirectoryListPanel getDirectoryListPanel() {
+		return directoryListPanel;
+	}
+
+	public void setDirectoryListPanel(DirectoryListPanel directoryListPanel) {
+		this.directoryListPanel = directoryListPanel;
 	}
 	
 	

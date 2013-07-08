@@ -2,12 +2,15 @@ package com.sg.main;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class Constants {
 
 	public static final int frameW = 800;
 	public static final int frameH = 600;
 	
+<<<<<<< HEAD
 	/*
 	public static final String serverIP= "112.108.39.185";
 	public static final int serverPort = 5555;
@@ -15,6 +18,13 @@ public class Constants {
 	
 	public static final String serverIP= "127.0.0.1";
 	public static final int serverPort = 12500;
+=======
+	public static final String serverIP= "112.108.39.208";
+	public static final int serverPort = 12500;
+		
+//	public static final String serverIP= "112.108.39.186";
+//	public static final int serverPort = 5551;
+>>>>>>> d837ccc3bcc6d94e2b94a4e04c78272d54a81202
 	
 	public static final Color backColor = Color.WHITE;
 	public static final Font Font1 = new Font(null,Font.CENTER_BASELINE,15);
@@ -22,7 +32,8 @@ public class Constants {
 	
 	public static enum BackgroudPath {
 		
-		loginBG("img/background/loginBG.jpg"), 
+		loginBG("img/background/loginBG.jpg"),
+		signupBG("img/background/signupBG.jpg"),
 		barBG("img/background/barBG.jpg"), 
 		connectionBG("img/background/connectionBG.jpg"),
 		settingsBG("img/background/settingsBG.jpg"),
@@ -45,6 +56,8 @@ public class Constants {
 
 		loginBtn1("img/button/loginBtn1.jpg"), 
 		loginBtn2("img/button/loginBtn2.jpg"), 
+		signupBtn1("img/button/signupBtn1.jpg"), 
+		signupBtn2("img/button/signupBtn2.jpg"), 
 		logoutBtn1("img/button/logoutBtn1.jpg"), 
 		logoutBtn2("img/button/logoutBtn2.jpg"),
 		connectBtn1("img/button/connectBtn1.jpg"), 
@@ -87,16 +100,27 @@ public class Constants {
 		public String getPath() { return path; }
 	}
 	
-	public static enum PacketCmd {
+	public static enum PacketType {
+
+		Error(0),
+		LoginRequest(1), 
+		LoginResponse(2), 
+		LogoutRequest(3), 
+		LogoutResponse(4),
+		SignupRequest(5), 
+		SignupResponse(6),
+		DirectoryListRequset(7), 
+		DirectoryListResponse(8),
+		DirectoryCreateRequset(9), 
+		DirectoryCreateResponse(10),
+		PROGRAM_EXIT_REQUEST(50), 
+		PROGRAM_EXIT_RESPONSE(51); 
 		
-		LoginRequest("0001"), 
-		LoginSuccess("0002"), 
-		LoginFailure("0003"), 
-		LogoutRequest("0004"), 
-		LogoutResponse("0005"); 
-		
-		final private String cmd;
-		private PacketCmd(String cmd) { this.cmd = cmd; }
-		public String getCmd() { return cmd; }
+		final private int type;
+		private PacketType(int type) {
+
+			this.type = type;
+		}
+		public int getType() { return type; }
 	}
 }

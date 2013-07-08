@@ -15,6 +15,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 
 
@@ -23,6 +24,8 @@ public class ConnectionPublicPanel extends JPanel {
 	private int width;
 	private int height;
 	private boolean connection;
+	private String id;
+	private String pwd;
 
 	// Components
 	private Font inputFont;
@@ -101,6 +104,22 @@ public class ConnectionPublicPanel extends JPanel {
 
 
 	public void initialize() { }
+	
+	public String getId() {
+		return id;
+	}
+
+	public String getPwd() {
+		return pwd;
+	}
+
+	public boolean isConnection() {
+		return connection;
+	}
+
+	public void setConnection(boolean connection) {
+		this.connection = connection;
+	}
 
 	public void changeSettingPanel() {
 		this.removeAll();
@@ -127,8 +146,6 @@ public class ConnectionPublicPanel extends JPanel {
 	}
 
 	private class ActionHandler implements ActionListener {
-		private String id;
-		private String pwd;
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -138,8 +155,25 @@ public class ConnectionPublicPanel extends JPanel {
 			}
 			
 			if(event.getSource()==btn[1]){
+				
+				id = textField.getText();
+				pwd = pwdField.getText();
+				
+				textField.setText("");
+				pwdField.setText("");
+
 				connection = true;
 				changeStatusPanel();
+				
+				if(isConnection() && ClientLauncher.getFrame().
+						getConnectionPanel().getPublicPanel().isConnection()){
+					
+					String data = "";
+					int type = Constants.PacketType.DirectoryListRequset.getType();
+					int length = data.length();
+					
+					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+				}
 			}
 			
 			if(event.getSource()==btn[2]){
@@ -147,5 +181,6 @@ public class ConnectionPublicPanel extends JPanel {
 			}
 		}
 	}
+
 }
 

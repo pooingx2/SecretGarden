@@ -6,35 +6,69 @@ import javax.swing.JOptionPane;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
+import com.sg.gui.*;
 
 public class PacketMgr {
 	private StringTokenizer tokenizer;
 	private String token[];
 	
 	public PacketMgr(){
-		token = new String[100];
+		
 	}
-	public void managePacket(String pk){
-		tokenizer = new StringTokenizer(pk,"\t");
+	public void managePacket(int type, int desc ,int length, String data){
+		tokenizer = new StringTokenizer(data,"\t");
+		token = new String[length];
 		int i =0;
 
+		System.out.println("type : " + type);
+		System.out.println("desc : " + desc);
+		System.out.println("length : " + length);
+		System.out.println("data : " + data);
+		
 		while(tokenizer.hasMoreTokens()) {
 			token[i] = tokenizer.nextToken();
-			System.out.println("teken : "+token[i]);
 			i++;
 		}
-
-		if(token[0].equals(Constants.PacketCmd.LoginFailure.getCmd())){
-			JOptionPane.showMessageDialog(null, token[1]);
+		
+			
+		if(type==Constants.PacketType.Error.getType()){
+			JOptionPane.showMessageDialog(null, token[0]);
 		}
 		
-		if(token[0].equals(Constants.PacketCmd.LoginSuccess.getCmd())){
-			JOptionPane.showMessageDialog(null, token[1]+" 님 환영합니다.");
+		
+		if(type==Constants.PacketType.LoginResponse.getType()){
+			JOptionPane.showMessageDialog(null, "Welcome");
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getConnectionPanel());
 		}
 		
-		if(token[0].equals(Constants.PacketCmd.LogoutResponse.getCmd())){
+		
+		if(type==Constants.PacketType.LogoutResponse.getType()){
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
 		}
+		
+		
+		if(type==Constants.PacketType.SignupResponse.getType()){
+			JOptionPane.showMessageDialog(null, "Thank you");
+			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().initForm();
+			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().dispose();
+		}
+		
+		
+		if(type==Constants.PacketType.DirectoryListResponse.getType())
+		{
+			//이전에 저장된 정보들(디렉토리 및 파일 이름) 초기화
+			DirectoryListPanel.initList();
+			
+			//수신한 데이터를 Panel에 뿌려준다.
+			for(int tokenNum=0;tokenNum<i;tokenNum = tokenNum + 4){
+				DirectoryListPanel.addList(token[tokenNum],token[tokenNum+1],token[tokenNum+2],token[tokenNum+3]);
+			}
+		}
+		
+		if(type==Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()){
+			//ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
+		}
+		
+		
 	}
 }
