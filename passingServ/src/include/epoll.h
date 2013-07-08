@@ -48,6 +48,7 @@ void server_process(Peer *peer11);
 /* 중간평가 이후 구현할 모듈 */
 
 // 접속한 사용자 테이블( ID, IP, MAC, Message Seqeence) 관리 프로세스 - IPC로 구현한다.  
+/*
 struct Joining_User_Info{
 
 	char userId[20];
@@ -64,7 +65,7 @@ struct Joining_User_Info{
 		
 
 }
-
+*/
 // IP변조 탐지 모듈
 
 // 로그 기록 모듈(Protocol)

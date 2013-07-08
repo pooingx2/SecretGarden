@@ -172,7 +172,9 @@ public class ConnectionPrivatePanel extends JPanel {
 					String data = "";
 					int type = Constants.PacketType.DirectoryListRequset.getType();
 					int length = data.length();
-					
+			
+					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
+
 					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 				}
 			}

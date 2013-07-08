@@ -20,6 +20,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+
 import com.sg.controller.KeyFileMgr;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
@@ -34,6 +35,7 @@ public class DirectoryListPanel extends JPanel {
 	private int height;
 	private boolean isSelected;
 	private boolean flag;
+
 	private KeyFileMgr keyFileMgr;
 	
 	// Components
@@ -64,8 +66,11 @@ public class DirectoryListPanel extends JPanel {
 		this.setBackground(Constants.backColor);
 		this.setLayout(null);
 		
-		keyFileMgr = new KeyFileMgr();
-		
+
+		//keyFileMgr = new KeyFileMgr();
+
+		//keyFileMgr = new KeyFileMgr();
+
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryListBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 
@@ -117,12 +122,13 @@ public class DirectoryListPanel extends JPanel {
 		this.add(bgImg);
 		
 		//초기 로드시 디렉토리 조회 패킷 전송
+		/*
 		String data = "directory list request" + "\t" + "endif";
 		int type = Constants.PacketType.DirectoryListRequset.getType();
 		int length = data.length();		
 		
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-		
+		*/
 	}
 
 	public void initialize() { }
@@ -144,32 +150,34 @@ public class DirectoryListPanel extends JPanel {
 		this.repaint();
 	}
 	
-	
 	//디렉토리 추가 버튼 클릭시 발생하는 이벤트
 	public void create(String dir){
 		
+
 		list.setSelectedIndex(dirList.size()-1);
 		keyFileMgr.createKeyFile(dir);
-		
 		// 디렉토리 생성을 반영하기 위한 패널 새로고침
 		changePanel();
-		
+	
 		// 디렉토리 추가 패킷 전송
 		// 초기 로드시 디렉토리 조회 패킷 전송
 		// 부분마다 추가를 위해 parent, root를 해쉬맵에서 조회하는 부분이 필요하다 
-		String data = "NULL" + "\t" + "folder" + "\t" + dir + "\t" + "1" + "\t" + "mydir" + "\t" + "1";
+		
+		String data = dir;
 		int type = Constants.PacketType.DirectoryCreateRequset.getType();
 		int length = data.length();
 			
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 		
 		// 추가된 Component를 반영하기 위해 조회 패킷 전송
+		
 		data = "directory list request";
 		type = Constants.PacketType.DirectoryListRequset.getType();
 		length = data.length();
 	
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 		
+		list.setSelectedIndex(12);
 	}
 	
 	public void access(){
@@ -267,10 +275,10 @@ public class DirectoryListPanel extends JPanel {
 	}
 	
 	// 외부 클래스(PacketMgr)에서 리스트에 디렉토리 목록을 갱신하기 위한 함수
-	public static void addList(String type, String name, String parent, String rootInt){	
+	public static void addList(String type, String name){	
 			dirList.addElement(type+ "  " + name);
-			nameTo_ParentandRoot.put(name, parent);
-			nameTo_ParentandRoot.put(name, rootInt);			
+			//nameTo_ParentandRoot.put(name, parent);
+			//nameTo_ParentandRoot.put(name, rootInt);			
 	}
 	
 	// 리스트 초기화 함수 
