@@ -1,5 +1,10 @@
 #include "epoll.h"
 
+/*----------------------------------------------------------------
+  function : init_data0
+  io: none
+  desc: initialize global client structure values
+----------------------------------------------------------------*/
 
 void init_data0(Peer *peer)
 {
@@ -11,6 +16,13 @@ void init_data0(Peer *peer)
      peer[i].socket = -1;
   }
 }
+
+/*-------------------------------------------------------------
+  function: init_server0
+  io: input : integer - server port (must be positive)
+  output: none
+  desc : tcp/ip listening socket setting with input variable
+----------------------------------------------------------------*/
 
 void init_server0(int svr_port)
 {
@@ -167,12 +179,13 @@ void client_recv(int event_fd, Peer *peer)
   Peer t_peer;
   t_peer.socket = event_fd;
 
-  //printf("recv start \n");
+  printf("recv start \n");
   len =  recvFrom(&t_peer, headerBuf, dataBuf);  
   
+
   int type = byteToInt(headerBuf, 0);
 
-  //printf("packet type : %d\n", type);
+  printf("read end type : %d\n", type);
 
   if( len < 0 || len == 0 )
   {
@@ -181,53 +194,19 @@ void client_recv(int event_fd, Peer *peer)
       return;
   }
   
+  printf("start type classify\n");
   switch(type)
   {
 	case 0 : 
 	{
-		// Auth, dir, HDFS Error Reporting Packet Protocol
-		// 
+
+		//userpool_send(headerBuf, peer);
+		//userpool_send(dataBuf, peer);
+
 		break;
 	}
 
         case 1 :
-	{
-		if(g_epoll_auth == 0)
-		{
-			//Exception
-			printf("auth server not running \n");
-			break;
-		}
-		Peer auth;
-		auth.socket = g_epoll_auth;	
-		
-                sendTo(&auth, 1, event_fd, strlen(dataBuf), dataBuf);
-
-		break;
-	}
-	case 2 :
-	{
-		Peer client;
-		client.socket = byteToInt(headerBuf, 4);
-
-		sendTo(&client, 2, g_epoll_auth ,strlen(dataBuf), dataBuf);
-
-		break;
-	}
-	case 3 :
-	{
-		Peer client;
-		client.socket = event_fd;
-		
-		sendTo(&client, 4, event_fd, strlen(dataBuf), dataBuf);
-		break;
-	
-	}
-	case 4 :
-	{
-		
-	}
-	case 5 :
 	{
 		Peer auth;
 		auth.socket = g_epoll_auth;
@@ -238,111 +217,34 @@ void client_recv(int event_fd, Peer *peer)
 			printf("auth server not running \n");
 			break;
 		}	
-		
-                sendTo(&auth, 5, event_fd, strlen(dataBuf), dataBuf);
-  		break;
-	}
-	case 6 :
-	{
-		Peer client;
-		client.socket = byteToInt(headerBuf, 4);
-		sendTo(&client, 6, g_epoll_dir ,strlen(dataBuf), dataBuf);
-		break;
 
-	}
-	case 7 :
-	{
-		Peer dirServ;
-		dirServ.socket = g_epoll_dir;
+		printf("login request to : %d, %d, %s \n", auth.socket, strlen(dataBuf), dataBuf);
+		sendTo(&auth, 1, event_fd, strlen(dataBuf), dataBuf);
 
-		if(g_epoll_dir == 0)
-		{
-			printf("dir server not running \n");
-			break;
-		}
-		sendTo(&dirServ, 7, event_fd, strlen(dataBuf), dataBuf);
-	}
-	case 8 :
-	{
-		Peer peer;
-		peer.socket = byteToInt(headerBuf, 4);
-		sendTo(&peer, 8, event_fd, strlen(dataBuf), dataBuf);		
 		break;
 	}
-	case 9:
-	{
-		Peer dirServ;
-		dirServ.socket = g_epoll_dir;
 
-		if(g_epoll_dir == 0)
-		{
-			printf("dir server not running \n");
-			break;
-		}
-		
-		sendTo(&dirServ, 9, event_fd, strlen(dataBuf), dataBuf);
-		break;
-	}
-	case 10:
-	{
-		Peer peer;
-		peer.socket = byteToInt(headerBuf, 4);
-		sendTo(&peer, 10, event_fd, strlen(dataBuf), dataBuf);
-		break;
-	}
 	case 101 :
 	{
-		if(g_epoll_auth == 0)
-			printf("Auth Serv Binding \n");
-		else{
-			printf("Auth Serv already Binding \n");
-			break;
-		}
-
+		printf("Auth Serv Binding \n");
+		
 		g_epoll_auth = event_fd;
-		Peer auth;
-                auth.socket  = g_epoll_auth;
 
-		sendTo(&auth, 104, event_fd , strlen(dataBuf), dataBuf);
+		printf("Auth Serv fd is : %d \n", event_fd);
+
+		sendTo(g_epoll_auth, 102, event_fd , strlen(dataBuf), dataBuf);
 
 		printf("Auth Serv Binding End \n");
  		break;
 	}
 	case 102 : 
 	{
-		if(g_epoll_dir == 0)
-			printf("Dir Serv Binding \n");
-		else{
-			printf("Dir Serv already Binding \n");
-			break;
-		}
-
-		g_epoll_dir  = event_fd;
-		Peer dir;
-		dir.socket  = g_epoll_dir;
-
-		
-		sendTo(&dir, 105, event_fd, strlen(dataBuf), dataBuf);
-
-		printf("Dir Serv Binding End \n");
-		break;
-	}
-	case 103 :
-	{
-	
-		g_epoll_HDFS  = event_fd;
-		Peer dir;
-		dir.socket  = g_epoll_HDFS;
-
-		
-		sendTo(&dir, 105, event_fd, strlen(dataBuf), dataBuf);
-		break;
+		printf("Dir Serv Binding \n");
 	}
  
 	default :
 	{
 		printf("default\n");
-		break;
 	}
   }
 
@@ -390,6 +292,9 @@ void server_process(Peer *peer)
           continue; /* next fd */
       }
       
+          /* if not server socket ,
+	     this socket is for client socket,
+	     so we read it */
      // 이벤트가 발생한 소켓에 대해서 데이터를 읽어들인다.
      // Thread Creadte
      printf("Event Create \n");

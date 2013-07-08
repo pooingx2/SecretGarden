@@ -113,15 +113,15 @@ public class LoginPanel extends JPanel {
 				String data = id + "\t"+pwd;
 				int type = Constants.PacketType.LoginRequest.getType();
 				int length = data.length();
-//				
+			
 				ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-//				
+				
 				inputID.setText("");
 				inputPwd.setText("");
 
 			}
 			if(event.getSource()==signupBtn){
-//				SignupFrame sigupFrame = new SignupFrame(400,500);
+
 				getSigupFrame().setVisible(true);
 				
 			}

@@ -9,13 +9,11 @@
 
 #define MAXLINE 1024
 
-//Peer peer[MAX_CLIENT];
-;
+Peer peer[MAX_CLIENT];
+
 int main(int argc, char **argv)
 {	
-  
-  Peer peer[MAX_CLIENT];
-			
+ 
   printf("[ETEST][START] epoll test server v1.2 (simple epoll test server)\n");
   /* entry , argument check and process */
   if(argc < 3) g_svr_port = DEFAULT_PORT;

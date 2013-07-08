@@ -26,6 +26,7 @@ public class KeyFileMgr {
 			kpg = KeyPairGenerator.getInstance("RSA");
 			kpg.initialize(1024);
 
+
 			KeyPair keyPair = kpg.generateKeyPair();
 			PublicKey publicKey = keyPair.getPublic();
 			PrivateKey privateKey = keyPair.getPrivate();
