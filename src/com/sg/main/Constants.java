@@ -102,7 +102,11 @@ public class Constants {
 		DirectoryListRequset(7), 
 		DirectoryListResponse(8),
 		DirectoryCreateRequset(9), 
-		DirectoryCreateResponse(10); 
+		DirectoryCreateResponse(10),
+		
+		
+		PROGRAM_EXIT_REQUEST(50), 
+		PROGRAM_EXIT_RESPONSE(51); 
 		
 		final private int type;
 		private PacketType(int type) {
