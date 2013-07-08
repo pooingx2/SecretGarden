@@ -157,7 +157,7 @@ public class DirectoryListPanel extends JPanel {
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 		
 		// 추가된 Component를 반영하기 위해 조회 패킷 전송
-		data = "directory list request" + "\t" + "endif";
+		data = "directory list request";
 		type = Constants.PacketType.DirectoryListRequset.getType();
 		length = data.length();
 	
@@ -260,12 +260,10 @@ public class DirectoryListPanel extends JPanel {
 	}
 	
 	// 외부 클래스(PacketMgr)에서 리스트에 디렉토리 목록을 갱신하기 위한 함수
-	public static void addList(String type, String name, String parent, String rootInt){
-			
+	public static void addList(String type, String name, String parent, String rootInt){	
 			dirList.addElement(type+ "  " + name);
 			nameTo_ParentandRoot.put(name, parent);
-			nameTo_ParentandRoot.put(name, rootInt);	
-			
+			nameTo_ParentandRoot.put(name, rootInt);			
 	}
 	
 	// 리스트 초기화 함수 

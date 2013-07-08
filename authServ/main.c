@@ -30,7 +30,7 @@ int main(int argc, char **argv)
    int length = 0;
    Peer messagingServ;  
 
-   printf("Test\n");
+ 
   
    messagingServ.socket =  joinToPassingServ("112.108.39.208", "12500", 101);	
         
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 			     }
 			     else
 			     {
-				 sendTo(&messagingServ, 2,
+				 sendTo(&messagingServ, 0,
                              		    desc, strlen(NoneMs), NoneMs);
 			     }
                              break;
