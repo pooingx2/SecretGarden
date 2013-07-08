@@ -13,6 +13,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 
 
@@ -21,7 +22,8 @@ public class ConnectionPrivatePanel extends JPanel {
 	private int width;
 	private int height;
 	private boolean connection;
-	private String filePath;
+	private String id;
+	private String pwd;
 
 	// Components
 	private Font inputFont;
@@ -38,7 +40,6 @@ public class ConnectionPrivatePanel extends JPanel {
 		this.width = w;
 		this.height = h;
 		this.connection = false;
-		this.filePath = null;
 		this.setLayout(null);
 		this.setBackground(Constants.backColor);
 		this.setBorder(new LineBorder(Color.LIGHT_GRAY));
@@ -89,7 +90,7 @@ public class ConnectionPrivatePanel extends JPanel {
 		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
 		btn[1].setBounds(30,240,80,30);
 		btn[1].addActionListener(handler);
-		
+
 		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
 		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
 		btn[2].setBounds(130,240,80,30);
@@ -102,7 +103,23 @@ public class ConnectionPrivatePanel extends JPanel {
 
 
 	public void initialize() { }
+	
+	public String getId() {
+		return id;
+	}
 
+	public String getPwd() {
+		return pwd;
+	}
+
+	public boolean isConnection() {
+		return connection;
+	}
+
+	public void setConnection(boolean connection) {
+		this.connection = connection;
+	}
+	
 	public void changeSettingPanel() {
 		this.removeAll();
 		this.add(label[0]);
@@ -127,9 +144,8 @@ public class ConnectionPrivatePanel extends JPanel {
 		this.repaint();
 	}
 
+
 	private class ActionHandler implements ActionListener {
-		private String id;
-		private String pwd;
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -137,12 +153,31 @@ public class ConnectionPrivatePanel extends JPanel {
 			if(event.getSource()==btn[0]){
 				changeSettingPanel();
 			}
-			
+
 			if(event.getSource()==btn[1]){
+
+				id = textField.getText();
+				pwd = pwdField.getText();
+				
+				textField.setText("");
+				pwdField.setText("");
+
 				connection = true;
 				changeStatusPanel();
+				
+				//test
+				if(isConnection() && ClientLauncher.getFrame().
+						getConnectionPanel().getPublicPanel().isConnection()){
+					
+					String data = "";
+					int type = Constants.PacketType.DirectoryListRequset.getType();
+					int length = data.length();
+					
+					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
+					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+				}
 			}
-			
+
 			if(event.getSource()==btn[2]){
 				changeStatusPanel();
 			}

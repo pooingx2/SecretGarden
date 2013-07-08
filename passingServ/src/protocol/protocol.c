@@ -18,7 +18,8 @@ readHeader
 				needSize=needSize-readSize;
 				
 		}
-		
+
+		printf("readSize : %d \n", readSize);
 		return readSize;
 }
 
@@ -49,7 +50,7 @@ recvFrom
 {	
 	 	int headerSize = readHeader(peer, headerBuf, HEADERSIZE);
 		
-		if(headerSize == 0 )
+		if(headerSize < 1 )
 		{
 			printf("Non Header \n");
 			return 0;
