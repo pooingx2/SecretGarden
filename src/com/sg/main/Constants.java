@@ -103,8 +103,6 @@ public class Constants {
 		DirectoryListResponse(8),
 		DirectoryCreateRequset(9), 
 		DirectoryCreateResponse(10),
-		
-		
 		PROGRAM_EXIT_REQUEST(50), 
 		PROGRAM_EXIT_RESPONSE(51); 
 		
