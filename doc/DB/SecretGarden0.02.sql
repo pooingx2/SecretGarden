@@ -29,7 +29,8 @@ CREATE TABLE File (
     file_id INTEGER NOT NULL AUTO_INCREMENT,
     type VARCHAR(20) NOT NULL,
     name VARCHAR(20) NOT NULL,
-    parent VARCHAR(20) NOT NULL,
+    parent   VARCHAR(20) NOT NULL,
+    metaPath VARCHAR(255) NOT NULL, 
     depth INTEGER NOT NULL,
     root INTEGER NOT NULL,
 

@@ -28,7 +28,8 @@
 #define DIR_CREAT_RESPONSE	 10
 
 //추가 Passing Serv 프로토콜(51~100)
-
+#define PROGRAM_EXIT_REQUEST     50
+#define PROGRAM_EXIT_RESPONSE    51
 
 //Serv Binding 프로토콜(101~150)
 #define AUTH_BINDING 		 101

@@ -10,9 +10,13 @@ public class Constants {
 	public static final int frameW = 800;
 	public static final int frameH = 600;
 	
-	public static final String serverIP= "127.0.0.1";
+//	public static final String serverIP= "127.0.0.1";
+//	public static final int serverPort = 12500;
+
+	public static final String serverIP= "112.108.39.208";
 	public static final int serverPort = 12500;
-		
+
+	
 	public static final Color backColor = Color.WHITE;
 	public static final Font Font1 = new Font(null,Font.CENTER_BASELINE,15);
 	public static final Font Font2 = new Font(null,Font.CENTER_BASELINE,20);
@@ -100,8 +104,6 @@ public class Constants {
 		DirectoryListResponse(8),
 		DirectoryCreateRequset(9), 
 		DirectoryCreateResponse(10),
-		
-		
 		PROGRAM_EXIT_REQUEST(50), 
 		PROGRAM_EXIT_RESPONSE(51); 
 		

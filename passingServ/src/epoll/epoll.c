@@ -167,9 +167,10 @@ void client_recv(int event_fd, Peer *peer)
   Peer t_peer;
   t_peer.socket = event_fd;
 
-  //printf("recv start \n");
+  printf("recv start \n");
   len =  recvFrom(&t_peer, headerBuf, dataBuf);  
-  
+  printf("recv end \n");
+
   int type = byteToInt(headerBuf, 0);
 
   //printf("packet type : %d\n", type);
@@ -183,14 +184,20 @@ void client_recv(int event_fd, Peer *peer)
   
   switch(type)
   {
-	case 0 : 
+	case ERROR_REPORT : 
 	{
 		// Auth, dir, HDFS Error Reporting Packet Protocol
 		// 
+		Peer client;
+		client.socket = byteToInt(headerBuf, 4);
+
+		sendTo(&client, 0, g_epoll_auth ,strlen(dataBuf), dataBuf);
+
+
 		break;
 	}
 
-        case 1 :
+        case LOGIN_REQUEST :
 	{
 		if(g_epoll_auth == 0)
 		{
@@ -205,7 +212,7 @@ void client_recv(int event_fd, Peer *peer)
 
 		break;
 	}
-	case 2 :
+	case LOGIN_RESPONSE :
 	{
 		Peer client;
 		client.socket = byteToInt(headerBuf, 4);
@@ -214,20 +221,22 @@ void client_recv(int event_fd, Peer *peer)
 
 		break;
 	}
-	case 3 :
+	case LOGOUT_REQUEST :
 	{
 		Peer client;
 		client.socket = event_fd;
 		
 		sendTo(&client, 4, event_fd, strlen(dataBuf), dataBuf);
+		userpool_delete(client.socket, peer);
+		//close(client.socket);
+		printf("delete\n");
 		break;
-	
 	}
-	case 4 :
+	case LOGOUT_RESPONSE :
 	{
 		
 	}
-	case 5 :
+	case SIGNUP_REQUEST :
 	{
 		Peer auth;
 		auth.socket = g_epoll_auth;
@@ -242,7 +251,7 @@ void client_recv(int event_fd, Peer *peer)
                 sendTo(&auth, 5, event_fd, strlen(dataBuf), dataBuf);
   		break;
 	}
-	case 6 :
+	case SIGNUP_RESPONSE :
 	{
 		Peer client;
 		client.socket = byteToInt(headerBuf, 4);
@@ -250,7 +259,7 @@ void client_recv(int event_fd, Peer *peer)
 		break;
 
 	}
-	case 7 :
+	case DIR_LIST_REQUEST :
 	{
 		Peer dirServ;
 		dirServ.socket = g_epoll_dir;
@@ -262,14 +271,15 @@ void client_recv(int event_fd, Peer *peer)
 		}
 		sendTo(&dirServ, 7, event_fd, strlen(dataBuf), dataBuf);
 	}
-	case 8 :
+	case DIR_LIST_RESPONSE :
 	{
-		Peer peer;
-		peer.socket = byteToInt(headerBuf, 4);
-		sendTo(&peer, 8, event_fd, strlen(dataBuf), dataBuf);		
+		Peer client;
+		client.socket = byteToInt(headerBuf, 4);
+
+		sendTo(&client, 8, event_fd, strlen(dataBuf), dataBuf);		
 		break;
 	}
-	case 9:
+	case DIR_CREAT_REQUEST:
 	{
 		Peer dirServ;
 		dirServ.socket = g_epoll_dir;
@@ -283,14 +293,30 @@ void client_recv(int event_fd, Peer *peer)
 		sendTo(&dirServ, 9, event_fd, strlen(dataBuf), dataBuf);
 		break;
 	}
-	case 10:
+
+	/* passingServ 프로토콜 50~100 */
+	case PROGRAM_EXIT_REQUEST:
+	{
+		Peer client;
+		client.socket = event_fd;
+		
+		sendTo(&client, PROGRAM_EXIT_RESPONSE, event_fd, strlen(dataBuf), dataBuf);
+		
+		userpool_delete(event_fd, peer);
+		close(client.socket);
+		
+		break;
+	}
+	
+
+	case DIR_CREAT_RESPONSE:
 	{
 		Peer peer;
 		peer.socket = byteToInt(headerBuf, 4);
 		sendTo(&peer, 10, event_fd, strlen(dataBuf), dataBuf);
 		break;
 	}
-	case 101 :
+	case AUTH_BINDING :
 	{
 		if(g_epoll_auth == 0)
 			printf("Auth Serv Binding \n");
@@ -308,7 +334,7 @@ void client_recv(int event_fd, Peer *peer)
 		printf("Auth Serv Binding End \n");
  		break;
 	}
-	case 102 : 
+	case DIR_BINDING : 
 	{
 		if(g_epoll_dir == 0)
 			printf("Dir Serv Binding \n");
@@ -327,7 +353,7 @@ void client_recv(int event_fd, Peer *peer)
 		printf("Dir Serv Binding End \n");
 		break;
 	}
-	case 103 :
+	case HDFS_BINDING :
 	{
 	
 		g_epoll_HDFS  = event_fd;
@@ -354,7 +380,7 @@ void server_process(Peer *peer)
   int i,nfds;
   int socket;
   int cli_len = sizeof(cli_addr);
-
+  //printf("Server init()\n");
   nfds = epoll_wait(g_epoll_fd,g_events,MAX_EVENTS,100); /* timeout 100ms */
 
   if(nfds == 0) return; /* no event , no work */
@@ -394,7 +420,7 @@ void server_process(Peer *peer)
      // Thread Creadte
      printf("Event Create \n");
      client_recv(g_events[i].data.fd, peer);   
-     
+     printf("Event End \n");
   } /* end of for 0-nfds */
 }
 /*------------------------------- end of function server_process */

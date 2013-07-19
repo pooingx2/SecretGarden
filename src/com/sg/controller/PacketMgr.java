@@ -60,13 +60,14 @@ public class PacketMgr {
 			DirectoryListPanel.initList();
 			
 			//수신한 데이터를 Panel에 뿌려준다.
-			for(int tokenNum=0;tokenNum<i;tokenNum = tokenNum + 4){
-				DirectoryListPanel.addList(token[tokenNum],token[tokenNum+1],token[tokenNum+2],token[tokenNum+3]);
+			for(int tokenNum=0;tokenNum<i;tokenNum = tokenNum + 2){
+				DirectoryListPanel.addList(token[tokenNum],token[tokenNum+1]);
 			}
 		}
 		
 		if(type==Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()){
-			//ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
+		
+			
 		}
 		
 		
