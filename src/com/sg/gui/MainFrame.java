@@ -76,7 +76,6 @@ public class MainFrame extends JFrame  {
 	
 	public void changePanel(JPanel panel) {
 		this.getContentPane().removeAll();
-//		panel.setFocusable(true);
 		if(panel != loginPanel){
 			this.add(actionBar);
 		}

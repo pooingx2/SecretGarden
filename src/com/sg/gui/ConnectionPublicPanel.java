@@ -64,7 +64,7 @@ public class ConnectionPublicPanel extends JPanel {
 		label[0] = new JLabel(new ImageIcon(Constants.IconPath.publicIcon.getPath()));
 		label[0].setBounds(5,5,230,55);
 
-		label[1] = new JLabel("Hadoop Master IP");
+		label[1] = new JLabel("AWS S3 ID");
 		label[1].setBounds(20,80,200,30);
 		label[1].setFont(inputFont);
 
@@ -72,7 +72,7 @@ public class ConnectionPublicPanel extends JPanel {
 		textField.setBounds(20,110,200,30);
 		textField.setFont(inputFont);
 
-		label[2] = new JLabel("SSH key");
+		label[2] = new JLabel("AWS S3 Secret key");
 		label[2].setBounds(20,150,200,30);
 		label[2].setFont(inputFont);
 
@@ -165,7 +165,6 @@ public class ConnectionPublicPanel extends JPanel {
 				connection = true;
 				changeStatusPanel();
 				
-				//test
 				if(isConnection() && ClientLauncher.getFrame().
 						getConnectionPanel().getPrivatePanel().isConnection()){
 
@@ -173,8 +172,9 @@ public class ConnectionPublicPanel extends JPanel {
 					int type = Constants.PacketType.DirectoryListRequset.getType();
 					int length = data.length();
 			
+					ClientLauncher.getFrame().getDirectoryListPanel().initialize();
 					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
-					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+					//ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 	
 				}
 			}

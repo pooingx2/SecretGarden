@@ -24,7 +24,6 @@ import javax.swing.border.LineBorder;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 
-
 public class DirectoryMngPanel extends JPanel {
 	// Attribute
 	private int width;

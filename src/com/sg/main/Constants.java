@@ -13,7 +13,7 @@ public class Constants {
 //	public static final String serverIP= "127.0.0.1";
 //	public static final int serverPort = 12500;
 
-	public static final String serverIP= "112.108.39.208";
+	public static final String serverIP = "112.108.39.173";
 	public static final int serverPort = 12500;
 
 	

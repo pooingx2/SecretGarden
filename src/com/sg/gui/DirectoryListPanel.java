@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -15,18 +13,16 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
-
-import com.sg.controller.KeyFileMgr;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
-
-
-
 
 public class DirectoryListPanel extends JPanel {
 	
@@ -34,26 +30,23 @@ public class DirectoryListPanel extends JPanel {
 	private int width;
 	private int height;
 	private boolean isSelected;
-	private boolean flag;
-
-	private KeyFileMgr keyFileMgr;
 	
 	// Components
 	private JLabel bgImg;
-	private JList<String> list;
 	private JScrollPane scroll;
-	
 	private JPanel btnGroupPanel;
 	private JButton btn[];
 	private ActionHandler handler;
 	private DirectoryMngPanel dirMngPanel;
-
+	private DefaultTableModel tableModel;
+	private JTable table;
+	private JTableHeader header;
 	
 	/* 디렉토리 리스트 관련 변수 */ 
 	// PacketMgr에서 받아온 파일 및 폴더 정보를 저장하기 위한 변수 
-	static Vector<String> dirList;
+	private Vector<String> row;
 	// 파일 및 폴더 추가시 사용할 부모 및 루트 정보를 보관한다
-	static Map<String, String> nameTo_ParentandRoot;
+	//private Map<String, String> nameTo_ParentandRoot;
 	
 	
 	public DirectoryListPanel(int w, int h) {
@@ -62,32 +55,40 @@ public class DirectoryListPanel extends JPanel {
 		this.width = w;
 		this.height = h;
 		this.isSelected = false;
-		this.flag = true;
 		this.setBackground(Constants.backColor);
 		this.setLayout(null);
-		
-
-		//keyFileMgr = new KeyFileMgr();
-
-		//keyFileMgr = new KeyFileMgr();
 
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryListBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 
-		dirList = new Vector<>();
-		nameTo_ParentandRoot = new HashMap<String, String>();
-		
-		list = new JList<String>(dirList);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setFixedCellHeight(30);
-		list.setFont(Constants.Font2);
 		handler = new ActionHandler();
-		list.addListSelectionListener(handler);
-		list.addMouseListener(handler);
 		
-		scroll = new JScrollPane(list,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scroll.setBounds(50, 100, 300, 360);
+		tableModel = new DefaultTableModel();
+		tableModel.setColumnIdentifiers( new String[] {"ID","Directory Name"} );
+		
+		table = new JTable( );
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setRowHeight(30);
+        table.setFont(Constants.Font1);
+        table.setModel(tableModel);
+        
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+    			if (!event.getValueIsAdjusting()) {
+    				isSelected = true;
+    				dirMngPanel.setSelectedValue(table.getValueAt(table.getSelectedRow(), 0).toString());
+    				dirMngPanel.setStatus(0);
+    				changePanel();
+    			}
+            }
+        });
+
+		header = table.getTableHeader();
+		header.setFont(Constants.Font2);
+        header.setEnabled( false );
+        
+        scroll = new JScrollPane( table );
+        scroll.setBounds(50, 100, 300, 360);
 
 		btnGroupPanel = new JPanel();
 		btnGroupPanel.setBounds(450,100,300,80);
@@ -105,8 +106,6 @@ public class DirectoryListPanel extends JPanel {
 		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.deleteBtn1.getPath()));
 		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2.getPath()));
 
-
-
 		for(int i=0;i<3;i++) {
 			btn[i].setBounds(15+100*i,5,70,70);
 			btn[i].addActionListener(handler);
@@ -120,18 +119,21 @@ public class DirectoryListPanel extends JPanel {
 		this.add(btnGroupPanel);
 		this.add(dirMngPanel);
 		this.add(bgImg);
-		
-		//초기 로드시 디렉토리 조회 패킷 전송
-		/*
-		String data = "directory list request" + "\t" + "endif";
-		int type = Constants.PacketType.DirectoryListRequset.getType();
-		int length = data.length();		
-		
-		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-		*/
 	}
-
+	
 	public void initialize() { }
+	
+	// 리스트 초기화 함수 
+	// 디렉토리 삽입,삭제,파일 업로드,다운로드시에 리스트를 갱신해야한다
+	public void initTable() {
+		for(int i=tableModel.getRowCount()-1;i>=0;i--){
+			tableModel.removeRow(i);
+		}
+	}
+	
+	public void addRow(Vector<String> row){
+		tableModel.addRow(row);
+	}
 
 	public boolean getIsSelected() {
 		return isSelected;
@@ -145,17 +147,19 @@ public class DirectoryListPanel extends JPanel {
 	public void changePanel() { 
 		this.remove(bgImg);
 		dirMngPanel.changetPanel();
+		this.add(scroll);
 		this.add(dirMngPanel);
 		this.add(bgImg);
 		this.repaint();
 	}
 	
-	//디렉토리 추가 버튼 클릭시 발생하는 이벤트
+	//디렉토리 추가 버튼 클릭시 실행
 	public void create(String dir){
+		String data;
+		int type;
+		int length;
 		
-
-		list.setSelectedIndex(dirList.size()-1);
-		keyFileMgr.createKeyFile(dir);
+		System.out.println("Asdf!!!!!");
 		// 디렉토리 생성을 반영하기 위한 패널 새로고침
 		changePanel();
 	
@@ -163,21 +167,16 @@ public class DirectoryListPanel extends JPanel {
 		// 초기 로드시 디렉토리 조회 패킷 전송
 		// 부분마다 추가를 위해 parent, root를 해쉬맵에서 조회하는 부분이 필요하다 
 		
-		String data = dir;
-		int type = Constants.PacketType.DirectoryCreateRequset.getType();
-		int length = data.length();
-			
+		data = dir;
+		type = Constants.PacketType.DirectoryCreateRequset.getType();
+		length = data.length();
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 		
 		// 추가된 Component를 반영하기 위해 조회 패킷 전송
-		
-		data = "directory list request";
+		data = "";
 		type = Constants.PacketType.DirectoryListRequset.getType();
 		length = data.length();
-	
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-		
-		list.setSelectedIndex(12);
 	}
 	
 	public void access(){
@@ -185,15 +184,10 @@ public class DirectoryListPanel extends JPanel {
 	}
 	
 	public void delete(){
-		dirList.removeElementAt(list.getSelectedIndex());
-		flag = false;
-		list.setListData(dirList);
-		list.repaint();
-		flag = true;
 		isSelected = false;
 	}
 
-	private class ActionHandler implements ActionListener, ListSelectionListener, MouseListener{
+	private class ActionHandler implements ActionListener, MouseListener{
 
 		private String id;
 		private String pwd;
@@ -235,16 +229,6 @@ public class DirectoryListPanel extends JPanel {
 		}
 
 		@Override
-		public void valueChanged(ListSelectionEvent event) {
-			if (!event.getValueIsAdjusting() && flag) {
-				isSelected = true;
-				dirMngPanel.setSelectedValue(list.getSelectedValue().toString());
-				dirMngPanel.setStatus(0);
-				changePanel();
-			}
-		}
-
-		@Override
 		public void mouseClicked(MouseEvent e) {
 			if(e.getButton()==MouseEvent.BUTTON1) {
 				if(e.getClickCount()==2) {
@@ -273,19 +257,4 @@ public class DirectoryListPanel extends JPanel {
 			// TODO Auto-generated method stub
 		}
 	}
-	
-	// 외부 클래스(PacketMgr)에서 리스트에 디렉토리 목록을 갱신하기 위한 함수
-	public static void addList(String type, String name){	
-			dirList.addElement(type+ "  " + name);
-			//nameTo_ParentandRoot.put(name, parent);
-			//nameTo_ParentandRoot.put(name, rootInt);			
-	}
-	
-	// 리스트 초기화 함수 
-	// 디렉토리 삽입,삭제,파일 업/다운로드시에 리스트를 갱신해야한다
-	public static void initList() {
-		dirList.clear();
-		nameTo_ParentandRoot.clear();
-	}
 }
-

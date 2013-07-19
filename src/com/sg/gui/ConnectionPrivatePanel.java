@@ -165,17 +165,20 @@ public class ConnectionPrivatePanel extends JPanel {
 				connection = true;
 				changeStatusPanel();
 				
-				//test
 				if(isConnection() && ClientLauncher.getFrame().
 						getConnectionPanel().getPublicPanel().isConnection()){
 					
 					String data = "";
 					int type = Constants.PacketType.DirectoryListRequset.getType();
 					int length = data.length();
-			
-					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
-
-					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+					
+					//ClientLauncher.getFrame().getDirectoryListPanel().initialize();
+					DirectoryListPanel directoryListPanel = new DirectoryListPanel(800, 600-50);
+					directoryListPanel.setBounds(0, 50, 800, 600-50);
+					
+					//ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
+					ClientLauncher.getFrame().changePanel(directoryListPanel);
+					//ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 				}
 			}
 

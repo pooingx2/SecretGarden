@@ -1,12 +1,12 @@
 package com.sg.controller;
 
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
-import com.sg.gui.*;
 
 public class PacketMgr {
 	private StringTokenizer tokenizer;
@@ -54,15 +54,21 @@ public class PacketMgr {
 		}
 		
 		
-		if(type==Constants.PacketType.DirectoryListResponse.getType())
-		{
-			//이전에 저장된 정보들(디렉토리 및 파일 이름) 초기화
-			DirectoryListPanel.initList();
+		if(type==Constants.PacketType.DirectoryListResponse.getType()) {
 			
-			//수신한 데이터를 Panel에 뿌려준다.
-			for(int tokenNum=0;tokenNum<i;tokenNum = tokenNum + 2){
-				DirectoryListPanel.addList(token[tokenNum],token[tokenNum+1]);
+			// Directory List를 갱신하기 위해 초기화 한다.
+			ClientLauncher.getFrame().getDirectoryListPanel().initTable();
+			
+			// 수신한 데이터를 Table에 추가한다. (index \t dirName \t index \t dirName ...)
+			for(int j=0 ; j<i ; j =j+2){
+				Vector<String> row = new Vector<String>();
+				row.add(token[j]);
+				row.add(token[j+1]);
+				ClientLauncher.getFrame().getDirectoryListPanel().addRow(row);
 			}
+			
+			//ClientLauncher.getFrame().getDirectoryListPanel().initList();
+			//ClientLauncher.getFrame().getDirectoryListPanel().addDirectory("asdasd");
 		}
 		
 		if(type==Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()){
