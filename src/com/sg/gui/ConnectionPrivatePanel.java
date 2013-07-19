@@ -144,7 +144,6 @@ public class ConnectionPrivatePanel extends JPanel {
 		this.repaint();
 	}
 
-
 	private class ActionHandler implements ActionListener {
 
 		@Override
@@ -163,22 +162,23 @@ public class ConnectionPrivatePanel extends JPanel {
 				pwdField.setText("");
 
 				connection = true;
+				ClientLauncher.getFrame().getConnectionPanel().setPrivate(id);
 				changeStatusPanel();
 				
+
 				if(isConnection() && ClientLauncher.getFrame().
 						getConnectionPanel().getPublicPanel().isConnection()){
 					
-					String data = "";
+					String id = ClientLauncher.getFrame().getLoginPanel().getId();
+					String private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
+					String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
+					
+					String data = id + "\t" + private_cloud + "\t" + public_cloud;
 					int type = Constants.PacketType.DirectoryListRequset.getType();
 					int length = data.length();
 					
-					//ClientLauncher.getFrame().getDirectoryListPanel().initialize();
-					DirectoryListPanel directoryListPanel = new DirectoryListPanel(800, 600-50);
-					directoryListPanel.setBounds(0, 50, 800, 600-50);
-					
-					//ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
-					ClientLauncher.getFrame().changePanel(directoryListPanel);
-					//ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
+					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 				}
 			}
 

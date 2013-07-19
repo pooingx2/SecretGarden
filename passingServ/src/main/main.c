@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 			
   printf("[ETEST][START] epoll test server v1.2 (simple epoll test server)\n");
   /* entry , argument check and process */
-  if(argc < 3) g_svr_port = DEFAULT_PORT;
+  if(argc < 3) g_svr_port = atoi(argv[1]);//DEFAULT_PORT;
   else
   {
      if(strcmp("-port",argv[1]) ==  0 )

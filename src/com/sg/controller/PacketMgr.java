@@ -66,9 +66,6 @@ public class PacketMgr {
 				row.add(token[j+1]);
 				ClientLauncher.getFrame().getDirectoryListPanel().addRow(row);
 			}
-			
-			//ClientLauncher.getFrame().getDirectoryListPanel().initList();
-			//ClientLauncher.getFrame().getDirectoryListPanel().addDirectory("asdasd");
 		}
 		
 		if(type==Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()){

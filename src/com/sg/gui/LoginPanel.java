@@ -20,6 +20,7 @@ public class LoginPanel extends JPanel {
 	// Attribute
 	private int width;
 	private int height;
+   String id;
 	
 	// Components
 	private JLabel bgImg;
@@ -108,12 +109,15 @@ public class LoginPanel extends JPanel {
 			id=inputID.getText();
 			pwd=inputPwd.getText();
 			
+			setId(id);
+			
+			
 			if(event.getSource()==loginBtn){
 
 				String data = id + "\t"+pwd;
 				int type = Constants.PacketType.LoginRequest.getType();
 				int length = data.length();
-			
+				
 				ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 				
 				inputID.setText("");
@@ -127,6 +131,15 @@ public class LoginPanel extends JPanel {
 			}
 		}
 
+	}
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+	
+	public String getId()
+	{
+		return this.id;
 	}
 }
 
