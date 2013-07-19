@@ -163,13 +163,20 @@ public class ConnectionPublicPanel extends JPanel {
 				pwdField.setText("");
 
 				connection = true;
+				
+				ClientLauncher.getFrame().getConnectionPanel().setPublic(id);
+				
 				changeStatusPanel();
 				
 				//test
 				if(isConnection() && ClientLauncher.getFrame().
 						getConnectionPanel().getPrivatePanel().isConnection()){
 
-					String data = "";
+					String id = ClientLauncher.getFrame().getLoginPanel().getId();
+					String private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
+					String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
+					
+					String data = id + "\t" + private_cloud + "\t" + public_cloud;;
 					int type = Constants.PacketType.DirectoryListRequset.getType();
 					int length = data.length();
 			

@@ -2,7 +2,8 @@ CC		:= gcc
 LD		:= ld
 INCLUDES	:= -I. -I$(TOPDIR)/include 
 DEFINES		:= -DDEBUG
-CFLAGS		:= -O2 -W -Wall $(INCLUDES) $(DEFINES)
+LIBSSL 		:= -lcrypto
+CFLAGS		:= -O2 -W -Wall $(INCLUDES) $(DEFINES) $(LIBSSL)
 
 ######################################################
 

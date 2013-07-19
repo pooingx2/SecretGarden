@@ -1,9 +1,17 @@
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
+#include <sys/types.h>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <arpa/inet.h>
+#include <errno.h>
+
+#include <openssl/rand.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 #ifndef protocol_H
 #define protocol_H
@@ -52,6 +60,8 @@ typedef char 	      data_bytes;
 // 통신중 에러 및 송수신자의 정보를 확인하기 위한 소켓 구조체
 typedef struct Peer {
 		int socket;
+		SSL	*sslHandle;
+		SSL_CTX *sslContext;
 		char ip[20];
 }Peer;
 

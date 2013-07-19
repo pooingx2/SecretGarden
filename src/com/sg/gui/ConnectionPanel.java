@@ -15,6 +15,11 @@ public class ConnectionPanel extends JPanel {
 	private int width;
 	private int height;
 	
+	/*********************/
+	String private_cloud;
+	String public_cloud;
+	/*********************/
+	
 	// Components
 	private JLabel bgImg;
 	private ConnectionPrivatePanel privatePanel;
@@ -58,5 +63,27 @@ public class ConnectionPanel extends JPanel {
 	public void setPublicPanel(ConnectionPublicPanel publicPanel) {
 		this.publicPanel = publicPanel;
 	}
+	/*********************/
+	/* 리스트 조회시 사용할 데이터 */
+	public void setPrivate(String private_cloud)
+	{
+		this.private_cloud = private_cloud;
+	}
+	
+	public void setPublic(String public_cloud)
+	{
+		this.public_cloud = public_cloud;
+	}
+	
+	public String getPrivate()
+	{
+		return private_cloud;
+	}
+	
+	public String getPublic()
+	{
+		return public_cloud;
+	}
+	/*********************/
 }
 

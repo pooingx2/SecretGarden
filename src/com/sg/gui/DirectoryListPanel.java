@@ -155,29 +155,32 @@ public class DirectoryListPanel extends JPanel {
 		
 
 		list.setSelectedIndex(dirList.size()-1);
-		keyFileMgr.createKeyFile(dir);
+		//keyFileMgr.createKeyFile(dir);
 		// 디렉토리 생성을 반영하기 위한 패널 새로고침
 		changePanel();
+	
 	
 		// 디렉토리 추가 패킷 전송
 		// 초기 로드시 디렉토리 조회 패킷 전송
 		// 부분마다 추가를 위해 parent, root를 해쉬맵에서 조회하는 부분이 필요하다 
-		
-		String data = dir;
+	
+		String id = ClientLauncher.getFrame().getLoginPanel().getId();
+		String private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
+		String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
+			
+		String data = dir + "\t" + private_cloud + "\t" + public_cloud + "\t" + id;
 		int type = Constants.PacketType.DirectoryCreateRequset.getType();
 		int length = data.length();
 			
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 		
 		// 추가된 Component를 반영하기 위해 조회 패킷 전송
-		
-		data = "directory list request";
+		data = id + "\t" + private_cloud + "\t" + public_cloud;
 		type = Constants.PacketType.DirectoryListRequset.getType();
 		length = data.length();
-	
+
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-		
-		list.setSelectedIndex(12);
+		//list.setSelectedIndex(12);
 	}
 	
 	public void access(){
