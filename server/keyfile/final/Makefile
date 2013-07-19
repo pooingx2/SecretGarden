@@ -1,6 +1,6 @@
 SOURCES = decrypt.c encrypt.c keygen.c main.c
 OBJECTS = ${SOURCES:.c=.o}
-OUT = keygen
+OUT = test
 
 $(OUT): $(OBJECTS)
 	gcc -o $(OUT) $(OBJECTS) -lcrypto

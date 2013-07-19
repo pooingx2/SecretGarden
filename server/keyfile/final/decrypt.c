@@ -33,6 +33,5 @@ int decryptAES(byte *enc_msg, int enc_msg_len, byte *key, byte **msg, int *msg_l
 
 		EVP_CIPHER_CTX_cleanup(&ctx);
 
-		printf("!!!!!\n");
 		return result;
 }

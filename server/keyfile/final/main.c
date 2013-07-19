@@ -33,7 +33,7 @@ int main(void)
 		int size;		// 128 bits (AES)
 
 		FILE *fp = NULL;
-		fp = fopen( "result.txt", "w+" );
+		fp = fopen( "AccessKey.pem", "w+" );
 		if( fp == NULL ){
 				printf("error\n");
 				return 0;
@@ -55,7 +55,7 @@ int main(void)
 				printf("AES encryption\n" );
 				printf("Encyrpted message = %s\n", BinaryToBnHex(enc_data));
 				printf("Encrypted message len = %d\n", enc_data_len);
-				fprintf( fp, "%s\n", enc_data );
+				fprintf( fp, "%s\n", BinaryToBnHex(enc_data));
 		}
 		else{
 				printf("AES encryption Error!\n" );
@@ -75,7 +75,6 @@ int main(void)
 
 		fclose( fp );
 
-		//메모리 해제  이부분 에러 난다!! 흠..
 		//    SAFE_FREE( Secret.key );
 
 		//    SAFE_FREE( enc_data );
