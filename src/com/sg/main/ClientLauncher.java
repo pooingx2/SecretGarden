@@ -12,11 +12,15 @@ public class ClientLauncher{
 	private static MainFrame frame;
 	
 	public static void main(String[] args) {
+		// 통신담당 모듈로 소켓을 연결하고 프로토콜에 맞게 통신을 지원
 		connector = new Connector();
+		// 정상 연결시 frame을 띄움
 		if(connector.getSocket()!=null) {
 			frame = new MainFrame(Constants.frameW,Constants.frameH);
 		}
 	}
+	
+	// 프로그램 종료시 리소스 반환
 	public static void exit()
 	{
 		try {

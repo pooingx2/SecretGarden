@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -34,6 +33,7 @@ public class LoginPanel extends JPanel {
 	private JPasswordField inputPwd;
 	private SignupFrame sigupFrame;
 	
+	// 로그인을 위한 패널
 	public LoginPanel(int w, int h) {
 		
 		super();
@@ -41,11 +41,14 @@ public class LoginPanel extends JPanel {
 		this.height = h;
 		this.setLayout(null);
 		
+		// 배경이미지 등록
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.loginBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 
+		// 폰트 설정
 		inputFont = Constants.Font1;
 		
+		// ID를 입력하기 위한 form
 		idLabel = new JLabel("ID");
 		idLabel.setFont(inputFont);
 		idLabel.setBounds(550,250,200,30);
@@ -54,6 +57,7 @@ public class LoginPanel extends JPanel {
 		inputID.setBounds(550,280,200,30);
 		inputID.setFont(inputFont);
 		
+		// password를 입력하기 위한 form
 		pwdLabel = new JLabel("Password");
 		pwdLabel.setFont(inputFont);
 		pwdLabel.setBounds(550,320,200,30);
@@ -62,6 +66,7 @@ public class LoginPanel extends JPanel {
 		inputPwd.setBounds(550,350,200,30);
 		inputPwd.setFont(inputFont);
 
+		// 버튼 이벤트 리스너 등록
 		handler = new ActionHandler();
 		loginBtn = new JButton(new ImageIcon(Constants.ButtonPath.loginBtn1.getPath()));
 		loginBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.loginBtn2.getPath()));
@@ -88,7 +93,6 @@ public class LoginPanel extends JPanel {
 	public void initialize() { }
 	
 	
-	
 	public SignupFrame getSigupFrame() {
 		return sigupFrame;
 	}
@@ -99,6 +103,7 @@ public class LoginPanel extends JPanel {
 
 
 
+	// 로그인 버튼과 취소 버튼을 위한 이벤트
 	private class ActionHandler implements ActionListener {
 		
 		private String id;
@@ -118,6 +123,7 @@ public class LoginPanel extends JPanel {
 				int type = Constants.PacketType.LoginRequest.getType();
 				int length = data.length();
 				
+				//id와 password 패킷 전송
 				ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 				
 				inputID.setText("");
@@ -130,8 +136,8 @@ public class LoginPanel extends JPanel {
 				
 			}
 		}
-
 	}
+	
 	public void setId(String id)
 	{
 		this.id = id;

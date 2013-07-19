@@ -9,15 +9,14 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
@@ -41,12 +40,8 @@ public class DirectoryListPanel extends JPanel {
 	private DefaultTableModel tableModel;
 	private JTable table;
 	private JTableHeader header;
-	
-	/* 디렉토리 리스트 관련 변수 */ 
-	// PacketMgr에서 받아온 파일 및 폴더 정보를 저장하기 위한 변수 
+	private DefaultTableCellRenderer renderer;
 	private Vector<String> row;
-	// 파일 및 폴더 추가시 사용할 부모 및 루트 정보를 보관한다
-	//private Map<String, String> nameTo_ParentandRoot;
 	
 	
 	public DirectoryListPanel(int w, int h) {
@@ -58,20 +53,37 @@ public class DirectoryListPanel extends JPanel {
 		this.setBackground(Constants.backColor);
 		this.setLayout(null);
 
+		// 배경이미지 등록
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryListBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 
+		// 이벤트 핸들러 등록
 		handler = new ActionHandler();
 		
-		tableModel = new DefaultTableModel();
-		tableModel.setColumnIdentifiers( new String[] {"ID","Directory Name"} );
+		// 해당셀을 수정할 수 없도록 설정
+		tableModel = new DefaultTableModel() {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		        return false;
+		    }
+		};
 		
-		table = new JTable( );
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setRowHeight(30);
-        table.setFont(Constants.Font1);
-        table.setModel(tableModel);
+		// table 헤더 설정
+		tableModel.setColumnIdentifiers( new String[] {"   ID","     Directory Name"} );
+		
+		
+		table = new JTable();	// directory list를 위한 table을 만듬
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	// row를 하나만 선택하도록 설정
+		table.setRowHeight(30);		// row 높이 설정
+        table.setFont(Constants.Font1);		// table font 설정
+        table.setModel(tableModel);		 // table model 설정
         
+        // columnSize 지정
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        table.getColumnModel().getColumn(0).setPreferredWidth(60);
+        table.getColumnModel().getColumn(1).setPreferredWidth(220);
+
+        // row를 선택 리스너
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent event) {
     			if (!event.getValueIsAdjusting()) {
@@ -82,19 +94,30 @@ public class DirectoryListPanel extends JPanel {
     			}
             }
         });
-
+        
+        // header 관련 설정
 		header = table.getTableHeader();
 		header.setFont(Constants.Font2);
         header.setEnabled( false );
         
+        // table cell 정렬
+        renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment( JLabel.CENTER );
+        renderer.setFont(getFont().deriveFont(80f));
+        table.getColumnModel().getColumn(0).setCellRenderer(renderer);
+        table.getColumnModel().getColumn(1).setCellRenderer(renderer);
+        
+        // scroll 등록
         scroll = new JScrollPane( table );
         scroll.setBounds(50, 100, 300, 360);
 
+        // 버튼 그룹 패널 생성
 		btnGroupPanel = new JPanel();
 		btnGroupPanel.setBounds(450,100,300,80);
 		btnGroupPanel.setBackground(Constants.backColor);
 		btnGroupPanel.setLayout(null);
 
+		// 버튼 생성  (Create, Access, Delte)
 		btn = new JButton[3];
 		
 		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.createBtn1.getPath()));
@@ -112,6 +135,7 @@ public class DirectoryListPanel extends JPanel {
 			btnGroupPanel.add(btn[i]);
 		}
 
+		// Directory를 관리할 수 있는 패널 등록
 		dirMngPanel = new DirectoryMngPanel(300,250);
 		dirMngPanel.setBounds(450,200,300,250);
 
@@ -131,10 +155,12 @@ public class DirectoryListPanel extends JPanel {
 		}
 	}
 	
+	// table row를 추가하는 함수
 	public void addRow(Vector<String> row){
 		tableModel.addRow(row);
 	}
 
+	// row가 등록 되었는지 상태를 나타냄
 	public boolean getIsSelected() {
 		return isSelected;
 	}
@@ -146,57 +172,57 @@ public class DirectoryListPanel extends JPanel {
 	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
 		this.remove(bgImg);
-		dirMngPanel.changetPanel();
+		dirMngPanel.changePanel();
 		this.add(scroll);
 		this.add(dirMngPanel);
 		this.add(bgImg);
 		this.repaint();
 	}
 	
-	//디렉토리 추가 버튼 클릭시 실행
+	// 디렉토리 추가 최종 확인 클릭시 실행
 	public void create(String dir){
-		String data;
-		String id;
-		int type;
-		int length;
-		String private_cloud;
-		String public_cloud;
 		
-		// 디렉토리 생성을 반영하기 위한 패널 새로고침
-		changePanel();
+		int type;				// 패킷 타입
+		int length;				// 패킷 길이
+		String data;			// 전송 데이터
+		String id;				// 디렉토리 indext
+		String private_cloud;		// 클라우드 연결 정보
+		String public_cloud;
 	
-	
-		// 디렉토리 추가 패킷 전송
-		// 초기 로드시 디렉토리 조회 패킷 전송
-		// 부분마다 추가를 위해 parent, root를 해쉬맵에서 조회하는 부분이 필요하다 
-
-	
-		id = ClientLauncher.getFrame().getLoginPanel().getId();
 		private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
 		public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
-			
+		id = ClientLauncher.getFrame().getLoginPanel().getId();
+		
 		data = dir + "\t" + private_cloud + "\t" + public_cloud + "\t" + id;
 		type = Constants.PacketType.DirectoryCreateRequset.getType();
 		length = data.length();
 			
+		// 디렉토리 생성 요청 패킷을 전송
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 		
-		// 추가된 Component를 반영하기 위해 조회 패킷 전송
+		// 추가된 Directory를 포함한 디렉토리 정보를 반영하기 위해 조회 패킷 전송
 		data = id + "\t" + private_cloud + "\t" + public_cloud;
 		type = Constants.PacketType.DirectoryListRequset.getType();
 		length = data.length();
 
+		// 디렉토리 리시트 조회 요청 패킷 전송
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+		
+		// 디렉토리 생성을 반영하기 위한 패널 새로고침
+		changePanel();
 	}
 	
+	// 디렉토리 접근 최종 확인 버튼 클릭시 실행
 	public void access(){
 		isSelected = false;
 	}
 	
+	// 디렉토리 삭제 최종 확인 클릭시 실행
 	public void delete(){
 		isSelected = false;
 	}
 
+	// 버튼 이벤트, 마우스 이벤트 리스너 등록
 	private class ActionHandler implements ActionListener, MouseListener{
 
 		private String id;

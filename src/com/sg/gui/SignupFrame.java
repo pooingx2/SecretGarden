@@ -31,11 +31,12 @@ public class SignupFrame extends JFrame  {
 	private JButton btn[];
 	private ActionHandler handler;
 	
+	// 회원 가입 frame
 	public SignupFrame(int w, int h) {
 		
 		super();
 		
-
+		// lookAndFeel을 통해 OS에 맞는 UI제공
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			SwingUtilities.updateComponentTreeUI(this);
@@ -49,20 +50,25 @@ public class SignupFrame extends JFrame  {
 		this.width = w;
 		this.height = h;
 		
+		// 화면 크기를 구함
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		this.setSize(width,height);
 		this.setResizable(false);
+		
+		// 화면 중앙에 frame이 오도록 설정
 		this.setLocation(screen.width/2-this.width/2, screen.height/2-this.height/2);
 
 		this.setLayout(null);
-//		this.setVisible(true);
 		
+		// 배경이미지
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.signupBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 
+		// font 설정
 		inputFont = Constants.Font1;
 		
+		// 각종 form의 TextFiled
 		textField = new JTextField[3];
 		pwdField = new JPasswordField[2];
 		
@@ -93,6 +99,8 @@ public class SignupFrame extends JFrame  {
 		
 		handler = new ActionHandler();
 		
+		// 확인버튼 0 , 취소버튼 1
+		
 		btn = new JButton[2];
 		
 		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
@@ -110,6 +118,7 @@ public class SignupFrame extends JFrame  {
 		this.add(bgImg);
 	}
 	
+	// form 초기화
 	public void initForm(){
 		textField[0].setText("");
 		textField[1].setText("");
@@ -118,6 +127,7 @@ public class SignupFrame extends JFrame  {
 		pwdField[1].setText("");
 	}
 	
+	// 버튼에 대한 이벤트
 	private class ActionHandler implements ActionListener {
 		private String id;
 		private String pwd1;
@@ -128,6 +138,7 @@ public class SignupFrame extends JFrame  {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 
+			// 확인 버튼을 눌렀을때
 			if(event.getSource()==btn[0]){
 				id=textField[0].getText();
 				name=textField[1].getText();
@@ -135,13 +146,18 @@ public class SignupFrame extends JFrame  {
 				pwd1=pwdField[0].getText();
 				pwd2=pwdField[1].getText();
 				
+				// 빈 Textfiled가 없도록 예외처리
 				if(id.equals("") || name.equals("") || email.equals("")
 									|| pwd1.equals("") || pwd2.equals("")){
 					JOptionPane.showMessageDialog(null, "Fill out the form");
 				}
+				
+				// pwd입력이 제대로 되었는지 확인
 				else if(!(pwd1.equals(pwd2))){
 					JOptionPane.showMessageDialog(null, "Password doesn't match the confirmation");
 				}
+				
+				// 회원가입 패킷 전송
 				else{
 					String data = id + "\t"+pwd1+"\t"+name+"\t"+email;
 					int type = Constants.PacketType.SignupRequest.getType();
@@ -151,6 +167,7 @@ public class SignupFrame extends JFrame  {
 				}
 			}
 			
+			// 취소 버튼을 눌렀을 때
 			if(event.getSource()==btn[1]){
 				dispose();
 				initForm();
