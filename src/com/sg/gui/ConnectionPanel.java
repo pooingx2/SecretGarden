@@ -15,10 +15,8 @@ public class ConnectionPanel extends JPanel {
 	private int width;
 	private int height;
 	
-	/*********************/
 	String private_cloud;
 	String public_cloud;
-	/*********************/
 	
 	// Components
 	private JLabel bgImg;
@@ -32,12 +30,15 @@ public class ConnectionPanel extends JPanel {
 		this.height = h;
 		this.setLayout(null);
 		
+		// 배경이미지 등록
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.connectionBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 		
+		// private 클라우드 연결 패널 생성
 		privatePanel = new ConnectionPrivatePanel(250,300);
 		privatePanel.setBounds(50,135,250,300);
 		
+		// public 클라우드 연결 패널 생성
 		publicPanel = new ConnectionPublicPanel(250,300);
 		publicPanel.setBounds(500,135,250,300);
 		
@@ -63,8 +64,8 @@ public class ConnectionPanel extends JPanel {
 	public void setPublicPanel(ConnectionPublicPanel publicPanel) {
 		this.publicPanel = publicPanel;
 	}
-	/*********************/
-	/* 리스트 조회시 사용할 데이터 */
+	
+	// 리스트 조회시 사용할 정보
 	public void setPrivate(String private_cloud)
 	{
 		this.private_cloud = private_cloud;
@@ -84,6 +85,5 @@ public class ConnectionPanel extends JPanel {
 	{
 		return public_cloud;
 	}
-	/*********************/
 }
 

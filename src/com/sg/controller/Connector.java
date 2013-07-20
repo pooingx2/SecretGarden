@@ -20,6 +20,7 @@ public class Connector implements Runnable {
 	boolean runable;
 	PacketMgr pkMgr;
 
+	// 서버와 연결을 담당
 	public Connector() {
 
 		try {
@@ -27,8 +28,11 @@ public class Connector implements Runnable {
 			dis = new DataInputStream(socket.getInputStream());
 			dos = new DataOutputStream(socket.getOutputStream());
 
+			// 받은 패킷을 처리 하는 함수
 			pkMgr = new PacketMgr();
 			runable = true;
+			
+			// 패킷을 받기 위한 스레드
 			client = new Thread(this);
 			client.start();
 
@@ -55,6 +59,7 @@ public class Connector implements Runnable {
 		return dos;
 	}
 
+	// 패킷을 서버로 전송하는 함수 (C 서버와 통신을 위해 byte 변환)
 	public void sendPacket(int type, int redesc, int length, String data) {
 		byte[] sendbuf = new byte[length + 12];
 
@@ -93,6 +98,7 @@ public class Connector implements Runnable {
 		}
 	}
 
+	// 서버로부터 받은 패킷을 재정의하여 처리 하는 함수 (byte를 원하는 정보 형태로 가공)
 	public void recvPacket(byte[] buf) {
 		byte[] headerBuf = new byte[12];
 
@@ -161,6 +167,7 @@ public class Connector implements Runnable {
 		}
 	}
 
+	// 서버로 패킷 헤더를 전송하는 함수 (C 서버와 통신을 위해 byte 변환)
 	public void sendHeader(int type, int redesc, int length) {
 
 		byte[] bytes = new byte[] { (byte) (type >>> 24), (byte) (type >>> 16),
@@ -194,6 +201,7 @@ public class Connector implements Runnable {
 		}
 	}
 
+	// 서버로 패킷 데이터를 전송하는 함수 (C 서버와 통신을 위해 byte 변환)
 	public void sendData(String data) {
 		byte out[];
 		data.trim();
@@ -207,7 +215,8 @@ public class Connector implements Runnable {
 			e.printStackTrace();
 		}
 	}
-
+	
+	// 서버로부터 받은 헤더 패킷을 재정의하는 함수(byte를 원하는 정보 형태로 가공)
 	public int[] receiveHeader() {
 		byte[] headerBuf = new byte[8];
 		int n1, n2, n3, n4;
@@ -238,7 +247,8 @@ public class Connector implements Runnable {
 		}
 		return null;
 	}
-
+	
+	// 서버로부터 받은 패킷 데이터를 재정의하여 처리 하는 함수 (byte를 원하는 정보 형태로 가공)
 	public void receiveData(int type, int length) {
 		byte[] dataBuf = new byte[length];
 		try {
@@ -256,6 +266,7 @@ public class Connector implements Runnable {
 
 	}
 
+	// 프로그램 종료 패킷이 들어오면 수행
 	public void disconnect() {
 		runable = false;
 		String data = "EXIT";
@@ -265,6 +276,7 @@ public class Connector implements Runnable {
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 	}
 
+	// 패킷 정보를 받기 위한 스레드
 	@Override
 	public void run() {
 

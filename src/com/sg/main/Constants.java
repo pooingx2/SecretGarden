@@ -7,20 +7,22 @@ import java.nio.ByteOrder;
 
 public class Constants {
 
+	// main framesize
 	public static final int frameW = 800;
 	public static final int frameH = 600;
 	
-//	public static final String serverIP= "127.0.0.1";
-//	public static final int serverPort = 12500;
-
+	// msg passing server ip, port
 	public static final String serverIP= "112.108.39.173";
 	public static final int serverPort = 12600;
 
-	
+	// 기본 바탕색
 	public static final Color backColor = Color.WHITE;
+	
+	// font 설정
 	public static final Font Font1 = new Font(null,Font.CENTER_BASELINE,15);
 	public static final Font Font2 = new Font(null,Font.CENTER_BASELINE,20);
 	
+	// 각종 패널 배경이미지 경로
 	public static enum BackgroudPath {
 		
 		loginBG("img/background/loginBG.jpg"),
@@ -43,6 +45,7 @@ public class Constants {
 		public String getPath() { return path; }
 	}
 	
+	// 버튼 관련 이미지 경로
 	public static enum ButtonPath {
 
 		loginBtn1("img/button/loginBtn1.jpg"), 
@@ -81,6 +84,7 @@ public class Constants {
 		public String getPath() { return path; }
 	}
 	
+	// icon 관련 이미지 경로
 	public static enum IconPath {
 		
 		privateIcon("img/icon/privateIcon.jpg"), 
@@ -91,6 +95,7 @@ public class Constants {
 		public String getPath() { return path; }
 	}
 	
+	// 프로토콜 패킷 타입
 	public static enum PacketType {
 
 		Error(0),

@@ -32,10 +32,14 @@ public class ActionBar extends JMenuBar{
 		this.height = h;
 		this.setLayout(null);
 		
+		// 배경이미지 등록
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.barBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 		
+		// 이벤트 핸들러 등록
 		handler = new ActionHandler();
+		
+		// 로그아웃 버튼
 		logoutBtn = new JButton(new ImageIcon(Constants.ButtonPath.logoutBtn1.getPath()));
 		logoutBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.logoutBtn2.getPath()));
 		logoutBtn.setBounds(730,5,40,40);
@@ -45,8 +49,7 @@ public class ActionBar extends JMenuBar{
 		this.add(bgImg);
 	}
 	
-	
-
+	// 이벤트 핸들러 등록
 	private class ActionHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -56,6 +59,7 @@ public class ActionBar extends JMenuBar{
 				int type = Constants.PacketType.LogoutRequest.getType();
 				int length = data.length();	
 				
+				// 로그아웃 요청 패킷 전송
 				ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 				
 			}	

@@ -44,19 +44,23 @@ public class ConnectionPrivatePanel extends JPanel {
 		this.setBackground(Constants.backColor);
 		this.setBorder(new LineBorder(Color.LIGHT_GRAY));
 
+		// 연결상태와 비연결 상태를 알려주는 배경이미지 등록
 		bgImg = new JLabel[2];
 		bgImg[0] = new JLabel(new ImageIcon(Constants.BackgroudPath.privateBG1.getPath()));
 		bgImg[0].setBounds(0,0,width,height);
 		bgImg[1] = new JLabel(new ImageIcon(Constants.BackgroudPath.privateBG2.getPath()));
 		bgImg[1].setBounds(0,0,width,height);
 
+		// 폰트 설정
 		inputFont = Constants.Font1;
 
+		// 연결 설정을 위한 form
 		label = new JLabel[3];
 		textField = new JTextField();
 		pwdField = new JPasswordField();
-		btn = new JButton[3];
+		
 		// btn[0] : main	btn[1] : connect	btn[2] : cancel
+		btn = new JButton[3];
 
 		handler = new ActionHandler();
 
@@ -112,6 +116,7 @@ public class ConnectionPrivatePanel extends JPanel {
 		return pwd;
 	}
 
+	// 연결되었는지를 나타냄
 	public boolean isConnection() {
 		return connection;
 	}
@@ -120,6 +125,7 @@ public class ConnectionPrivatePanel extends JPanel {
 		this.connection = connection;
 	}
 	
+	// 패널을 변경하는 함수
 	public void changeSettingPanel() {
 		this.removeAll();
 		this.add(label[0]);
@@ -132,6 +138,7 @@ public class ConnectionPrivatePanel extends JPanel {
 		this.repaint();
 	}
 
+	// 연결 상태를 시각적으로 보여주는 함수
 	public void changeStatusPanel() {
 		this.removeAll();
 		this.add(btn[0]);
@@ -143,7 +150,6 @@ public class ConnectionPrivatePanel extends JPanel {
 		}
 		this.repaint();
 	}
-
 
 	private class ActionHandler implements ActionListener {
 
@@ -163,13 +169,10 @@ public class ConnectionPrivatePanel extends JPanel {
 				pwdField.setText("");
 
 				connection = true;
-				/*********************/
 				ClientLauncher.getFrame().getConnectionPanel().setPrivate(id);
-				/*********************/
 				changeStatusPanel();
 				
-				
-				//test
+				// private 과 public모두 연결되어 있다면 실행
 				if(isConnection() && ClientLauncher.getFrame().
 						getConnectionPanel().getPublicPanel().isConnection()){
 					/*********************/
@@ -180,9 +183,10 @@ public class ConnectionPrivatePanel extends JPanel {
 					String data = id + "\t" + private_cloud + "\t" + public_cloud;
 					int type = Constants.PacketType.DirectoryListRequset.getType();
 					int length = data.length();
-			
+					
+					// 메인 프레임을 디렉토리 프레임으로 변경
 					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
-
+					// 디렉토리 리스트 요청 패킷을 전송
 					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 					/*********************/
 				}

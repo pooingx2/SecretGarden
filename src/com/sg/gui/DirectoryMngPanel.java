@@ -24,7 +24,6 @@ import javax.swing.border.LineBorder;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 
-
 public class DirectoryMngPanel extends JPanel {
 	// Attribute
 	private int width;
@@ -32,7 +31,7 @@ public class DirectoryMngPanel extends JPanel {
 	
 	/* 	status
 	0 : Default		1 : Information		2 : Create	
-	3 : Access			4: Delete	*/
+	3 : Access		4: Delete	*/
 	
 	private int status;
 	private File file;
@@ -58,6 +57,7 @@ public class DirectoryMngPanel extends JPanel {
 		this.setBackground(Constants.backColor);
 		this.setBorder(new LineBorder(Color.LIGHT_GRAY));
 
+		// 디렉토리를 관리하기 위한 배경 이미지 (Create, Access, Delete,  ...
 		bgImg = new JLabel[5];
 		bgImg[0] = new JLabel();
 		bgImg[1] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG1.getPath()));
@@ -69,6 +69,7 @@ public class DirectoryMngPanel extends JPanel {
 			bgImg[i].setBounds(1,1,width-2,height-2);
 		}
 
+		// font 설정
 		inputFont = Constants.Font1;
 
 		label = new JLabel[2];
@@ -95,17 +96,20 @@ public class DirectoryMngPanel extends JPanel {
 		textField[1].setFont(inputFont);
 
 		handler = new ActionHandler();
-
+		
+		// Accessfile load 버튼
 		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.loadKeyfileBtn1.getPath()));
 		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.loadKeyfileBtn2.getPath()));
 		btn[0].setBounds(20,100,100,30);
 		btn[0].addActionListener(handler);
 
+		// 확인버튼
 		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
 		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
 		btn[1].setBounds(100,200,80,30);
 		btn[1].addActionListener(handler);
 
+		// 취서버튼
 		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
 		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
 		btn[2].setBounds(200,200,80,30);
@@ -129,6 +133,7 @@ public class DirectoryMngPanel extends JPanel {
 		label[1].setText(value);
 	}
 	
+	// JFleChoose를 통한 파일 선택 함수
 	public void selectkeyFile(){
 		JFileChooser fileDialog = new JFileChooser(new File("."));
 		int isSelected = fileDialog.showOpenDialog(null);
@@ -141,7 +146,8 @@ public class DirectoryMngPanel extends JPanel {
 		}
 	}
 
-	public void changetPanel() {
+	// 각종 status에 따라  Directory관리 패널을 변경
+	public void changePanel() {
 
 		this.removeAll();
 		switch(this.status){
@@ -173,16 +179,19 @@ public class DirectoryMngPanel extends JPanel {
 		this.repaint();
 	}
 
+	// 버튼에 따른 이벤트 핸들러
 	private class ActionHandler implements ActionListener {
 		private String dirName;
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
 
+			// file load버튼을 누르면 유저 컴퓨터에서 file을 선택하도록 함
 			if(event.getSource()==btn[0]){
 				selectkeyFile();
 			}
 
+			// 확인버튼을 누르면 해당 상태에 맞는 함수를 call 
 			if(event.getSource()==btn[1]){
 				dirName=textField[0].getText();
 				if(status == 2) {
@@ -197,6 +206,7 @@ public class DirectoryMngPanel extends JPanel {
 				btn[2].doClick();
 			}
 
+			// 취소버튼을 누르면 초기화
 			if(event.getSource()==btn[2]){
 				textField[0].setText("");
 				textField[1].setText("");
@@ -207,7 +217,7 @@ public class DirectoryMngPanel extends JPanel {
 					label[1].setText("");
 					setStatus(1);
 				}
-				changetPanel();
+				changePanel();
 			}
 		}
 	}
