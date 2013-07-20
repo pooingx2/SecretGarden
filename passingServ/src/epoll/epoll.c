@@ -271,6 +271,7 @@ void client_recv(int event_fd, Peer *peer)
 		}
 		sendTo(&dirServ, 7, event_fd, strlen(dataBuf), dataBuf);
 	}
+
 	case DIR_LIST_RESPONSE :
 	{
 		Peer client;
@@ -279,6 +280,7 @@ void client_recv(int event_fd, Peer *peer)
 		sendTo(&client, 8, event_fd, strlen(dataBuf), dataBuf);		
 		break;
 	}
+
 	case DIR_CREAT_REQUEST:
 	{
 		Peer dirServ;
@@ -291,6 +293,14 @@ void client_recv(int event_fd, Peer *peer)
 		}
 		
 		sendTo(&dirServ, 9, event_fd, strlen(dataBuf), dataBuf);
+		break;
+	}
+	
+	case DIR_KEY_RESPONSE:
+	{
+		Peer peer;
+		peer.socket = byteToInt(headerBuf, 4);
+		sendTo(&peer, 10, event_fd, strlen(dataBuf), dataBuf);
 		break;
 	}
 
@@ -308,14 +318,6 @@ void client_recv(int event_fd, Peer *peer)
 		break;
 	}
 	
-
-	case DIR_CREAT_RESPONSE:
-	{
-		Peer peer;
-		peer.socket = byteToInt(headerBuf, 4);
-		sendTo(&peer, 10, event_fd, strlen(dataBuf), dataBuf);
-		break;
-	}
 	case AUTH_BINDING :
 	{
 		if(g_epoll_auth == 0)
