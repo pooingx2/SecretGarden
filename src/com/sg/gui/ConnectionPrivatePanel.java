@@ -172,7 +172,7 @@ public class ConnectionPrivatePanel extends JPanel {
 				//test
 				if(isConnection() && ClientLauncher.getFrame().
 						getConnectionPanel().getPublicPanel().isConnection()){
-					
+					/*********************/
 					String id = ClientLauncher.getFrame().getLoginPanel().getId();
 					String private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
 					String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
@@ -184,6 +184,7 @@ public class ConnectionPrivatePanel extends JPanel {
 					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
 
 					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+					/*********************/
 				}
 			}
 
