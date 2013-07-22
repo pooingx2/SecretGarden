@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -141,6 +142,7 @@ public class DirectoryMngPanel extends JPanel {
 			file = fileDialog.getSelectedFile();
 			filePath = file.getAbsolutePath();
 			if(file != null) {
+				// textField[1] 파일 읽어올 위치
 				textField[1].setText(filePath);
 			}
 		}
@@ -199,6 +201,24 @@ public class DirectoryMngPanel extends JPanel {
 				}
 				else if(status == 3) {
 					ClientLauncher.getFrame().getDirectoryListPanel().access();
+					
+					/* 하부 폴더에 접근하기 위하여 Keyfile을 서버로 전송한다 */
+					JOptionPane.showMessageDialog(null, "Request Check Key File");
+					
+					String key  = "defualt";
+					String id   = "70";
+					String name = "none";
+					
+					
+					String data = key + "\t" + id + "\t" + name;
+					int type = Constants.PacketType.DirectoryAccessRequset.getType();
+					int length = data.length();
+					
+	
+					// 디렉토리 리스트 요청 패킷을 전송
+					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+					/*********************/
+					
 				}
 				else if(status == 4) {
 					ClientLauncher.getFrame().getDirectoryListPanel().delete();

@@ -1,5 +1,9 @@
 package com.sg.controller;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -17,7 +21,7 @@ public class PacketMgr {
 	}
 	
 	// 패킷 정보를 tocken으로 쪼개고 각 type에 맞는 기능을 처리
-	public void managePacket(int type, int desc ,int length, String data){
+	public void managePacket(int type, int desc ,int length, String data) throws FileNotFoundException{
 		
 		// packet data를 쪼갬
 		tokenizer = new StringTokenizer(data,"\t");
@@ -74,11 +78,45 @@ public class PacketMgr {
 				ClientLauncher.getFrame().getDirectoryListPanel().addRow(row);
 			}
 		}
+
+		// 디렉토리 생성에 따른 키 데이터를 수신하여 파일로 변환하는 과정
+		if(type==Constants.PacketType.DirectoryCreateResponse.getType())
+		{
+			// 키 파일 생성
+			// 어디다 저장할지 선택하면 좋을거같음...
+			FileOutputStream combinedFO = new FileOutputStream("/home/keyFile.sg");	//통합될 파일
+		
+			byte out[];
+			//data.trim();
+			out = token[0].getBytes();
+
+			
+			try {
+				combinedFO.write(out);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		// 디렉토리 액세스 리스판스(Key file 인증) 
+		if(type==Constants.PacketType.DirectoryAccessResponse.getType())
+		{
+			// 보여주기 위한 정보들 하부 폴더들 Name, parent, depth, root
+					
+		}
+		
+		// 폴더 생성
+		
+		// 파일 업로드
+		
+		// 파일 다운로드
 		
 		if(type==Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()){
 		
 			
 		}
+		
 		
 		
 	}
