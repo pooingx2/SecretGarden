@@ -99,7 +99,7 @@ public class PacketMgr {
 			}
 		}
 		
-		// 디렉토리 액세스 리스판스(Key file 인증) 
+		// 디렉토리 액세스 리스판스(Key file 인증에 따른 디렉토리 접속 키 부여) 
 		if(type==Constants.PacketType.DirectoryAccessResponse.getType())
 		{
 			// 보여주기 위한 정보들 하부 폴더들 Name, parent, depth, root

@@ -263,6 +263,13 @@ public class DirectoryListPanel extends JPanel {
 	public void delete() {
 		isSelected = false;
 	}
+	
+	public String get_directory_Id()
+	{
+		
+		return table.getValueAt(
+				table.getSelectedRow(), 0).toString();
+	}
 
 	// 버튼 이벤트, 마우스 이벤트 리스너 등록
 	private class ActionHandler implements ActionListener, MouseListener {
@@ -303,6 +310,7 @@ public class DirectoryListPanel extends JPanel {
 				}
 			}
 		}
+		
 
 		@Override
 		public void mouseClicked(MouseEvent e) {

@@ -205,10 +205,11 @@ public class DirectoryMngPanel extends JPanel {
 					/* 하부 폴더에 접근하기 위하여 Keyfile을 서버로 전송한다 */
 					JOptionPane.showMessageDialog(null, "Request Check Key File");
 					
-					String key  = "defualt";
-					String id   = "70";
+					String key  = "none";
+					String id   = ClientLauncher.getFrame().getDirectoryListPanel().get_directory_Id();
 					String name = "none";
 					
+					//get_directory_Id(3);
 					
 					String data = key + "\t" + id + "\t" + name;
 					int type = Constants.PacketType.DirectoryAccessRequset.getType();
@@ -234,10 +235,13 @@ public class DirectoryMngPanel extends JPanel {
 					setStatus(0);
 				}
 				else {
+					
 					label[1].setText("");
 					setStatus(1);
 				}
+				
 				changePanel();
+				
 			}
 		}
 	}
