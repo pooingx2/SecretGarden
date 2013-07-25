@@ -11,12 +11,40 @@ import java.util.Vector;
 
 import javax.swing.JFileChooser;
 
+import com.sg.model.FileInfo;
+
 public class FileMgr {
 
 	private String homePath;
+	private Vector<FileInfo> fileInfoList;
+	private int maxDepth;	//fileInfoList의 maxDepth
+	
 	// file을 관리
 	public FileMgr(){
 		homePath = System.getProperty("user.home");
+		fileInfoList = new Vector<FileInfo>();
+		maxDepth = 0;
+	}
+	
+	public Vector<FileInfo> getFileInfoList() {
+		return fileInfoList;
+	}
+
+	public void setFileInfoList(Vector<FileInfo> fileInfoList) {
+		this.fileInfoList = fileInfoList;
+	}
+	
+	public int getMaxDepth() {
+		return maxDepth;
+	}
+
+	public void setMaxDepth(int maxDepth) {
+		this.maxDepth = maxDepth;
+	}
+
+	public void initFileInfo(){
+		maxDepth = 0;
+		fileInfoList.removeAllElements();
 	}
 
 	// file을 저장하기 위한 함수

@@ -31,7 +31,7 @@ public class DirectoryListPanel extends JPanel {
 	private int height;
 	private boolean isSelected;
 	private boolean isAccessed;
-	private boolean initialization;
+	private boolean editMode;
 
 	// Components
 	private JLabel bgImg;
@@ -73,13 +73,10 @@ public class DirectoryListPanel extends JPanel {
 		};
 
 		// table 헤더 설정
-		tableModel.setColumnIdentifiers(new String[] { "   ID",
-				"     Directory Name" });
+		tableModel.setColumnIdentifiers(new String[] { "   ID", "     Directory Name" });
 
 		table = new JTable(); // directory list를 위한 table을 만듬
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // row를 하나만
-																		// 선택하도록
-																		// 설정
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // row를 하나만 택하도록 설정
 		table.setRowHeight(30); // row 높이 설정
 		table.setFont(Constants.Font1); // table font 설정
 		table.setModel(tableModel); // table model 설정
@@ -91,19 +88,18 @@ public class DirectoryListPanel extends JPanel {
 
 		// row를 선택 리스너
 		table.getSelectionModel().addListSelectionListener(
-				new ListSelectionListener() {
-					public void valueChanged(ListSelectionEvent event) {
-						if (!event.getValueIsAdjusting() && !initialization) {
-							isSelected = true;
-							dirMngPanel.setStatus(0);
-							if(dirMngPanel.getStatus() == 0){
-								dirMngPanel.setSelectedValue(table.getValueAt(
-										table.getSelectedRow(), 0).toString());
-							}
-							changePanel();
+			new ListSelectionListener() {
+				public void valueChanged(ListSelectionEvent event) {
+					if (!event.getValueIsAdjusting() && !editMode) {
+						isSelected = true;
+						dirMngPanel.setStatus(0);
+						if(dirMngPanel.getStatus() == 0){
+							dirMngPanel.setSelectedValue(table.getValueAt(table.getSelectedRow(), 0).toString());
 						}
+						changePanel();
 					}
-				});
+				}
+			});
 
 		// header 관련 설정
 		header = table.getTableHeader();
@@ -166,16 +162,18 @@ public class DirectoryListPanel extends JPanel {
 	// 리스트 초기화 함수
 	// 디렉토리 삽입,삭제,파일 업로드,다운로드시에 리스트를 갱신해야한다
 	public void initTable() {
-		this.initialization = true;
+		this.editMode = true;
 		for (int i = tableModel.getRowCount() - 1; i > -1; i--) {
 			tableModel.removeRow(i);
 		}
-		this.initialization = false;
+		this.editMode = false;
 	}
 
 	// table row를 추가하는 함수
 	public void addRow(Vector<String> row) {
+		this.editMode = true;
 		tableModel.addRow(row);
+		this.editMode = false;
 	}
 
 	// row가 등록 되었는지 상태를 나타냄
@@ -199,84 +197,53 @@ public class DirectoryListPanel extends JPanel {
 
 	// 생성 클릭시 실행
 	public void create(String dir) {
-		
-		// 디렉토리 생성
-		if (isAccessed == false) 
-		{
-			int type; // 패킷 타입
-			int length; // 패킷 길이
-			String data; // 전송 데이터
-			String id; // 디렉토리 indext
-			String private_cloud; // 클라우드 연결 정보
-			String public_cloud;
+		int type; // 패킷 타입
+		int length; // 패킷 길이
+		String data; // 전송 데이터
+		String id; // 디렉토리 indext
+		String private_cloud; // 클라우드 연결 정보
+		String public_cloud;
 
-			private_cloud = ClientLauncher.getFrame().getConnectionPanel()
-					.getPrivate();
-			public_cloud = ClientLauncher.getFrame().getConnectionPanel()
-					.getPublic();
-			id = ClientLauncher.getFrame().getLoginPanel().getId();
+		private_cloud = ClientLauncher.getFrame().getConnectionPanel()
+				.getPrivate();
+		public_cloud = ClientLauncher.getFrame().getConnectionPanel()
+				.getPublic();
+		id = ClientLauncher.getFrame().getLoginPanel().getId();
 
-			data = dir + "\t" + private_cloud + "\t" + public_cloud + "\t" + id;
-			type = Constants.PacketType.DirectoryCreateRequset.getType();
-			length = data.length();
+		data = dir + "\t" + private_cloud + "\t" + public_cloud + "\t" + id;
+		type = Constants.PacketType.DirectoryCreateRequset.getType();
+		length = data.length();
 
-			// 디렉토리 생성 요청 패킷을 전송
-			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+		// 디렉토리 생성 요청 패킷을 전송
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 
-			// 추가된 Directory를 포함한 디렉토리 정보를 반영하기 위해 조회 패킷 전송
-			data = id + "\t" + private_cloud + "\t" + public_cloud;
-			type = Constants.PacketType.DirectoryListRequset.getType();
-			length = data.length();
+		// 추가된 Directory를 포함한 디렉토리 정보를 반영하기 위해 조회 패킷 전송
+		data = id + "\t" + private_cloud + "\t" + public_cloud;
+		type = Constants.PacketType.DirectoryListRequset.getType();
+		length = data.length();
 
-			// 디렉토리 리시트 조회 요청 패킷 전송
-			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+		// 디렉토리 리시트 조회 요청 패킷 전송
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 
-			// 디렉토리 생성을 반영하기 위한 패널 새로고침
-			changePanel();
-		}
-		// 액세스된 상태이므로 폴더 생성
-		else
-		{
-			int type = 0;
-			int dir_id;
-			String dir_Name;
-			String key;
-			
-			int length = 0;
-			String data = null;
-			
-			// get 디렉토리 id, 이름
-			
-			// get key 파일
-			
-			// get 타입, 길이, 데이터 
-			
-			// 패킷 전송
-			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-			
-			
-		}
+		// 디렉토리 생성을 반영하기 위한 패널 새로고침
+		changePanel();
 	}
 
 	// 디렉토리 접근 최종 확인 버튼 클릭시 실행
 	public void access() {
-		isSelected = false;
 		// 액세스시 폴더 리스트를 가져와야 한다
 	}
 
 	// 디렉토리 삭제 최종 확인 클릭시 실행
 	public void delete() {
-		isSelected = false;
 	}
 	
 	public void settings(){
-		isSelected = false;
 	}
 	
 	public String get_directory_Id()
 	{
-		return table.getValueAt(
-				table.getSelectedRow(), 0).toString();
+		return table.getValueAt(table.getSelectedRow(), 0).toString();
 	}
 
 	// 버튼 이벤트, 마우스 이벤트 리스너 등록

@@ -1,19 +1,14 @@
 package com.sg.controller;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
+import com.sg.model.FileInfo;
 
 public class PacketMgr {
 	private StringTokenizer tokenizer;
@@ -69,31 +64,84 @@ public class PacketMgr {
 		// 디렉토리 리스트 요청 응답에 대한 패킷을 처리(디렉토리 정보들을 테이블에 저장)
 		if(type==Constants.PacketType.DirectoryListResponse.getType()) {
 			
+			StringTokenizer tokenizer2;
+			String token2[];
+			token2= new String[100];
+			
 			// Directory List를 갱신하기 위해 초기화 한다.
 			ClientLauncher.getFrame().getDirectoryListPanel().initTable();
 			
-			// 수신한 데이터를 Table에 추가한다. (index \t dirName \t index \t dirName ...)
-			for(int j=0 ; j<i ; j =j+2){
+			// 수신한 데이터를 Table에 추가한다. (index,dirName \t index,dirName ...)
+			// 한 row를 vector형태로 취함
+			for(int j=0 ; j<i ; j++){
 				Vector<String> row = new Vector<String>();
-				row.add(token[j]);
-				row.add(token[j+1]);
+				tokenizer2 = new StringTokenizer(token[j],",");
+				int k = 0;
 				
-				// table에 추가하기 위해 Vector(row)정보를 보냄
+				while(tokenizer2.hasMoreTokens()) {
+					token2[k] = tokenizer2.nextToken();
+					row.add(token2[k]);
+					k++;
+				}
+				//table에 추가하기 위해 Vector(row)정보를 보냄
 				ClientLauncher.getFrame().getDirectoryListPanel().addRow(row);
 			}
+			
 		}
 
 		// 디렉토리 생성에 따른 키 데이터를 수신하여 파일로 변환하는 과정
 		if(type==Constants.PacketType.DirectoryCreateResponse.getType()) {
-			System.out.println(token[0]);
 			fileMgr.saveFile(token[0]);
 		}
 		
 		// 디렉토리 액세스 리스판스(Key file 인증에 따른 디렉토리 접속 키 부여) 
-		if(type==Constants.PacketType.DirectoryAccessResponse.getType())
-		{
-			// 보여주기 위한 정보들 하부 폴더들 Name, parent, depth, root
+		if(type==Constants.PacketType.DirectoryAccessResponse.getType()) {
+			
+			StringTokenizer tokenizer2;
+			String token2[];
+			token2= new String[100];
+			Vector<FileInfo> fileInfoList;
+			FileInfo fileInfo;
+			
+			ClientLauncher.getFileMgr().initFileInfo();
+			fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
+			// 수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName ...)
+			// (type,name,parent,depth,index \t type,name,parent,depth,index ... )
+			for(int j=0 ; j<i ; j++){
+				fileInfo = new FileInfo();
+				tokenizer2 = new StringTokenizer(token[j],",");
+				int k = 0;
+				while(tokenizer2.hasMoreTokens()) {
+					token2[k] = tokenizer2.nextToken();
 					
+					switch(k){
+					case 0 : 
+						fileInfo.setType(token2[k]); 
+						break;
+					case 1 : 
+						fileInfo.setName(token2[k]); 
+						break;
+					case 2 : 
+						fileInfo.setParent(token2[k]); 
+						break;
+					case 3 : 
+						fileInfo.setDepth(token2[k]); 
+						if(ClientLauncher.getFileMgr().getMaxDepth() < Integer.parseInt(fileInfo.getDepth())) 
+							ClientLauncher.getFileMgr().setMaxDepth(Integer.parseInt(fileInfo.getDepth()));
+						break;
+					case 4 : 
+						fileInfo.setIndex(token2[k]); 
+						break;
+					default : 
+						break;
+					}
+					k++;
+				}
+				fileInfoList.add(fileInfo);
+			}
+			ClientLauncher.getFrame().getFileListPanel().initialize();
+			ClientLauncher.getFrame().getFileListPanel().makeTree();
+			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getFileListPanel());
 		}
 		
 		// 폴더 생성

@@ -1,6 +1,5 @@
 package com.sg.gui;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -22,7 +21,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
+import com.sg.model.FileInfo;
 
 public class FileListPanel extends JPanel {
 
@@ -62,26 +63,30 @@ public class FileListPanel extends JPanel {
 		handler = new ActionHandler();
 
 		// TreeModel 등록
-		root = new DefaultMutableTreeNode("Root");
-		for (int j = 0; j < 5; j++) {
-			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode("Main :" + j);
-			root.add(node1);
+		root = new DefaultMutableTreeNode("root");
 
-			for (int i = 0; i < 4; i++) {
-				DefaultMutableTreeNode tmpnode = new DefaultMutableTreeNode(i);
-				node1.add(tmpnode);
-			}
-		}
+//		System.out.println("\n\n root.getDepth()" + root.getLevel());
+//		
+//		for (int j = 0; j < 5; j++) {
+//			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode("Main :" + j);
+//			root.add(node1);
+//			System.out.println("\n\n node1.getDepth()" + node1.getLevel());
+//			System.out.println("\n\n node1.getParent()" + node1.getParent());
+//			for (int i = 0; i < 4; i++) {
+//				DefaultMutableTreeNode tmpnode = new DefaultMutableTreeNode(i);
+//				node1.add(tmpnode);
+//				System.out.println("\n\n tmpnode.getDepth()" + tmpnode.getLevel());
+//				System.out.println("\n\n tmpnode.getParent()" + tmpnode.getParent());
+//			}
+//		}
+		
 		model= new DefaultTreeModel(root);
+		
 
 		// File view Tree 등록
-		fileTree = new JTree(model) {
-			@Override public void updateUI() {
-				setCellRenderer(null);
-				setCellEditor(null);
-				super.updateUI();
-			}
-		};
+		fileTree = new JTree();
+		fileTree.setRowHeight(20);
+		fileTree.setModel(model);
 		fileTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent event) {
@@ -135,8 +140,48 @@ public class FileListPanel extends JPanel {
 		this.add(bgImg);
 	}
 
-	public void initialize() { }
 
+	public void initialize() { 
+		scroll = new JScrollPane(fileTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll.setBounds(50, 100, 250, 360);
+		this.removeAll();
+		this.add(scroll);
+		this.add(btnGroupPanel);
+		this.add(fileMngPanel);
+		this.add(bgImg);
+	}
+
+	// fileInfoList에 저장된 node를 통해 tree를 만듬
+	public void makeTree() {
+		Vector<FileInfo> fileInfoList;
+		DefaultMutableTreeNode node;
+		int maxDepth;
+		
+		fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
+		maxDepth = ClientLauncher.getFileMgr().getMaxDepth();
+		
+		for(FileInfo fileInfo : fileInfoList){
+			node = new DefaultMutableTreeNode(fileInfo.getName());
+			if(fileInfo.getDepth().equals("1")){
+				root.add(node);
+			}
+			else{
+				DefaultMutableTreeNode temp;
+				temp = root;
+				while( temp != null){
+					if(temp.toString().equals(fileInfo.getParent()) && 
+							temp.getLevel() == (Integer.parseInt(fileInfo.getDepth())-1)){
+						temp.add(node);
+						System.out.println("add " + temp.getParent() + " : "+ temp);
+					}
+					temp = temp.getNextNode();
+				}
+			}
+		}
+
+	}
+	
 	public DefaultMutableTreeNode getSelectedNode() {
 		return (DefaultMutableTreeNode) fileTree.getLastSelectedPathComponent();
 		

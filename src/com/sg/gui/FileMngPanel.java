@@ -201,16 +201,16 @@ public class FileMngPanel extends JPanel {
 			if(event.getSource()==btn[1]){
 				dirName=textField[0].getText();
 				if(status == 2) {
-					ClientLauncher.getFrame().getFileViewPanel().create(dirName);
+					ClientLauncher.getFrame().getFileListPanel().create(dirName);
 				}
 				else if(status == 3) {
-					ClientLauncher.getFrame().getFileViewPanel().upload();
+					ClientLauncher.getFrame().getFileListPanel().upload();
 				}
 				else if(status == 4) {
-					ClientLauncher.getFrame().getFileViewPanel().download();
+					ClientLauncher.getFrame().getFileListPanel().download();
 				}
 				else if(status == 5) {
-					ClientLauncher.getFrame().getFileViewPanel().delete();
+					ClientLauncher.getFrame().getFileListPanel().delete();
 				}
 				btn[2].doClick();
 			}

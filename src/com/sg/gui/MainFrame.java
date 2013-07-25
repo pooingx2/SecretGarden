@@ -127,7 +127,7 @@ public class MainFrame extends JFrame  {
 		this.directoryListPanel = directoryListPanel;
 	}
 
-	public FileListPanel getFileViewPanel() {
+	public FileListPanel getFileListPanel() {
 		return fileListPanel;
 	}
 
