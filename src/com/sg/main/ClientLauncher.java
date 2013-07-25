@@ -3,6 +3,8 @@ package com.sg.main;
 import java.io.IOException;
 
 import com.sg.controller.Connector;
+import com.sg.controller.FileMgr;
+import com.sg.controller.PacketMgr;
 import com.sg.gui.MainFrame;
 
 
@@ -10,14 +12,25 @@ public class ClientLauncher{
 
 	private static Connector connector;
 	private static MainFrame frame;
+	private static PacketMgr pkMgr;
+	private static FileMgr fileMgr;
 	
 	public static void main(String[] args) {
-		//connector = new Connector();
-		//if(connector.getSocket()!=null) {
-			frame = new MainFrame();
-			frame.initialize();
-		//}
+
+		// file을 load 및 save
+		fileMgr = new FileMgr();
+		// 받은 패킷을 처리 하는 함수
+		pkMgr = new PacketMgr();
+		// 통신담당 모듈로 소켓을 연결하고 프로토콜에 맞게 통신을 지원
+		connector = new Connector();
+		
+		// 정상 연결시 frame을 띄움
+		if(connector.getSocket()!=null) {
+			frame = new MainFrame(Constants.frameW,Constants.frameH);
+		}
 	}
+	
+	// 프로그램 종료시 리소스 반환
 	public static void exit()
 	{
 		try {
@@ -45,5 +58,22 @@ public class ClientLauncher{
 	public static void setFrame(MainFrame frame) {
 		ClientLauncher.frame = frame;
 	}
+
+	public static PacketMgr getPkMgr() {
+		return pkMgr;
+	}
+
+	public static void setPkMgr(PacketMgr pkMgr) {
+		ClientLauncher.pkMgr = pkMgr;
+	}
+
+	public static FileMgr getFileMgr() {
+		return fileMgr;
+	}
+
+	public static void setFileMgr(FileMgr fileMgr) {
+		ClientLauncher.fileMgr = fileMgr;
+	}
+	
 	
 }
