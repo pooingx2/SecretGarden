@@ -53,7 +53,6 @@ public class DirectoryListPanel extends JPanel {
 		this.height = h;
 		this.isSelected = false;
 		this.isAccessed = false;
-		
 		this.setBackground(Constants.backColor);
 		this.setLayout(null);
 		

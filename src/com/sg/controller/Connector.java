@@ -23,10 +23,12 @@ public class Connector implements Runnable {
 	// 서버와 연결을 담당
 	public Connector() {
 		pkMgr = ClientLauncher.getPkMgr();
+
 		try {
 			socket = new Socket(Constants.serverIP, Constants.serverPort);
 			dis = new DataInputStream(socket.getInputStream());
 			dos = new DataOutputStream(socket.getOutputStream());
+			
 			runable = true;
 			
 			// 패킷을 받기 위한 스레드

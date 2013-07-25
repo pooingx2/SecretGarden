@@ -60,7 +60,6 @@ public class ConnectionPublicPanel extends JPanel {
 		label = new JLabel[3];
 		textField = new JTextField();
 		pwdField = new JPasswordField();
-		
 		// btn[0] : main	btn[1] : connect	btn[2] : cancel
 		btn = new JButton[3];
 

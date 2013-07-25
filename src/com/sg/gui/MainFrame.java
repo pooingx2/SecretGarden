@@ -134,9 +134,5 @@ public class MainFrame extends JFrame  {
 	public void setFileListPanel(FileListPanel fileListPanel) {
 		this.fileListPanel = fileListPanel;
 	}
-	
-	
-	
-	
 
 }

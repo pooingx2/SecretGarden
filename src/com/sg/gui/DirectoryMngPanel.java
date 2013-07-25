@@ -28,11 +28,9 @@ public class DirectoryMngPanel extends JPanel {
 	3 : Access		4 : Delete			5 : Settings 
 	*/
 	private int status;
-	
 	private String key;
 	private String id;
 	private String name;
-	
 	
 	// Components
 	private Font inputFont;
@@ -164,7 +162,6 @@ public class DirectoryMngPanel extends JPanel {
 		case 5 : 	//	Settings
 			this.add(btn[1]);
 			this.add(btn[2]);
-			break;
 		default : 
 			break;
 		}
@@ -194,17 +191,14 @@ public class DirectoryMngPanel extends JPanel {
 					ClientLauncher.getFrame().getDirectoryListPanel().access();
 					
 					// 하부 폴더에 접근하기 위하여 Keyfile을 서버로 전송한다 
-
-
 					id   = ClientLauncher.getFrame().getDirectoryListPanel().get_directory_Id();
 					name = "none";
 					String data = key + "\t" + id + "\t" + name;
 					int type = Constants.PacketType.DirectoryAccessRequset.getType();
 					int length = data.length();
-	
 					// 디렉토리 리스트 요청 패킷을 전송
-					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 					
+					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 				}
 				else if(status == 4) {
 					ClientLauncher.getFrame().getDirectoryListPanel().delete();
