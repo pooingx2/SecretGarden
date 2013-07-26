@@ -131,6 +131,7 @@ public class PacketMgr {
 						break;
 					case 4 : 
 						fileInfo.setIndex(token2[k]); 
+						//ClientLauncher.getFileMgr().set_root_dir_index(token2[k]);
 						break;
 					default : 
 						break;
@@ -144,13 +145,94 @@ public class PacketMgr {
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getFileListPanel());
 		}
 		
+		/*************************************************************************/
 		// 폴더 생성
+		if(type==Constants.PacketType.FolderCreateResponse.getType()) 
+		{	
+			/****************************************************/
+			// 어떤 노드를 어떤 부모의 자식으로 달아주어야 하는가
+			// node child, node parent 가 인자로 온다
+			// { child node } { parent node }
+			/****************************************************/
+			
+			/*
+			StringTokenizer tokenizer2;
+			String token2[];
+			token2= new String[100];
+			Vector<FileInfo> fileInfoList;
+			FileInfo fileInfo;
+			
+			
+			ClientLauncher.getFileMgr().initFileInfo();
+			fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
+			//  수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName ...)
+			// (type,name,parent,depth,index \t type,name,parent,depth,index ... )
+			for(int j=0 ; j<i ; j++){
+				fileInfo = new FileInfo();
+				tokenizer2 = new StringTokenizer(token[j],",");
+				int k = 0;
+				while(tokenizer2.hasMoreTokens()) {
+					token2[k] = tokenizer2.nextToken();
+					
+					switch(k){
+					case 0 : 
+						fileInfo.setType(token2[k]); 
+						break;
+					case 1 : 
+						fileInfo.setName(token2[k]); 
+						break;
+					case 2 : 
+						fileInfo.setParent(token2[k]); 
+						break;
+					case 3 : 
+						fileInfo.setDepth(token2[k]); 
+						if(ClientLauncher.getFileMgr().getMaxDepth() < Integer.parseInt(fileInfo.getDepth())) 
+							ClientLauncher.getFileMgr().setMaxDepth(Integer.parseInt(fileInfo.getDepth()));
+						break;
+					case 4 : 
+						fileInfo.setIndex(token2[k]); 
+						ClientLauncher.getFileMgr().set_root_dir_index(token2[k]);
+						break;
+					default : 
+						break;
+					}
+					k++;
+				}
+				fileInfoList.add(fileInfo);
+			}
+			ClientLauncher.getFrame().getFileListPanel().initialize();
+			ClientLauncher.getFrame().getFileListPanel().makeTree();
+			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getFileListPanel());
+			*/
+		}
+		/*************************************************************************/
 		
-		// 파일 업로드
 		
-		// 파일 다운로드
+		// 메타데이터 업로드
+		if(type==Constants.PacketType.MetaUploadResponse.getType())
+		{
 		
-		if(type==Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()){
+			
+		}
+		
+		// 메타데이터 다운로드
+		if(type==Constants.PacketType.MetaDownloadResponse.getType())
+		{
+				
+					
+		}
+		
+		// 폴더 및 디렉토리 셋팅(공유와 관련된)패킷 수신
+		if(type==Constants.PacketType.SettingResponse.getType())
+		{
+				
+					
+		}
+		
+		
+		// 프로그램 종료
+		if(type==Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType())
+		{
 		
 			
 		}

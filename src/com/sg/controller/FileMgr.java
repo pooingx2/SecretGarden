@@ -17,12 +17,26 @@ public class FileMgr {
 
 	private String homePath;
 	private Vector<FileInfo> fileInfoList;
-	private int maxDepth;	//fileInfoList의 maxDepth
+	private int maxDepth;		//fileInfoList의 maxDepth
+
+	/***********************************************/
+	private String root_dir_index;					//폴더들의 부모 디렉토리 인덱스.
+														//디렉토리 내부의 폴더들의 루트 인덱스를 의미한다.
+													    //디렉토리 내부에 아무런 폴더가없는 상태에서 폴더를 추가할시 참조한다.
+	/***********************************************/
 	
 	// file을 관리
 	public FileMgr(){
 		homePath = System.getProperty("user.home");
 		fileInfoList = new Vector<FileInfo>();
+		maxDepth = 0;
+	}
+	
+	public void clear()
+	{
+		homePath = null;
+		fileInfoList.clear();
+		fileInfoList.removeAllElements();
 		maxDepth = 0;
 	}
 	
@@ -41,7 +55,19 @@ public class FileMgr {
 	public void setMaxDepth(int maxDepth) {
 		this.maxDepth = maxDepth;
 	}
+	
+	/***********************************************/
+	/* 최상위 루트 인덱스 */
+	public String get_root_dir_index()
+	{
+		return root_dir_index;
+	}
 
+	public void set_root_dir_index(String token2) {
+		this.root_dir_index = token2;
+	}
+	/***********************************************/
+	
 	public void initFileInfo(){
 		maxDepth = 0;
 		fileInfoList.removeAllElements();
@@ -118,4 +144,6 @@ public class FileMgr {
 		
 		return result;
 	}
+	
+	
 }

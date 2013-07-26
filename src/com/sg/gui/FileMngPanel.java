@@ -23,6 +23,7 @@ import javax.swing.border.LineBorder;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
+import com.sg.model.MetaData;
 
 public class FileMngPanel extends JPanel {
 	// Attribute
@@ -188,7 +189,15 @@ public class FileMngPanel extends JPanel {
 	// 버튼에 따른 이벤트 핸들러
 	private class ActionHandler implements ActionListener {
 		private String dirName;
-
+		
+		/********************************/
+		/* Uplade되는 파일 이름 */
+		private String fileName;
+		/* Upload되는 메타데이터 */
+		private MetaData m_data;
+		/********************************/
+		
+		
 		@Override
 		public void actionPerformed(ActionEvent event) {
 
@@ -204,7 +213,14 @@ public class FileMngPanel extends JPanel {
 					ClientLauncher.getFrame().getFileListPanel().create(dirName);
 				}
 				else if(status == 3) {
-					ClientLauncher.getFrame().getFileListPanel().upload();
+					/*********************************************************************************/
+					/* 성진이가 파일 업로드 할 부분 메타데이터 제외하고 분할된 파일을 전송하는것까지 구성 */
+					/* Upload Module 위치할 부분 */
+					/*********************************************************************************/
+					ClientLauncher.getFrame().getFileListPanel().file_to_cloud();
+					
+					/* 메타데이터 전송 */
+					ClientLauncher.getFrame().getFileListPanel().upload(fileName, m_data);
 				}
 				else if(status == 4) {
 					ClientLauncher.getFrame().getFileListPanel().download();

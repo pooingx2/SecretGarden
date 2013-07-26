@@ -120,6 +120,15 @@ public class Constants {
 		DirectoryAccessResponse(12),
 		FolderCreateRequset(13), 
 		FolderCreateResponse(14),
+		FileCreateRequset(15), 
+		FileCreateResponse(16),
+		MetaUploadRequset(17), 
+		MetaUploadResponse(18),
+		MetaDownloadRequset(19), 
+		MetaDownloadResponse(20),
+		SettingRequset(21), 
+		SettingResponse(22),
+
 		PROGRAM_EXIT_REQUEST(50), 
 		PROGRAM_EXIT_RESPONSE(51); 
 		

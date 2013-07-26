@@ -196,8 +196,9 @@ public class DirectoryMngPanel extends JPanel {
 					String data = key + "\t" + id + "\t" + name;
 					int type = Constants.PacketType.DirectoryAccessRequset.getType();
 					int length = data.length();
-					// 디렉토리 리스트 요청 패킷을 전송
 					
+					// 인증 및 폴더 리스트 요청
+					ClientLauncher.getFileMgr().set_root_dir_index(id);
 					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 				}
 				else if(status == 4) {

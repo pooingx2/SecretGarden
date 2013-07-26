@@ -49,13 +49,14 @@ public class DirectoryListPanel extends JPanel {
 	public DirectoryListPanel(int w, int h) {
 
 		super();
+		boolean isAccessed = false;
 		this.width = w;
 		this.height = h;
 		this.isSelected = false;
 		this.isAccessed = false;
 		this.setBackground(Constants.backColor);
 		this.setLayout(null);
-		
+
 		// 배경이미지 등록
 		bgImg = new JLabel(new ImageIcon(
 				Constants.BackgroudPath.directoryListBG.getPath()));
@@ -73,10 +74,13 @@ public class DirectoryListPanel extends JPanel {
 		};
 
 		// table 헤더 설정
-		tableModel.setColumnIdentifiers(new String[] { "   ID", "     Directory Name" });
+		tableModel.setColumnIdentifiers(new String[] { "   ID",
+				"     Directory Name" });
 
 		table = new JTable(); // directory list를 위한 table을 만듬
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // row를 하나만 택하도록 설정
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // row를 하나만
+																		// 택하도록
+																		// 설정
 		table.setRowHeight(30); // row 높이 설정
 		table.setFont(Constants.Font1); // table font 설정
 		table.setModel(tableModel); // table model 설정
@@ -88,18 +92,19 @@ public class DirectoryListPanel extends JPanel {
 
 		// row를 선택 리스너
 		table.getSelectionModel().addListSelectionListener(
-			new ListSelectionListener() {
-				public void valueChanged(ListSelectionEvent event) {
-					if (!event.getValueIsAdjusting() && !editMode) {
-						isSelected = true;
-						dirMngPanel.setStatus(0);
-						if(dirMngPanel.getStatus() == 0){
-							dirMngPanel.setSelectedValue(table.getValueAt(table.getSelectedRow(), 0).toString());
+				new ListSelectionListener() {
+					public void valueChanged(ListSelectionEvent event) {
+						if (!event.getValueIsAdjusting() && !editMode) {
+							isSelected = true;
+							dirMngPanel.setStatus(0);
+							if (dirMngPanel.getStatus() == 0) {
+								dirMngPanel.setSelectedValue(table.getValueAt(
+										table.getSelectedRow(), 0).toString());
+							}
+							changePanel();
 						}
-						changePanel();
 					}
-				}
-			});
+				});
 
 		// header 관련 설정
 		header = table.getTableHeader();
@@ -114,7 +119,8 @@ public class DirectoryListPanel extends JPanel {
 		table.getColumnModel().getColumn(1).setCellRenderer(renderer);
 
 		// scroll 등록
-		scroll = new JScrollPane(table, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
+		scroll = new JScrollPane(table,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setBounds(50, 100, 300, 360);
 
@@ -124,24 +130,32 @@ public class DirectoryListPanel extends JPanel {
 		btnGroupPanel.setBackground(Constants.backColor);
 		btnGroupPanel.setLayout(null);
 
-		// 버튼 생성  (Create, Access, Delte)
+		// 버튼 생성 (Create, Access, Delte)
 		btn = new JButton[4];
-		
-		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.createBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2.getPath()));
+
+		btn[0] = new JButton(new ImageIcon(
+				Constants.ButtonPath.createBtn1.getPath()));
+		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2
+				.getPath()));
 		// 버튼 생성 (Create, Access, Delte)
 
-		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.accessBtn1.getPath()));
-		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.accessBtn2.getPath()));
+		btn[1] = new JButton(new ImageIcon(
+				Constants.ButtonPath.accessBtn1.getPath()));
+		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.accessBtn2
+				.getPath()));
 
-		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.deleteBtn1.getPath()));
-		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2.getPath()));
-		
-		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.settingsBtn1.getPath()));
-		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.settingsBtn2.getPath()));
+		btn[2] = new JButton(new ImageIcon(
+				Constants.ButtonPath.deleteBtn1.getPath()));
+		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2
+				.getPath()));
 
-		for(int i=0;i<4;i++) {
-			btn[i].setBounds(11+70*i,5,70,70);
+		btn[3] = new JButton(new ImageIcon(
+				Constants.ButtonPath.settingsBtn1.getPath()));
+		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.settingsBtn2
+				.getPath()));
+
+		for (int i = 0; i < 4; i++) {
+			btn[i].setBounds(11 + 70 * i, 5, 70, 70);
 			btn[i].addActionListener(handler);
 			btnGroupPanel.add(btn[i]);
 		}
@@ -197,52 +211,63 @@ public class DirectoryListPanel extends JPanel {
 
 	// 생성 클릭시 실행
 	public void create(String dir) {
-		int type; // 패킷 타입
-		int length; // 패킷 길이
-		String data; // 전송 데이터
-		String id; // 디렉토리 indext
-		String private_cloud; // 클라우드 연결 정보
-		String public_cloud;
+		
+		if (isAccessed == false) {
+			int type; // 패킷 타입
+			int length; // 패킷 길이
+			String data; // 전송 데이터
+			String id; // 디렉토리 indext
+			String private_cloud; // 클라우드 연결 정보
+			String public_cloud;
 
-		private_cloud = ClientLauncher.getFrame().getConnectionPanel()
-				.getPrivate();
-		public_cloud = ClientLauncher.getFrame().getConnectionPanel()
-				.getPublic();
-		id = ClientLauncher.getFrame().getLoginPanel().getId();
+			private_cloud = ClientLauncher.getFrame().getConnectionPanel()
+					.getPrivate();
+			public_cloud = ClientLauncher.getFrame().getConnectionPanel()
+					.getPublic();
+			id = ClientLauncher.getFrame().getLoginPanel().getId();
 
-		data = dir + "\t" + private_cloud + "\t" + public_cloud + "\t" + id;
-		type = Constants.PacketType.DirectoryCreateRequset.getType();
-		length = data.length();
+			data = dir + "\t" + private_cloud + "\t" + public_cloud + "\t" + id;
+			type = Constants.PacketType.DirectoryCreateRequset.getType();
+			length = data.length();
 
-		// 디렉토리 생성 요청 패킷을 전송
-		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+			// 디렉토리 생성 요청 패킷을 전송
+			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 
-		// 추가된 Directory를 포함한 디렉토리 정보를 반영하기 위해 조회 패킷 전송
-		data = id + "\t" + private_cloud + "\t" + public_cloud;
-		type = Constants.PacketType.DirectoryListRequset.getType();
-		length = data.length();
+			// 추가된 Directory를 포함한 디렉토리 정보를 반영하기 위해 조회 패킷 전송
+			data = id + "\t" + private_cloud + "\t" + public_cloud;
+			type = Constants.PacketType.DirectoryListRequset.getType();
+			length = data.length();
 
-		// 디렉토리 리시트 조회 요청 패킷 전송
-		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+			// 디렉토리 리시트 조회 요청 패킷 전송
+			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 
-		// 디렉토리 생성을 반영하기 위한 패널 새로고침
-		changePanel();
+			// 디렉토리 생성을 반영하기 위한 패널 새로고침
+			changePanel();
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null,
+					"create Folder");
+		}
+		
 	}
 
 	// 디렉토리 접근 최종 확인 버튼 클릭시 실행
 	public void access() {
 		// 액세스시 폴더 리스트를 가져와야 한다
+		isAccessed = true;
+		JOptionPane.showMessageDialog(null,
+				"access directory");
 	}
 
 	// 디렉토리 삭제 최종 확인 클릭시 실행
 	public void delete() {
 	}
-	
-	public void settings(){
+
+	public void settings() {
 	}
-	
-	public String get_directory_Id()
-	{
+
+	public String get_directory_Id() {
 		return table.getValueAt(table.getSelectedRow(), 0).toString();
 	}
 
@@ -267,7 +292,8 @@ public class DirectoryListPanel extends JPanel {
 				} else {
 					dirMngPanel.setStatus(0);
 					changePanel();
-					JOptionPane.showMessageDialog(null, "For Access Choose a directory");
+					JOptionPane.showMessageDialog(null,
+							"For Access Choose a directory");
 				}
 			}
 
@@ -281,15 +307,15 @@ public class DirectoryListPanel extends JPanel {
 				else {
 					dirMngPanel.setStatus(0);
 					changePanel();
-					JOptionPane.showMessageDialog(null, "For DeleteChoose a directory");
+					JOptionPane.showMessageDialog(null,
+							"For DeleteChoose a directory");
 				}
 			}
-			
-			if(event.getSource()==btn[3]){
+
+			if (event.getSource() == btn[3]) {
 
 			}
 		}
-		
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
