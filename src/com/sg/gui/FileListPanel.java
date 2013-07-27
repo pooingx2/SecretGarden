@@ -79,24 +79,7 @@ public class FileListPanel extends JPanel {
 
 		// TreeModel 등록
 		root = new DefaultMutableTreeNode("root");
-
-//		System.out.println("\n\n root.getDepth()" + root.getLevel());
-//		
-//		for (int j = 0; j < 5; j++) {
-//			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode("Main :" + j);
-//			root.add(node1);
-//			System.out.println("\n\n node1.getDepth()" + node1.getLevel());
-//			System.out.println("\n\n node1.getParent()" + node1.getParent());
-//			for (int i = 0; i < 4; i++) {
-//				DefaultMutableTreeNode tmpnode = new DefaultMutableTreeNode(i);
-//				node1.add(tmpnode);
-//				System.out.println("\n\n tmpnode.getDepth()" + tmpnode.getLevel());
-//				System.out.println("\n\n tmpnode.getParent()" + tmpnode.getParent());
-//			}
-//		}
-		
 		model= new DefaultTreeModel(root);
-		
 
 		// File view Tree 등록
 		fileTree = new JTree();
@@ -112,6 +95,7 @@ public class FileListPanel extends JPanel {
 		});
 		fileTree.setEditable(true);
 		fileTree.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		fileTree.setCellRenderer(new MyTreeRenderer());
 		setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
 		// scroll 등록
@@ -158,6 +142,7 @@ public class FileListPanel extends JPanel {
 
 
 	public void initialize() { 
+		fileMngPanel.initialize();
 		scroll = new JScrollPane(fileTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setBounds(50, 100, 250, 360);

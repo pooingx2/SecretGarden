@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -59,6 +61,12 @@ public class SignupFrame extends JFrame  {
 		// 화면 중앙에 frame이 오도록 설정
 		this.setLocation(screen.width/2-this.width/2, screen.height/2-this.height/2);
 
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e){
+				initialize();
+			}
+		});
+		
 		this.setLayout(null);
 		
 		// 배경이미지
@@ -119,7 +127,7 @@ public class SignupFrame extends JFrame  {
 	}
 	
 	// form 초기화
-	public void initForm(){
+	public void initialize(){
 		textField[0].setText("");
 		textField[1].setText("");
 		textField[2].setText("");
@@ -170,7 +178,7 @@ public class SignupFrame extends JFrame  {
 			// 취소 버튼을 눌렀을 때
 			if(event.getSource()==btn[1]){
 				dispose();
-				initForm();
+				initialize();
 			}
 		}
 	}

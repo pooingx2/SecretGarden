@@ -171,6 +171,7 @@ public class DirectoryListPanel extends JPanel {
 	}
 
 	public void initialize() {
+		dirMngPanel.initialize();
 	}
 
 	// 리스트 초기화 함수

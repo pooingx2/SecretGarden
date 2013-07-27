@@ -64,11 +64,7 @@ public class MainFrame extends JFrame  {
 		// 로그인 패널 생성
 		loginPanel = new LoginPanel(width, height);
 		loginPanel.setBounds(0, 0, width, height);
-		
-		// 상단 액션바패널 생성
-		actionBar = new ActionBar(width,50);
-		actionBar.setBounds(0, 0, width, 50);
-		
+
 		// public과 private에 연결과 인증을 위한 패널 생성
 		connectionPanel = new ConnectionPanel(width, height-50);
 		connectionPanel.setBounds(0, 50, width, height-50);
@@ -80,6 +76,10 @@ public class MainFrame extends JFrame  {
 		// 파일 목록을 Tree형태로 보여주는 패널 생성
 		fileListPanel = new FileListPanel(width, height-50);
 		fileListPanel.setBounds(0, 50, width, height-50);
+		
+		// 상단 액션바패널 생성
+		actionBar = new ActionBar(width,50);
+		actionBar.setBounds(0, 0, width, 50);
 		
 		// 처음 로그인 패널을 띄움
 		this.add(loginPanel);
@@ -97,7 +97,24 @@ public class MainFrame extends JFrame  {
 		this.getContentPane().removeAll();
 		if(panel != loginPanel){
 			this.add(actionBar);
+			if(panel == connectionPanel){
+				connectionPanel.initialize();
+				actionBar.setStatus(1);
+			}
+			else if(panel == directoryListPanel){
+				directoryListPanel.initialize();
+				actionBar.setStatus(2);
+			}
+			else if(panel == fileListPanel){
+				fileListPanel.initialize();
+				actionBar.setStatus(3);
+			}
+			else {
+				actionBar.setStatus(0);
+			}
 		}
+		else 
+			loginPanel.initialize();
 		this.add(panel);
 		this.repaint();
 	}

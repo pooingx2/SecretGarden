@@ -90,7 +90,10 @@ public class LoginPanel extends JPanel {
 			
 	}
 
-	public void initialize() { }
+	public void initialize() { 
+		inputID.setText("");
+		inputPwd.setText("");
+	}
 	
 	
 	public SignupFrame getSigupFrame() {
@@ -116,7 +119,6 @@ public class LoginPanel extends JPanel {
 			
 			setId(id);
 			
-			
 			if(event.getSource()==loginBtn){
 
 				String data = id + "\t"+pwd;
@@ -124,10 +126,8 @@ public class LoginPanel extends JPanel {
 				int length = data.length();
 				
 				//id와 password 패킷 전송
+				ClientLauncher.getHybrid().getAWSModule().setUserId(id);
 				ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-				
-				inputID.setText("");
-				inputPwd.setText("");
 
 			}
 			if(event.getSource()==signupBtn){

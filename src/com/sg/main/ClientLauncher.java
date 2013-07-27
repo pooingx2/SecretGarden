@@ -2,6 +2,7 @@ package com.sg.main;
 
 import java.io.IOException;
 
+import com.sg.cloud.Hybrid;
 import com.sg.controller.Connector;
 import com.sg.controller.FileMgr;
 import com.sg.controller.PacketMgr;
@@ -14,6 +15,7 @@ public class ClientLauncher{
 	private static MainFrame frame;
 	private static PacketMgr pkMgr;
 	private static FileMgr fileMgr;
+	private static Hybrid hybrid;
 	
 	public static void main(String[] args) {
 
@@ -23,6 +25,8 @@ public class ClientLauncher{
 		pkMgr = new PacketMgr();
 		// 통신담당 모듈로 소켓을 연결하고 프로토콜에 맞게 통신을 지원
 		connector = new Connector();
+		// cloud Controller module 실행
+		hybrid = new Hybrid();
 		
 		// 정상 연결시 frame을 띄움
 		if(connector.getSocket()!=null) {
@@ -73,6 +77,14 @@ public class ClientLauncher{
 
 	public static void setFileMgr(FileMgr fileMgr) {
 		ClientLauncher.fileMgr = fileMgr;
+	}
+
+	public static Hybrid getHybrid() {
+		return hybrid;
+	}
+
+	public static void setHybrid(Hybrid hybrid) {
+		ClientLauncher.hybrid = hybrid;
 	}
 	
 	

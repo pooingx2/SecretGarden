@@ -57,7 +57,7 @@ public class PacketMgr {
 		// 회원가입 응답에 대한 패킷을 처리 (회원가입 프레임을 초기화 하고 없앰)
 		if(type==Constants.PacketType.SignupResponse.getType()){
 			JOptionPane.showMessageDialog(null, "Thank you");
-			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().initForm();
+			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().initialize();
 			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().dispose();
 		}
 		

@@ -122,7 +122,12 @@ public class FileMngPanel extends JPanel {
 	}
 
 
-	public void initialize() { }
+	public void initialize() { 
+		textField[0].setText("");
+		textField[1].setText("");
+		label[0].setText("");
+		label[1].setText("");
+	}
 
 	public int getStatus() {
 		return status;
@@ -136,17 +141,8 @@ public class FileMngPanel extends JPanel {
 		label[1].setText(value);
 	}
 	
-	// JFleChoose를 통한 파일 선택 함수
 	public void loadFile(){
-		JFileChooser fileDialog = new JFileChooser(new File("."));
-		int isSelected = fileDialog.showOpenDialog(null);
-		if(isSelected == JFileChooser.APPROVE_OPTION) {
-			file = fileDialog.getSelectedFile();
-			filePath = file.getAbsolutePath();
-			if(file != null) {
-				textField[1].setText(filePath);
-			}
-		}
+		
 	}
 
 	// 각종 status에 따라  Directory관리 패널을 변경
