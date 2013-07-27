@@ -206,6 +206,16 @@ public class FileListPanel extends JPanel {
 		return fileInfo;
 	}
 	
+	public String getSelectedPath(){
+		String path="";
+		
+		for(int i=0;i<(selectedNode.getPath().length);i++){
+			path += "/" + selectedNode.getPath()[i];
+		}
+		System.out.println(path);
+
+		return path;
+	}
 	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
 		this.remove(bgImg);

@@ -56,14 +56,13 @@ public class HDFSClient implements PrivateUpDown1 {
 	public int upload(String fileName, String userId, File targetFile, String dirPath) throws IOException {
 		/*
 		  디렉토리 중복 여부 확인 필요
-		  
 		 */	
 		int optionNum = 1;
 		byte[] buf = new byte[1048576];
 		BufferedInputStream readFile = new BufferedInputStream(new FileInputStream(targetFile));
 		readFile.read(buf, 0, 1048576);
 
-		Files sendingFile = new Files(fileName,"secretgarden"+userId+"/"+dirPath, optionNum, buf, userId);
+		Files sendingFile = new Files(fileName,"secretgarden"+userId+dirPath+"/", optionNum, buf, userId);
 		objOutput = new ObjectOutputStream(writer);
 		objOutput.writeObject(sendingFile);
 		objOutput.flush();

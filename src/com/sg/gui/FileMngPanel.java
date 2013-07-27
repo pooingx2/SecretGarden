@@ -142,9 +142,12 @@ public class FileMngPanel extends JPanel {
 		label[1].setText(value);
 	}
 	
-	public void getUploadFilePath(){
+	public void setUploadFilePath(){
 		String path = ClientLauncher.getFileMgr().loadUploadFile();
-		
+		if(path != null){
+			System.out.println(path);
+			textField[1].setText(path);
+		}
 	}
 
 	// 각종 status에 따라  Directory관리 패널을 변경
@@ -201,13 +204,13 @@ public class FileMngPanel extends JPanel {
 
 			// fileload버튼을 누르면 유저 컴퓨터에서 file을 선택하도록 함
 			if(event.getSource()==btn[0]){
-				getUploadFilePath();
+				setUploadFilePath();
 			}
 
 			// 확인버튼을 누르면 해당 상태에 맞는 함수를 call 
 			if(event.getSource()==btn[1]){
 				dirName	= textField[0].getText();
-				fileName	= textField[1].getText();
+				fileName = textField[1].getText();
 				if(status == 2) {
 					ClientLauncher.getFrame().getFileListPanel().create(dirName);
 				}
@@ -215,6 +218,12 @@ public class FileMngPanel extends JPanel {
 					/*********************************************************************************/
 					/* 성진이가 파일 업로드 할 부분 메타데이터 제외하고 분할된 파일을 전송하는것까지 구성 */
 					/* Upload Module 위치할 부분 */
+					String dirPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+					try {
+						ClientLauncher.getHybrid().upload(fileName,dirPath);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 					/*********************************************************************************/
 					ClientLauncher.getFrame().getFileListPanel().file_to_cloud();
 					

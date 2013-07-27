@@ -63,14 +63,25 @@ public class Hybrid {
 		// 제거 모듈 만들어 줘야 함
 		return 0;
 	}
-	public int upload() throws IOException {
+	
+	private String getFileName(String path) {
+		StringTokenizer token = new StringTokenizer(path,"\\");
+		String fileName = null;
+		while(token.hasMoreElements()) {
+			fileName = token.nextToken();
+		}
+		System.out.println(fileName);
+		return fileName;
+	}
+	public int upload(String file, String path) throws IOException {
 		//upload는 모두 transaction을 지켜야 하기 때문에 redo와 undo 처리가 필요
-		String fileName = "test.txt";							//입력 받아야 함
-		String dirPath = "this/is/a/test/";
+		String fileName = getFileName(file);			//입력 받아야 함 file을 잘라서 맨 마지막꺼
+		String dirPath = path;						//유저가 만든 디랙토리 패스
+		System.out.println("\n\n\n\n\n!!!!!!TEST!!!!!!! : "+path);
 		String userId = "sungjin";
 		String realPos = makeFileName(fileName);
 		String uploadName = realPos+fileName;
-		File targetFile = new File(fileName);
+		File targetFile = new File(file);
 
 		//aws s3 upload
 		aWSModule.upload( uploadName, userId, targetFile, dirPath);		

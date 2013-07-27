@@ -116,9 +116,9 @@ public class FileMgr {
 		int isSelected = fileDialog.showOpenDialog(null);
 		if(isSelected == JFileChooser.APPROVE_OPTION) {
 			File file = fileDialog.getSelectedFile();
-			path = file.getAbsolutePath();
 			BufferedReader in = null;
 			if(file != null) {
+				path = file.getAbsolutePath();
 				try{
 					in = new BufferedReader(new FileReader(file));
 					while ((temp = in.readLine()) != null) {
@@ -147,7 +147,15 @@ public class FileMgr {
 	
 	public String loadUploadFile(){
 		String path=null;
-		
+		JFileChooser fileDialog = new JFileChooser(new File(homePath));
+		int isSelected = fileDialog.showOpenDialog(null);
+		if(isSelected == JFileChooser.APPROVE_OPTION) {
+			File file = fileDialog.getSelectedFile();
+			BufferedReader in = null;
+			if(file != null) {
+				path = file.getAbsolutePath();
+			}
+		}
 		return path;
 	}
 	
