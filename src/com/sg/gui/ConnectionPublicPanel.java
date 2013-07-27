@@ -10,6 +10,7 @@ import javax.sound.sampled.Line;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -105,7 +106,12 @@ public class ConnectionPublicPanel extends JPanel {
 	}
 
 
-	public void initialize() { }
+	public void initialize() { 
+		textField.setText("");
+		pwdField.setText("");
+		this.connection = false;
+		changeStatusPanel();
+	}
 	
 	public String getId() {
 		return id;
@@ -163,13 +169,17 @@ public class ConnectionPublicPanel extends JPanel {
 				
 				id = textField.getText();
 				pwd = pwdField.getText();
-				
-				textField.setText("");
-				pwdField.setText("");
 
 				connection = true;
 				ClientLauncher.getFrame().getConnectionPanel().setPublic(id);
-				changeStatusPanel();
+				connection = ClientLauncher.getHybrid().auth(Constants.amazon,id,pwd);
+
+				if(connection){
+					changeStatusPanel();
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Connect Error");
+				}
 				
 				// private 과 public모두 연결되어 있다면 실행
 				if(isConnection() && ClientLauncher.getFrame().

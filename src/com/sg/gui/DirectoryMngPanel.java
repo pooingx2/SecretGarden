@@ -113,7 +113,12 @@ public class DirectoryMngPanel extends JPanel {
 	}
 
 
-	public void initialize() { }
+	public void initialize() { 
+		textField[0].setText("");
+		textField[1].setText("");
+		label[0].setText("");
+		label[1].setText("");
+	}
 
 	public int getStatus() {
 		return status;

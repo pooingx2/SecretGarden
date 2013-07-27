@@ -7,6 +7,8 @@ import java.nio.ByteOrder;
 
 public class Constants {
 
+	
+	
 	// main framesize
 	public static final int frameW = 800;
 	public static final int frameH = 600;
@@ -21,6 +23,10 @@ public class Constants {
 	// font 설정
 	public static final Font Font1 = new Font(null,Font.CENTER_BASELINE,15);
 	public static final Font Font2 = new Font(null,Font.CENTER_BASELINE,20);
+
+	// cloud Constants
+	public static final String hadoop = "Hadoop";
+	public static final String amazon = "Amazon";
 	
 	// 각종 패널 배경이미지 경로
 	public static enum BackgroudPath {
@@ -61,6 +67,12 @@ public class Constants {
 		signupBtn2("img/button/signupBtn2.jpg"), 
 		logoutBtn1("img/button/logoutBtn1.jpg"), 
 		logoutBtn2("img/button/logoutBtn2.jpg"),
+		homeBtn1("img/button/homeBtn1.jpg"),
+		homeBtn2("img/button/homeBtn2.jpg"),
+		backBtn1("img/button/backBtn1.jpg"),
+		backBtn2("img/button/backBtn2.jpg"),
+		forwardBtn1("img/button/forwardBtn1.jpg"),
+		forwardBtn2("img/button/forwardBtn2.jpg"),
 		connectBtn1("img/button/connectBtn1.jpg"), 
 		connectBtn2("img/button/connectBtn2.jpg"),
 		privateBtn1("img/button/privateBtn1.jpg"),
@@ -95,7 +107,9 @@ public class Constants {
 	public static enum IconPath {
 		
 		privateIcon("img/icon/privateIcon.jpg"), 
-		publicIcon("img/icon/publicIcon.jpg"); 
+		publicIcon("img/icon/publicIcon.jpg"),
+		forderIcon("img/icon/forderIcon.jpg"),
+		fileIcon("img/icon/fileIcon.jpg");
 		
 		final private String path;
 		private IconPath(String path) { this.path = path; }

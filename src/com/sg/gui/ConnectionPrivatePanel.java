@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -58,7 +59,7 @@ public class ConnectionPrivatePanel extends JPanel {
 		label = new JLabel[3];
 		textField = new JTextField();
 		pwdField = new JPasswordField();
-		
+
 		// btn[0] : main	btn[1] : connect	btn[2] : cancel
 		btn = new JButton[3];
 
@@ -105,9 +106,13 @@ public class ConnectionPrivatePanel extends JPanel {
 		this.add(bgImg[0]);
 	}
 
+	public void initialize() { 
+		textField.setText("");
+		pwdField.setText("");
+		this.connection = false;
+		changeStatusPanel();
+	}
 
-	public void initialize() { }
-	
 	public String getId() {
 		return id;
 	}
@@ -124,7 +129,7 @@ public class ConnectionPrivatePanel extends JPanel {
 	public void setConnection(boolean connection) {
 		this.connection = connection;
 	}
-	
+
 	// 패널을 변경하는 함수
 	public void changeSettingPanel() {
 		this.removeAll();
@@ -164,14 +169,20 @@ public class ConnectionPrivatePanel extends JPanel {
 
 				id = textField.getText();
 				pwd = pwdField.getText();
-				
+
 				textField.setText("");
 				pwdField.setText("");
 
-				connection = true;
 				ClientLauncher.getFrame().getConnectionPanel().setPrivate(id);
-				changeStatusPanel();
-				
+
+				connection = ClientLauncher.getHybrid().auth(Constants.hadoop,id,pwd);
+
+				if(connection){
+					changeStatusPanel();
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Connect Error");
+				}
 				// private 과 public모두 연결되어 있다면 실행
 				if(isConnection() && ClientLauncher.getFrame().
 						getConnectionPanel().getPublicPanel().isConnection()){
@@ -179,19 +190,20 @@ public class ConnectionPrivatePanel extends JPanel {
 					String id = ClientLauncher.getFrame().getLoginPanel().getId();
 					String private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
 					String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
-					
+
 					String data = id + "\t" + private_cloud + "\t" + public_cloud;
 					int type = Constants.PacketType.DirectoryListRequset.getType();
 					int length = data.length();
-					
+
 					// 메인 프레임을 디렉토리 프레임으로 변경
 					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
 					// 디렉토리 리스트 요청 패킷을 전송
 					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 					/*********************/
 				}
-			}
 
+			}
+	
 			if(event.getSource()==btn[2]){
 				changeStatusPanel();
 			}

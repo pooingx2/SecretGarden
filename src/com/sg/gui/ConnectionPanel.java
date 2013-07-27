@@ -47,7 +47,10 @@ public class ConnectionPanel extends JPanel {
 		this.add(bgImg);
 	}
 	
-	public void initialize() { }
+	public void initialize() { 
+		privatePanel.initialize();
+		publicPanel.initialize();
+	}
 	
 	public ConnectionPrivatePanel getPrivatePanel() {
 		return privatePanel;
