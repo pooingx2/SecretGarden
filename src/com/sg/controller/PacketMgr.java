@@ -211,8 +211,10 @@ public class PacketMgr {
 		// 메타데이터 업로드
 		if(type==Constants.PacketType.MetaUploadResponse.getType())
 		{
+			/* 확인차... */
+			/* 사실 없어도 된다 */
+			System.out.println("meta path is : " + token[0]);
 		
-			
 		}
 		
 		// 메타데이터 다운로드

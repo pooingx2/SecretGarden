@@ -59,7 +59,7 @@ public class FileListPanel extends JPanel {
 	/* JTree 에 추가되는 자식노드를 의미한다 */ 
 	DefaultMutableTreeNode node;
 	/*******************************************************/
-
+	
 	public FileListPanel(int w, int h) {
 
 		super();
@@ -107,7 +107,13 @@ public class FileListPanel extends JPanel {
 			@Override
 			public void valueChanged(TreeSelectionEvent event) 
 			{
-				selectedNode = getSelectedNode();
+				/* 노드 선택시 선택된 노드가 어떠한 노드인지 저장 */
+				/* 폴더 펼쳤다 접었다 하는경우 오류 방지 및 폴더 생성시 관련 정보 참조를 위함 */
+				//if(event.)
+				if(getSelectedNode().equals(new DefaultMutableTreeNode()))
+				{
+					selectedNode = getSelectedNode();
+				}
 			}
 		});
 		fileTree.setEditable(true);
@@ -309,12 +315,12 @@ public class FileListPanel extends JPanel {
 			String root;
 			DefaultMutableTreeNode node;
 			
-			Vector<FileInfo> fileInfoList = null;
+			Vector<FileInfo> fileInfoList;
 			FileInfo fileInfo =  new FileInfo();
 			
 			/* 노드 선택시 발생하는 이벤트, 파일 및 폴더 추가를 위해 구성하였음 */
 			/************************************************/
-			System.out.println("selected node");
+			System.out.print("selected node : ");
 			
 			selected_node_Level = Integer.toString(getSelectedNode().getLevel());
 			selected_node_Name  = getSelectedNode().toString();
@@ -324,16 +330,21 @@ public class FileListPanel extends JPanel {
 					  "level : " + selected_node_Level
 					+ ", name : " + selected_node_Name 
 					+ ", root dir index : " + selected_node_root );
+			
+			
+
+			fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
 			/************************************************/
 			
+			
 			// 전송 데이터 셋팅
-			name = fileName;
+			name 	= fileName;
 			parent = selected_node_Name;
 			depth  = Integer.toString((Integer.parseInt(selected_node_Level) + 1));
 			root   = selected_node_root ;
 		
 			type = Constants.PacketType.FileCreateRequset.getType();
-			data = name + "\t" + parent + "\t" + depth + "\t" + root; // 차후에 메타데이터도 같이 전송되도록 할 예정
+			data = name + "\t" + parent + "\t" + depth + "\t" + root + "\t" + Object.getdata() ; // 차후에 메타데이터도 같이 전송되도록 할 예정
 			length = data.length();
 			
 			
@@ -345,7 +356,7 @@ public class FileListPanel extends JPanel {
 			// 생성된 폴더를 fileInfo리스트에 추가한다.
 			// 차후에 폴더설정의 변경시 참조해야 하는 데이터
 			System.out.println(fileInfoList.size());
-			fileInfo.setType("folder");
+			fileInfo.setType("file");
 			fileInfo.setName(name);
 			fileInfo.setParent(parent);
 			fileInfo.setDepth(depth);
@@ -355,14 +366,15 @@ public class FileListPanel extends JPanel {
 			System.out.println(fileInfoList.size());
 			/************************************************/
 			
-			
 			// 파일 생성 요청 패킷을 전송
-			//ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 			changePanel();
 		}
 	}
 	
-	public void download(){
+	
+	public void download()
+	{
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a file");
 		else
@@ -371,6 +383,7 @@ public class FileListPanel extends JPanel {
 			// 무엇을 어디서 다운로드 할 것인가?ㄴ
 		}
 	}
+	
 	public void delete(){
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a file or directory");

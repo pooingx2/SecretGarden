@@ -128,6 +128,12 @@ public class Constants {
 		MetaDownloadResponse(20),
 		SettingRequset(21), 
 		SettingResponse(22),
+		
+		// 파일 업로드, 파일 다운로드, 디렉토리 서버 전송, 바인딩 프로토콜
+		FROM_DIR_TO_HDFS_FOR_UPLOAD_METADATA(30),
+				FROM_HDFS_TO_DIR_FOR_MODIFY_MEATAPATH(31),
+				FROM_DIR_TO_HDFS_FOR_DOWNLOADLOAD_METADATA(32),
+				FROM_HDFS_TO_DIR_FOR_SEND_METADATA(33),
 
 		PROGRAM_EXIT_REQUEST(50), 
 		PROGRAM_EXIT_RESPONSE(51); 

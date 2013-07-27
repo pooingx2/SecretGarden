@@ -208,7 +208,8 @@ public class FileMngPanel extends JPanel {
 
 			// 확인버튼을 누르면 해당 상태에 맞는 함수를 call 
 			if(event.getSource()==btn[1]){
-				dirName=textField[0].getText();
+				dirName	= textField[0].getText();
+				fileName	= textField[1].getText();
 				if(status == 2) {
 					ClientLauncher.getFrame().getFileListPanel().create(dirName);
 				}
@@ -220,6 +221,7 @@ public class FileMngPanel extends JPanel {
 					ClientLauncher.getFrame().getFileListPanel().file_to_cloud();
 					
 					/* 메타데이터 전송 */
+					MetaData m_data = new MetaData();
 					ClientLauncher.getFrame().getFileListPanel().upload(fileName, m_data);
 				}
 				else if(status == 4) {
