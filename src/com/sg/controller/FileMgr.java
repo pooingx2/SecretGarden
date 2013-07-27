@@ -72,7 +72,7 @@ public class FileMgr {
 		maxDepth = 0;
 		fileInfoList.removeAllElements();
 	}
-
+	
 	// file을 저장하기 위한 함수
 	public void saveFile(String data){
 		String path=null;
@@ -143,6 +143,12 @@ public class FileMgr {
 		result.add(key);
 		
 		return result;
+	}
+	
+	public String loadUploadFile(){
+		String path=null;
+		
+		return path;
 	}
 	
 	

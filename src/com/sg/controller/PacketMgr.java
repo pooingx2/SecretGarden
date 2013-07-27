@@ -207,11 +207,8 @@ public class PacketMgr {
 		}
 		/*************************************************************************/
 		
-		
-		// 메타데이터 업로드
-		if(type==Constants.PacketType.MetaUploadResponse.getType())
-		{
-		
+		if(type==Constants.PacketType.FileDownloadResponse.getType()) 
+		{	
 			
 		}
 		

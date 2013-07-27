@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -115,7 +116,7 @@ public class FileMngPanel extends JPanel {
 		// 취서버튼
 		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
 		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
-		btn[2].setBounds(200,200,80,30);
+		btn[2].setBounds(250,200,80,30);
 		btn[2].addActionListener(handler);
 
 		this.add(bgImg[1]);
@@ -141,7 +142,8 @@ public class FileMngPanel extends JPanel {
 		label[1].setText(value);
 	}
 	
-	public void loadFile(){
+	public void getUploadFilePath(){
+		String path = ClientLauncher.getFileMgr().loadUploadFile();
 		
 	}
 
@@ -197,9 +199,9 @@ public class FileMngPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent event) {
 
-			// file load버튼을 누르면 유저 컴퓨터에서 file을 선택하도록 함
+			// fileload버튼을 누르면 유저 컴퓨터에서 file을 선택하도록 함
 			if(event.getSource()==btn[0]){
-				loadFile();
+				getUploadFilePath();
 			}
 
 			// 확인버튼을 누르면 해당 상태에 맞는 함수를 call 
@@ -219,6 +221,7 @@ public class FileMngPanel extends JPanel {
 					ClientLauncher.getFrame().getFileListPanel().upload(fileName, m_data);
 				}
 				else if(status == 4) {
+					
 					ClientLauncher.getFrame().getFileListPanel().download();
 				}
 				else if(status == 5) {

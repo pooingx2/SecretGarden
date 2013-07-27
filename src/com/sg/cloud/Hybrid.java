@@ -65,9 +65,9 @@ public class Hybrid {
 	}
 	public int upload() throws IOException {
 		//upload는 모두 transaction을 지켜야 하기 때문에 redo와 undo 처리가 필요
-		String fileName = "test.txt";								//입력 받아야 함 ,,,,,,함디렉토리 패스 포
+		String fileName = "test.txt";							//입력 받아야 함
 		String dirPath = "this/is/a/test/";
-		String userId = "sungjin";								//입력 받아야 함
+		String userId = "sungjin";
 		String realPos = makeFileName(fileName);
 		String uploadName = realPos+fileName;
 		File targetFile = new File(fileName);

@@ -44,7 +44,7 @@ public class FileListPanel extends JPanel {
 	private JTree fileTree;
 	private TreeModel model;
 	private DefaultMutableTreeNode root;
-	Vector<FileInfo> fileInfoList;
+	private Vector<FileInfo> fileInfoList;
 	
 	/*******************************************************/
 	/* JTree에 폴더 추가를 반영하기 위해 선택된 부모노드를 의미한다 */
@@ -85,11 +85,9 @@ public class FileListPanel extends JPanel {
 		fileTree = new JTree();
 		fileTree.setRowHeight(20);
 		fileTree.setModel(model);
-		fileTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener()
-		{	
+		fileTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {	
 			@Override
-			public void valueChanged(TreeSelectionEvent event) 
-			{
+			public void valueChanged(TreeSelectionEvent event) {
 				selectedNode = getSelectedNode();
 			}
 		});
@@ -186,9 +184,26 @@ public class FileListPanel extends JPanel {
 		changePanel();
 	}
 	
-	public DefaultMutableTreeNode getSelectedNode()
-	{
-		return (DefaultMutableTreeNode) fileTree.getLastSelectedPathComponent();	
+	public DefaultMutableTreeNode getSelectedNode() {
+		return (DefaultMutableTreeNode) fileTree.getLastSelectedPathComponent();
+	}
+	
+	public FileInfo getSelectedFileInfo(){
+		FileInfo fileInfo = null;
+		
+		fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
+		
+		String name = selectedNode.toString();
+		String parent = selectedNode.getParent().toString();
+		String level = selectedNode.getLevel()+"";
+		
+		for(FileInfo item : fileInfoList){
+			if(name.equals(item.getName()) 
+					&& parent.equals(item.getParent()) && level.equals(item.getDepth())) {
+				return item;
+			}
+		}
+		return fileInfo;
 	}
 	
 	// Component 추가 및 제거를 반영하기 위한 새로고침
@@ -342,7 +357,7 @@ public class FileListPanel extends JPanel {
 			
 			
 			// 파일 생성 요청 패킷을 전송
-			//ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 			changePanel();
 		}
 	}
@@ -352,22 +367,39 @@ public class FileListPanel extends JPanel {
 			JOptionPane.showMessageDialog(null, "Choose a file");
 		else
 		{
+			int type;		 // 패킷 타입
+			int length;	 // 패킷 길이
+			String data; 	 // 전송 데이터
+			FileInfo fileInfo = getSelectedFileInfo();
+			
+			type = Constants.PacketType.FileDownloadRequest.getType();
+			data = fileInfo.getName() + "\t" + fileInfo.getParent() + "\t" + 
+					fileInfo.getDepth() + "\t" + fileInfo.getIndex(); 	// 차후에 메타데이터도 같이 전송되도록 할 예정
+			length = data.length();
+			
+			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 			System.out.println("download");
+			
 			// 무엇을 어디서 다운로드 할 것인가?ㄴ
 		}
 	}
 	public void delete(){
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a file or directory");
-			
 		else if( selectedNode == root )
 			JOptionPane.showMessageDialog(null, "Can't delete root directory");
-		else
-			((DefaultTreeModel) model).removeNodeFromParent(selectedNode);
+		else {
+			//((DefaultTreeModel) model).removeNodeFromParent(selectedNode);
+			FileInfo fileInfo = getSelectedFileInfo();
+			System.out.println("name " + fileInfo.getName());
+			System.out.println("parent " + fileInfo.getParent());
+			System.out.println("level " + fileInfo.getDepth());
+			System.out.println("index " + fileInfo.getIndex());
+		}
 	}
 	
-	public void file_to_cloud()
-	{
+	public void file_to_cloud() {
+		
 		
 	}
 
@@ -405,7 +437,6 @@ public class FileListPanel extends JPanel {
 			if(event.getSource()==btn[3]){
 				fileMngPanel.setStatus(5);
 				fileMngPanel.changePanel();
-				delete();
 			}
 			
 		}
