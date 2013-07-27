@@ -38,19 +38,27 @@
 #define ACCESS_DIR_RESPONSE	 12
 #define FOLDER_CREAT_REQUEST	 13
 #define FOLDER_CREAT_RESPONSE	 14
-#define META_UPLOAD_REQUEST	 15
+#define META_UPLOAD_REQUEST	 	 15
 #define META_UPLOAD_RESPONSE	 16
 #define META_DOWNLOAD_REQUEST	 17
 #define META_DOWNLOAD_RESPONSE	 18
+#define SHARE_REQUEST		 	 19
+#define SHARE_RESPONSE		 	 20
+
+// 클라이언트간 전송 프로토콜
+#define DIR_TO_HDFS_FOR_UPLOAD_METADATA		30
+#define HDFS_TO_DIR_FOR_MODIFY_METAPATH		31
+#define DIR_TO_HDFS_FOR_DOWNLOAD_METADATA	32
+#define HDFS_TO_DIR_FOR_SEND_METADATA		33
 
 //추가 Passing Serv 프로토콜(51~100)
 #define PROGRAM_EXIT_REQUEST     50
 #define PROGRAM_EXIT_RESPONSE    51
 
-//Serv Binding 프로토콜(101~150)
-#define AUTH_BINDING 		 101
-#define DIR_BINDING		 102
-#define HDFS_BINDING		 103
+//Serv Binding 프로토콜(101~150) VPN 구성
+#define AUTH_BINDING 		 	 101
+#define DIR_BINDING		 	 	 102
+#define HDFS_BINDING		 	 103
 #define AUTH_BINDING_RESPONSE	 104
 #define DIR_BINDING_RESPONSE	 105
 #define HDFS_BINDING_RESPONSE	 106
@@ -58,7 +66,7 @@
 
 // 프로토콜에 정의된 헤더와 데이터 사이즈
 #define HEADERSIZE   		 12
-#define DATASIZE  		 1024
+#define DATASIZE  		 	 1024
 
 
 // Java to C 간 Byte통신을 위한 사용자 정의 자료형
@@ -68,9 +76,10 @@ typedef char 	      data_bytes;
 // 통신중 에러 및 송수신자의 정보를 확인하기 위한 소켓 구조체
 typedef struct Peer {
 		int socket;
-		SSL	*sslHandle;
+		SSL		*sslHandle;
 		SSL_CTX *sslContext;
 		char ip[20];
+		char mac_address[50];
 }Peer;
 
 

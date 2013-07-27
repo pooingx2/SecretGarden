@@ -173,8 +173,6 @@ void client_recv(int event_fd, Peer *peer)
 
   int type = byteToInt(headerBuf, 0);
 
-  //printf("packet type : %d\n", type);
-
   if( len < 0 || len == 0 )
   {
       userpool_delete(event_fd, peer);
@@ -236,6 +234,7 @@ void client_recv(int event_fd, Peer *peer)
 	{
 		
 	}
+
 	case SIGNUP_REQUEST :
 	{
 		Peer auth;
@@ -304,6 +303,144 @@ void client_recv(int event_fd, Peer *peer)
 		break;
 	}
 
+	case ACCESS_DIR_REQUEST:
+	{
+		Peer dirServ;
+		dirServ.socket = g_epoll_dir;
+
+		if(g_epoll_dir == 0)
+		{
+			printf("dir server not running \n");
+			break;
+		}
+		
+		sendTo(&dirServ, 11, event_fd, strlen(dataBuf), dataBuf);
+		break;
+		
+	}
+
+	case ACCESS_DIR_RESPONSE:
+	{
+		Peer peer;
+		peer.socket = byteToInt(headerBuf, 4);
+		sendTo(&peer, 12, event_fd, strlen(dataBuf), dataBuf);
+		break;
+	}
+
+	case FOLDER_CREAT_REQUEST:
+	{
+		Peer dirServ;
+		dirServ.socket = g_epoll_dir;
+
+		if(g_epoll_dir == 0)
+		{
+			printf("dir server not running \n");
+			break;
+		}
+		
+		sendTo(&dirServ, 13, event_fd, strlen(dataBuf), dataBuf);
+		break;	
+	}
+
+	case FOLDER_CREAT_RESPONSE:
+	{
+		Peer peer;
+		peer.socket = byteToInt(headerBuf, 4);
+		sendTo(&peer, 14, event_fd, strlen(dataBuf), dataBuf);
+		break;
+	}
+
+	case META_UPLOAD_REQUEST:
+	{
+		Peer dirServ;
+		dirServ.socket = g_epoll_dir;
+
+		if(g_epoll_dir == 0)
+		{
+			printf("dir server not running \n");
+			break;
+		}
+		
+		/* event fd 클라이언트 소켓 디스크립터 번호 */
+		sendTo(&dirServ, 15, event_fd, strlen(dataBuf), dataBuf);
+		break;
+	}
+
+	case META_UPLOAD_RESPONSE:
+	{
+		Peer peer;
+		peer.socket = byteToInt(headerBuf, 4);
+		sendTo(&peer, 16, event_fd, strlen(dataBuf), dataBuf);
+		break;
+	}
+
+	/* Transmit 프로토콜 30~49 */
+	case DIR_TO_HDFS_FOR_UPLOAD_METADATA:
+	{
+
+		Peer hdfs;
+		hdfs.socket = g_epoll_HDFS;
+	    
+
+		if(g_epoll_HDFS == 0)
+		{
+			printf("HDFS server not running \n");
+			break;
+		}
+
+		sendTo(&hdfs, 30, event_fd, strlen(dataBuf), dataBuf);
+
+		break;
+	}
+
+	/* 메타데이터 패쓰의 설정을 위해 사용 */
+	case HDFS_TO_DIR_FOR_MODIFY_METAPATH:
+	{
+		Peer dirServ;
+		dirServ.socket = g_epoll_dir;
+
+		if(g_epoll_dir == 0)
+		{
+			printf("dir server not running \n");
+			break;
+		}
+
+		sendTo(&dirServ, 31, event_fd, strlen(dataBuf), dataBuf);
+		break;
+	}
+
+	case DIR_TO_HDFS_FOR_DOWNLOAD_METADATA:
+	{
+		Peer hdfs;
+		hdfs.socket = g_epoll_HDFS;
+	    
+
+		if(g_epoll_HDFS == 0)
+		{
+			printf("HDFS server not running \n");
+			break;
+		}
+
+		sendTo(&hdfs, 32, event_fd, strlen(dataBuf), dataBuf);
+		break;
+	}
+
+	case HDFS_TO_DIR_FOR_SEND_METADATA:
+	{
+		Peer dirServ;
+		dirServ.socket = g_epoll_dir;
+
+		if(g_epoll_dir == 0)
+		{
+			printf("dir server not running \n");
+			break;
+		}
+
+		sendTo(&dirServ, 31, event_fd, strlen(dataBuf), dataBuf);
+		break;
+	}
+
+
 	/* passingServ 프로토콜 50~100 */
 	case PROGRAM_EXIT_REQUEST:
 	{
@@ -338,9 +475,11 @@ void client_recv(int event_fd, Peer *peer)
 	}
 	case DIR_BINDING : 
 	{
+
 		if(g_epoll_dir == 0)
 			printf("Dir Serv Binding \n");
-		else{
+		else
+		{
 			printf("Dir Serv already Binding \n");
 			break;
 		}
@@ -359,11 +498,11 @@ void client_recv(int event_fd, Peer *peer)
 	{
 	
 		g_epoll_HDFS  = event_fd;
-		Peer dir;
-		dir.socket  = g_epoll_HDFS;
+		Peer HDFS;
+		HDFS.socket  = g_epoll_HDFS;
 
 		
-		sendTo(&dir, 105, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&HDFS, 106, event_fd, strlen(dataBuf), dataBuf);
 		break;
 	}
  
