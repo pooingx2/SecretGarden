@@ -130,7 +130,7 @@ public class PacketMgr {
 						break;
 					case 4 : 
 						fileInfo.setIndex(token2[k]); 
-						//ClientLauncher.getFileMgr().set_root_dir_index(token2[k]);
+//						ClientLauncher.getFileMgr().setRootDirID(token2[k]);
 						break;
 					default : 
 						break;
@@ -179,7 +179,6 @@ public class PacketMgr {
 						break;
 					case 4 : 
 						fileInfo.setIndex(token2[k]); 
-						//ClientLauncher.getFileMgr().set_root_dir_index(token2[k]);
 						break;
 					default : 
 						break;
@@ -188,9 +187,8 @@ public class PacketMgr {
 				}
 				fileInfoList.add(fileInfo);
 			}
-			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getFileListPanel());
+			ClientLauncher.getFrame().getFileListPanel().initialize();
 		}
-		/*************************************************************************/
 		
 		if(type==Constants.PacketType.FileDownloadResponse.getType()) 
 		{	
