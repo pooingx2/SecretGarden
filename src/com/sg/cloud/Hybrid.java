@@ -130,7 +130,7 @@ public class Hybrid {
 		request.setUserId(userId);
 		
 		System.out.println("dirPath : " + fixedSourcePath + "\nfileName : " + fixedFileName);//test
-		
+
 		byte[] awsBuf = null;
 		byte[] hdfsBuf = null;
 		File downFile = null;
@@ -162,6 +162,7 @@ public class Hybrid {
 
 		return 0;
 	}
+	
 	public int deleteFile() {
 		return 0;
 	}
@@ -170,6 +171,7 @@ public class Hybrid {
 	public String getUserId() {
 		return userId;
 	}
+
 
 	public void setUserId(String userId) {
 		this.userId = userId;

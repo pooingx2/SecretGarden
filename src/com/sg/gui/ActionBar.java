@@ -1,16 +1,14 @@
 package com.sg.gui;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
+import java.util.Stack;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.sg.main.ClientLauncher;
@@ -21,10 +19,10 @@ public class ActionBar extends JMenuBar{
 	// Attribute
 	private int width;
 	private int height;
-	/* status
-	0 : default		1 : connection		2 : DirectoryList		3 : fileList
-	 */
-	private int status;
+	private Stack<JPanel> backStack;
+	private Stack<JPanel> forwardStack;
+	private boolean isBackBtnPress; 
+	private boolean isForwardBtnPress;
 	
 	// Components
 	private JLabel bgImg;
@@ -32,6 +30,7 @@ public class ActionBar extends JMenuBar{
 	private JButton homeBtn;
 	private JButton backBtn;
 	private JButton forwardBtn;
+	private JButton shareBtn;
 	private JButton logoutBtn;
 	
 	public ActionBar(int w, int h) {
@@ -39,6 +38,10 @@ public class ActionBar extends JMenuBar{
 		this.width = w;
 		this.height = h;
 		this.setLayout(null);
+		this.backStack = new Stack<JPanel>();
+		this.forwardStack = new Stack<JPanel>();
+		this.isBackBtnPress = false;
+		this.isForwardBtnPress = false;
 		
 		// 배경이미지 등록
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.barBG.getPath()));
@@ -65,29 +68,63 @@ public class ActionBar extends JMenuBar{
 		forwardBtn.setBounds(120,5,40,40);
 		forwardBtn.addActionListener(handler);
 		
+		// 공유 버튼
+		shareBtn = new JButton(new ImageIcon(Constants.ButtonPath.shareBtn1.getPath()));
+		shareBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.shareBtn2.getPath()));
+		shareBtn.setBounds(670,5,40,40);
+		shareBtn.addActionListener(handler);
+		
 		// 로그아웃 버튼
 		logoutBtn = new JButton(new ImageIcon(Constants.ButtonPath.logoutBtn1.getPath()));
 		logoutBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.logoutBtn2.getPath()));
-		logoutBtn.setBounds(730,5,40,40);
+		logoutBtn.setBounds(720,5,40,40);
 		logoutBtn.addActionListener(handler);
 		
 		this.add(homeBtn);
 		this.add(backBtn);
 		this.add(forwardBtn);
+		this.add(shareBtn);
 		this.add(logoutBtn);
 		this.add(bgImg);
 	}
 	
 	public void initialize() { 
+		backStack.clear();
+		forwardStack.clear();
 	}
 	
-	public int getStatus() {
-		return status;
+	public Stack<JPanel> getBackStack() {
+		return backStack;
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
+	public void setBackStack(Stack<JPanel> backStack) {
+		this.backStack = backStack;
 	}
+
+	public Stack<JPanel> getForwardStack() {
+		return forwardStack;
+	}
+
+	public void setForwardStack(Stack<JPanel> forwardStack) {
+		this.forwardStack = forwardStack;
+	}
+
+	public boolean isBackBtnPress() {
+		return isBackBtnPress;
+	}
+
+	public void setBackBtnPress(boolean isBackBtnPress) {
+		this.isBackBtnPress = isBackBtnPress;
+	}
+
+	public boolean isForwardBtnPress() {
+		return isForwardBtnPress;
+	}
+
+	public void setForwardBtnPress(boolean isForwardBtnPress) {
+		this.isForwardBtnPress = isForwardBtnPress;
+	}
+
 
 	// 이벤트 핸들러 등록
 	private class ActionHandler implements ActionListener {
@@ -97,22 +134,34 @@ public class ActionBar extends JMenuBar{
 			if(event.getSource()==homeBtn){
 				ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getConnectionPanel());
 			}	
-			
+			// 뒤로가기 버튼을 눌렀을때 stack에 담긴 page에서 pop하고 현재 페이지를 forward stack에 push
 			if(event.getSource()==backBtn){
-				switch(status){
-				case 1 : ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
-					break;
-				case 2 : ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getConnectionPanel());
-					break;
-				case 3 : ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
-					break;
-				default : 
-					break;
+				isBackBtnPress = true;
+				if(!backStack.isEmpty()){
+					JPanel item= backStack.pop();
+					ClientLauncher.getFrame().changePanel(item);
 				}
+				else{
+					JOptionPane.showMessageDialog(null, "Empty Stack");
+				}
+				isBackBtnPress = false;
+			}	
+
+			// 앞으로가기 버튼을 눌렀을때 stack에 담긴 page에서 pop하고 현재 페이지를 back stack에 push
+			if(event.getSource()==forwardBtn){
+				isForwardBtnPress = true;
+				if(!forwardStack.isEmpty()){
+					JPanel item= forwardStack.pop();
+					ClientLauncher.getFrame().changePanel(item);
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "Empty Stack");
+				}
+				isForwardBtnPress = false;
 			}	
 			
-			if(event.getSource()==forwardBtn){
-				System.out.println("forwardBtn");
+			if(event.getSource()==shareBtn){
+				 ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getSharingPanel());
 			}	
 			
 			if(event.getSource()==logoutBtn){

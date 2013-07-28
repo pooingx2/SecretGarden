@@ -10,6 +10,14 @@ public class FileInfo {
 	public FileInfo() {
 		
 	}
+	
+	public FileInfo(String type, String name, String parent, String depth, String index){
+		this.type = type;
+		this.name = name;
+		this.parent = parent;
+		this.depth = depth;
+		this.index = index;
+	}
 
 	public String getIndex() {
 		return index;

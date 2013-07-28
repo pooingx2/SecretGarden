@@ -171,8 +171,8 @@ public class ConnectionPublicPanel extends JPanel {
 				pwd = pwdField.getText();
 
 				ClientLauncher.getFrame().getConnectionPanel().setPublic(id);
-				connection = ClientLauncher.getHybrid().auth(Constants.amazon,id,pwd);
-//				connection = true;
+//				connection = ClientLauncher.getHybrid().auth(Constants.amazon,id,pwd);
+				connection = true;
 				
 				if(connection){
 					changeStatusPanel();
@@ -190,7 +190,7 @@ public class ConnectionPublicPanel extends JPanel {
 					String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
 					
 					String data = id + "\t" + private_cloud + "\t" + public_cloud;;
-					int type = Constants.PacketType.DirectoryListRequset.getType();
+					int type = Constants.PacketType.DirectoryListRequest.getType();
 					int length = data.length();
 			
 					// 메인 프레임을 디렉토리 프레임으로 변경

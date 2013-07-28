@@ -140,6 +140,7 @@ public class FileListPanel extends JPanel {
 
 
 	public void initialize() { 
+		
 		fileMngPanel.initialize();
 		scroll = new JScrollPane(fileTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -149,6 +150,7 @@ public class FileListPanel extends JPanel {
 		this.add(btnGroupPanel);
 		this.add(fileMngPanel);
 		this.add(bgImg);
+		
 	}
 
 	// fileInfoList에 저장된 node를 통해 tree를 만듬
@@ -254,7 +256,7 @@ public class FileListPanel extends JPanel {
 			
 			selected_node_Level = Integer.toString(getSelectedNode().getLevel());
 			selected_node_Name  = getSelectedNode().toString();
-			selected_node_root  = ClientLauncher.getFileMgr().get_root_dir_index();
+			selected_node_root  = ClientLauncher.getFileMgr().getRootDirID();
 			
 			System.out.println(
 					  " level : " + selected_node_Level
@@ -268,7 +270,7 @@ public class FileListPanel extends JPanel {
 			depth  = Integer.toString((Integer.parseInt(selected_node_Level) + 1));
 			root   = selected_node_root ;
 		
-			type = Constants.PacketType.FolderCreateRequset.getType();
+			type = Constants.PacketType.FolderCreateRequest.getType();
 			data = name + "\t" + parent + "\t" + depth + "\t" + root;
 			length = data.length();
 			
@@ -328,7 +330,7 @@ public class FileListPanel extends JPanel {
 			
 			selected_node_Level = Integer.toString(getSelectedNode().getLevel());
 			selected_node_Name  = getSelectedNode().toString();
-			selected_node_root  = ClientLauncher.getFileMgr().get_root_dir_index();
+			selected_node_root  = ClientLauncher.getFileMgr().getRootDirID();
 			
 			System.out.println(
 					  "level : " + selected_node_Level
@@ -347,7 +349,7 @@ public class FileListPanel extends JPanel {
 			depth  = Integer.toString((Integer.parseInt(selected_node_Level) + 1));
 			root   = selected_node_root ;
 		
-			type = Constants.PacketType.FileCreateRequset.getType();
+			type = Constants.PacketType.FileCreateRequest.getType();
 			data = name + "\t" + parent + "\t" + depth + "\t" + root + "\t" + Object.getdata() ; // 차후에 메타데이터도 같이 전송되도록 할 예정
 			length = data.length();
 			
