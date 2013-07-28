@@ -1,5 +1,6 @@
 package com.sg.cloud;
 
+import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -85,32 +86,34 @@ public class Hybrid {
 		return fixedPath;
 	}
 	
-	public int upload(String file, String path) throws IOException {
+	public int upload(String sourceFile, String destPath) throws IOException {
 		//upload는 모두 transaction을 지켜야 하기 때문에 redo와 undo 처리가 필요
-		
+		int optionNum = 1;
 		Files sendingFile = new Files();
 		
-		String fileName = getFileName(file);			//입력 받아야 함 file을 잘라서 맨 마지막꺼
+		String fileName = getFileName(sourceFile);			//입력 받아야 함 file을 잘라서 맨 마지막꺼
 		
-		String dirPath = path;						//유저가 만든 디랙토리 패스
-		dirPath = dirPath.substring(1);
+		String fixedDestPath = destPath.substring(1)+"/";						//유저가 만든 디랙토리 패스
+		String fixedFileName =  makeFileName(fileName)+fileName;
+	
 		
-		System.out.println("fileName : "+fileName);
-		System.out.println("dirPath : " + dirPath);
-		
-		String realPos = makeFileName(fileName);
-		String uploadName = "/"+realPos+fileName;
-		File targetFile = new File(file);
-		
+		File targetFile = new File(sourceFile);
+		sendingFile = new Files(fixedFileName, fixedDestPath, 1, this.userId);
 		//aws s3 upload
-		aWSModule.upload( uploadName, userId, targetFile, dirPath);		
+		if (aWSModule.upload( sendingFile, targetFile) == -1) {
+			System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
+			return -1;
+			
+		}
 
 		//hdfs upload
-		hdfsModule.upload(fileName, userId, targetFile, dirPath+realPos);
+		hdfsModule.upload(sendingFile, targetFile);
 
 		return 0;
 	}
 	
+
+
 	/* 각 클라우드에서 다운로드. 
 	 * sourcePath : 클라우드에 위치한 파일의 경로
 	 * destPath   : 클라우드에서 다운받아 local에 저장할 경로
@@ -129,7 +132,6 @@ public class Hybrid {
 		request.setOptionNum(2);
 		request.setUserId(userId);
 		
-		System.out.println("dirPath : " + fixedSourcePath + "\nfileName : " + fixedFileName);//test
 
 		byte[] awsBuf = null;
 		byte[] hdfsBuf = null;
@@ -140,24 +142,35 @@ public class Hybrid {
 		
 		//aws s3 download
 		awsReceiveFile = aWSModule.download(request);
+		System.out.println("optnum : " + awsReceiveFile.getOptionNum());
 		if (awsReceiveFile.getOptionNum() == -1) {
 			System.out.println("aws download error...");
 			return -1;
+		}else{
+			System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
+			awsBuf = awsReceiveFile.getFileBuf();
 		}
 		//hdfs download
 		hdfsReceiveFile = hdfsModule.download(request);
+		
 		if (hdfsReceiveFile.getOptionNum() == -1) {
 			System.out.println("hdfs download error...\ndelete " + fixedSourcePath+fixedFileName+" in s3 bucket");
 			return -1;
+		} else{
+			hdfsBuf = hdfsReceiveFile.getFileBuf();
 		}
-		
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
 		downFile = new File( destPath+fileName );
-
 		bos = new BufferedOutputStream(new FileOutputStream(downFile));
+		
 		bos.write(hdfsBuf);
-		bos.write(awsBuf);
+		
+		try{
+			bos.write(awsBuf);
+		} catch (NullPointerException es){
+			
+		}
 		bos.close();
 
 		return 0;

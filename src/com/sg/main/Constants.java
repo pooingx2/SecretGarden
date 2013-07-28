@@ -141,8 +141,6 @@ public class Constants {
 		FileCreateResponse(16),
 		FileDownloadRequest(17),
 		FileDownloadResponse(18),
-		MetaDownloadRequest(19), 
-		MetaDownloadResponse(20),
 		SettingRequset(21), 
 		SettingResponse(22),
 		

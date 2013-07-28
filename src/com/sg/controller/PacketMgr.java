@@ -192,17 +192,6 @@ public class PacketMgr {
 		}
 		/*************************************************************************/
 		
-		if(type==Constants.PacketType.FileDownloadResponse.getType()) 
-		{	
-
-		}
-		
-		// 메타데이터 다운로드
-		if(type==Constants.PacketType.MetaDownloadResponse.getType())
-		{
-				
-					
-		}
 		
 		// 폴더 및 디렉토리 셋팅(공유와 관련된)패킷 수신
 		if(type==Constants.PacketType.SettingResponse.getType())

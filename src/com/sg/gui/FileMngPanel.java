@@ -236,9 +236,9 @@ public class FileMngPanel extends JPanel {
 					/*접근 할 경로 + 파일 명 형식 : /root/asd/C:UsersSSM123.bkg*/
 					//String sourcePath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
 					//System.out.println("sourcePath : " + sourcePath);
-					String sourcePath = "/asd/dfd/hadoop-1.1.2.tar.gz";
+					String sourcePath = "/root/hi/test.txt";
 					/*destPath : local 에 다운로드 할 dir 경, 어디에 다운로드할지 경로 설정 필요*/
-					String destPath = "~/home/sungjin/downloadtest/";
+					String destPath = "/home/sungjin/downloadtest/";
 					/**/
 					try {
 						ClientLauncher.getHybrid().download(sourcePath, destPath);

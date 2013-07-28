@@ -66,19 +66,20 @@ public class AWSUpDown implements PublicUpDown{
 	}
 
 	@Override
-	public int upload(String fileName, String userId, File targetFile, String dirPath) throws IOException {
-		// TODO Auto-generated method stub
-		//버킷 만들고 키파일 설정 포함
-		//파일 업로드 ...
-		String bucketName = "secretgarden"+userId;			//입력 받아야 함. 키파일과 연결도 해야 함		
-		String keyName = dirPath +fileName;				 //입력 받아야 함. 버킷네임+고유id들 (디렉토리 패스 포함)
+	public int upload(Files fileDescript, File targetFile) throws IOException {
 		
-		//System.out.println("Creating bucket " + bucketName + "\n");
+		
+		String bucketName = "secretgarden"+fileDescript.getUserId();			//입력 받아야 함. 키파일과 연결도 해야 함		
+		String keyName = fileDescript.getDirPath() + fileDescript.getFileName();				 //입력 받아야 함. 버킷네임+고유id들 (디렉토리 패스 포함)
+		
+		
 		try {
 		
 			System.out.println("Uploading a new object to S3 from a file\n");
 
 			s3.putObject(new PutObjectRequest(bucketName, keyName, targetFile));
+			
+			System.out.println("aws upload completed");
 
 		} catch (AmazonServiceException ase) {
 			System.out.println("Caught an AmazonServiceException, which means your request made it "
@@ -88,11 +89,13 @@ public class AWSUpDown implements PublicUpDown{
 			System.out.println("AWS Error Code:   " + ase.getErrorCode());
 			System.out.println("Error Type:       " + ase.getErrorType());
 			System.out.println("Request ID:       " + ase.getRequestId());
+			return -1;
 		} catch (AmazonClientException ace) {
 			System.out.println("Caught an AmazonClientException, which means the client encountered "
 					+ "a serious internal problem while trying to communicate with S3, "
 					+ "such as not being able to access the network.");
 			System.out.println("Error Message: " + ace.getMessage());
+			return -1;
 		}
 
 		return 0;
@@ -104,11 +107,12 @@ public class AWSUpDown implements PublicUpDown{
 		// TODO Auto-generated method stub
 		//키파일 인증 포함
 		String bucketName = "secretgarden" + request.getUserId();
-		byte[] downBuf = new byte[10];
+		byte[] downBuf = new byte[30];
 		Files receivFile = null;
 		int optionNum = request.getOptionNum();
-		
+		System.out.println(request.getDirPath()+request.getFileName());
 		System.out.println("Downloading an object");
+		
 		try {
 			S3Object object = s3.getObject(new GetObjectRequest(bucketName, request.getDirPath()+request.getFileName()));
 			System.out.println("Content-Type: "  + object.getObjectMetadata().getContentType());
@@ -121,7 +125,7 @@ public class AWSUpDown implements PublicUpDown{
 			receivFile = new Files(request.getFileName(), request.getDirPath(), optionNum, request.getUserId());
 			return receivFile;
 		}
-		receivFile = new Files(request.getFileName(), request.getDirPath(), optionNum, request.getUserId());
+		receivFile = new Files(request.getFileName(), request.getDirPath(), optionNum, downBuf, request.getUserId());
 		
 		return receivFile;
 	}
