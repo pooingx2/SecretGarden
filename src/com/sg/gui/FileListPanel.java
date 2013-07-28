@@ -17,7 +17,6 @@ import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -41,6 +40,7 @@ public class FileListPanel extends JPanel {
 	private JButton btn[];
 	private ActionHandler handler;
 	private FileMngPanel fileMngPanel;
+	private Vector<String> row;
 	private JTree fileTree;
 	private TreeModel model;
 	private DefaultMutableTreeNode root;
@@ -60,9 +60,8 @@ public class FileListPanel extends JPanel {
 		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.fileListBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 
-		// 이벤트 핸들러 등록
 		handler = new ActionHandler();
-
+		
 		// 버튼 그룹 패널 생성
 		btnGroupPanel = new JPanel();
 		btnGroupPanel.setBounds(400,100,350,80);
@@ -125,6 +124,12 @@ public class FileListPanel extends JPanel {
 		scroll = new JScrollPane(fileTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setBounds(50, 100, 250, 360);
+		
+		this.add(scroll);
+		this.add(btnGroupPanel);
+		this.add(fileMngPanel);
+		this.add(bgImg);
+		this.repaint();
 	}
 
 
@@ -139,6 +144,7 @@ public class FileListPanel extends JPanel {
 		Vector<FileInfo> fileInfoList;
 		DefaultMutableTreeNode node;
 		root.removeAllChildren();
+		fileTree.removeAll();
 		int maxDepth;
 		
 		fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
@@ -156,6 +162,7 @@ public class FileListPanel extends JPanel {
 					if(temp.toString().equals(fileInfo.getParent()) && 
 							temp.getLevel() == (Integer.parseInt(fileInfo.getDepth())-1)){
 						temp.add(node);
+						System.out.println("add child " + node.toString() +" to " + temp.getParent() + " : "+ temp);
 					}
 					temp = temp.getNextNode();
 				}
@@ -173,10 +180,8 @@ public class FileListPanel extends JPanel {
 		fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
 		
 		String name = selectedNode.toString();
-		String parent = "null";
+		String parent = selectedNode.getParent().toString();
 		String level = selectedNode.getLevel()+"";
-		if(!level.equals("0")) 
-			parent = selectedNode.getParent().toString();
 		
 		for(FileInfo item : fileInfoList){
 			if(name.equals(item.getName()) 
@@ -192,33 +197,29 @@ public class FileListPanel extends JPanel {
 		for(int i=0;i<(selectedNode.getPath().length);i++){
 			path += "/" + selectedNode.getPath()[i];
 		}
+		System.out.println(path);
+
 		return path;
 	}
-	
 	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
 		this.remove(bgImg);
 		fileMngPanel.changePanel();
 		this.add(scroll);
 		this.add(fileMngPanel);
-		this.add(btnGroupPanel);
 		this.add(bgImg);
 		this.repaint();
 	}
 
-	// create Directory
 	public void create(String folderName){
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a parent directory");
 		else{
-			int type;			// 패킷 타입
-			int length;			// 패킷 길이
-			String data;		// 전송 데이터
 			
-			type = Constants.PacketType.FolderCreateRequest.getType();
-			data = folderName + "\t" + selectedNode.toString() + "\t" + 
+			int type = Constants.PacketType.FolderCreateRequest.getType();
+			String data = folderName + "\t" + selectedNode.toString() + "\t" + 
 					((selectedNode.getLevel()+1)+"") + "\t" + ClientLauncher.getFileMgr().getRootDirID();
-			length = data.length();
+			int length = data.length();
 			
 			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 		}
@@ -228,8 +229,7 @@ public class FileListPanel extends JPanel {
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a parent directory");
 		else {
-			
-			
+			System.out.println("upload");
 		}
 	}
 	
