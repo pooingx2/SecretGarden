@@ -86,17 +86,16 @@ public class PacketMgr {
 				//table에 추가하기 위해 Vector(row)정보를 보냄
 				ClientLauncher.getFrame().getDirectoryListPanel().addRow(row);
 			}
-			
 		}
 
 		// 디렉토리 생성에 따른 키 데이터를 수신하여 파일로 변환하는 과정
 		if(type==Constants.PacketType.DirectoryCreateResponse.getType()) {
-			fileMgr.saveFile(token[0]);
+//			fileMgr.saveFile(token[0]);
 		}
 		
 		// 디렉토리 액세스 리스판스(Key file 인증에 따른 디렉토리 접속 키 부여) 
 		if(type==Constants.PacketType.DirectoryAccessResponse.getType()) {
-			
+
 			StringTokenizer tokenizer2;
 			String token2[];
 			token2= new String[100];
@@ -143,27 +142,18 @@ public class PacketMgr {
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getFileListPanel());
 		}
 		
-		/*************************************************************************/
 		// 폴더 생성
 		if(type==Constants.PacketType.FolderCreateResponse.getType()) 
 		{	
-			/****************************************************/
-			// 어떤 노드를 어떤 부모의 자식으로 달아주어야 하는가
-			// node child, node parent 가 인자로 온다
-			// { child node } { parent node }
-			/****************************************************/
-			
-			/*
 			StringTokenizer tokenizer2;
 			String token2[];
 			token2= new String[100];
 			Vector<FileInfo> fileInfoList;
 			FileInfo fileInfo;
 			
-			
 			ClientLauncher.getFileMgr().initFileInfo();
 			fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
-			//  수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName ...)
+			// 수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName ...)
 			// (type,name,parent,depth,index \t type,name,parent,depth,index ... )
 			for(int j=0 ; j<i ; j++){
 				fileInfo = new FileInfo();
@@ -189,7 +179,7 @@ public class PacketMgr {
 						break;
 					case 4 : 
 						fileInfo.setIndex(token2[k]); 
-						ClientLauncher.getFileMgr().set_root_dir_index(token2[k]);
+						//ClientLauncher.getFileMgr().set_root_dir_index(token2[k]);
 						break;
 					default : 
 						break;
@@ -199,7 +189,6 @@ public class PacketMgr {
 				fileInfoList.add(fileInfo);
 			}
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getFileListPanel());
-			*/
 		}
 		/*************************************************************************/
 		

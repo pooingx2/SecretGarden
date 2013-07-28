@@ -196,14 +196,14 @@ public class DirectoryMngPanel extends JPanel {
 					ClientLauncher.getFrame().getDirectoryListPanel().access();
 					
 					// 하부 폴더에 접근하기 위하여 Keyfile을 서버로 전송한다 
-					id   = ClientLauncher.getFrame().getDirectoryListPanel().get_directory_Id();
+					id   = ClientLauncher.getFrame().getDirectoryListPanel().getDirectoryID();
 					name = "none";
 					String data = key + "\t" + id + "\t" + name;
-					int type = Constants.PacketType.DirectoryAccessRequset.getType();
+					int type = Constants.PacketType.DirectoryAccessRequest.getType();
 					int length = data.length();
 					
 					// 인증 및 폴더 리스트 요청
-					ClientLauncher.getFileMgr().set_root_dir_index(id);
+					ClientLauncher.getFileMgr().setRootDirID(id);
 					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 				}
 				else if(status == 4) {
