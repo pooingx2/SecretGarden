@@ -40,6 +40,7 @@ public class HDFSClient implements PrivateUpDown1 {
 			return false;
 		} catch (IOException e) {
 			System.out.println("IOException");
+			return false;
 		}
 		System.out.println("networking established");
 		return true;
@@ -62,7 +63,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		BufferedInputStream readFile = new BufferedInputStream(new FileInputStream(targetFile));
 		readFile.read(buf, 0, 1048576);
 
-		Files sendingFile = new Files(fileName,"secretgarden"+userId+dirPath+"/", optionNum, buf, userId);
+		Files sendingFile = new Files(fileName,"secretgarden"+userId+"/"+dirPath+"/", optionNum, buf, userId);
 		objOutput = new ObjectOutputStream(writer);
 		objOutput.writeObject(sendingFile);
 		objOutput.flush();
@@ -75,11 +76,9 @@ public class HDFSClient implements PrivateUpDown1 {
 	
 
 	@Override
-	public byte[] download(String sourcePath, String userId, String fileName) throws IOException {
+	public Files download(Files request) throws IOException {
 		//BufferedOutputStream bos = null;
-		int optionNum = 2;
 		
-		Files request = new Files(fileName, sourcePath, optionNum, userId);
 		
 		//request
 		objOutput = new ObjectOutputStream(writer);
@@ -101,7 +100,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		objInput.close();
 		objOutput.close();
 		
-		return recievFile.getFileBuf();
+		return recievFile;
 	}
 
 	

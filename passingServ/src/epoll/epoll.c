@@ -195,7 +195,7 @@ void client_recv(int event_fd, Peer *peer)
 		break;
 	}
 
-        case LOGIN_REQUEST :
+    case LOGIN_REQUEST :
 	{
 		if(g_epoll_auth == 0)
 		{

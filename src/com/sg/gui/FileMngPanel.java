@@ -217,6 +217,7 @@ public class FileMngPanel extends JPanel {
 				else if(status == 3) {
 					/*********************************************************************************/
 					/* 성진이가 파일 업로드 할 부분 메타데이터 제외하고 분할된 파일을 전송하는것까지 구성 */
+					/* 올라간 파일 뷰 필요 , 파일을 클릭하고 업로드 할경우 새로운 경로로 되는것 수정 필요*/
 					/* Upload Module 위치할 부분 */
 					String dirPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
 					try {
@@ -232,7 +233,19 @@ public class FileMngPanel extends JPanel {
 					ClientLauncher.getFrame().getFileListPanel().upload(fileName, m_data);
 				}
 				else if(status == 4) {
-					
+					/*접근 할 경로 + 파일 명 형식 : /root/asd/C:UsersSSM123.bkg*/
+					//String sourcePath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+					//System.out.println("sourcePath : " + sourcePath);
+					String sourcePath = "/asd/dfd/hadoop-1.1.2.tar.gz";
+					/*destPath : local 에 다운로드 할 dir 경, 어디에 다운로드할지 경로 설정 필요*/
+					String destPath = "~/home/sungjin/downloadtest/";
+					/**/
+					try {
+						ClientLauncher.getHybrid().download(sourcePath, destPath);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					ClientLauncher.getFrame().getFileListPanel().download();
 				}
 				else if(status == 5) {
