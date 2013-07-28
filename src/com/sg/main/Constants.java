@@ -36,6 +36,7 @@ public class Constants {
 		barBG("img/background/barBG.jpg"), 
 		connectionBG("img/background/connectionBG.jpg"),
 		settingsBG("img/background/settingsBG.jpg"),
+		shareBG("img/background/shareBG.jpg"),
 		privateBG1("img/background/privatePanelBG1.jpg"),
 		privateBG2("img/background/privatePanelBG2.jpg"),
 		publicBG1("img/background/publicPanelBG1.jpg"),
@@ -60,7 +61,7 @@ public class Constants {
 	
 	// 버튼 관련 이미지 경로
 	public static enum ButtonPath {
-
+		
 		loginBtn1("img/button/loginBtn1.jpg"), 
 		loginBtn2("img/button/loginBtn2.jpg"), 
 		signupBtn1("img/button/signupBtn1.jpg"), 
@@ -73,6 +74,8 @@ public class Constants {
 		backBtn2("img/button/backBtn2.jpg"),
 		forwardBtn1("img/button/forwardBtn1.jpg"),
 		forwardBtn2("img/button/forwardBtn2.jpg"),
+		shareBtn1("img/button/shareBtn1.jpg"),
+		shareBtn2("img/button/shareBtn2.jpg"),
 		connectBtn1("img/button/connectBtn1.jpg"), 
 		connectBtn2("img/button/connectBtn2.jpg"),
 		privateBtn1("img/button/privateBtn1.jpg"),

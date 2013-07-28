@@ -140,8 +140,6 @@ public class PacketMgr {
 				}
 				fileInfoList.add(fileInfo);
 			}
-			ClientLauncher.getFrame().getFileListPanel().initialize();
-			ClientLauncher.getFrame().getFileListPanel().makeTree();
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getFileListPanel());
 		}
 		
@@ -200,8 +198,6 @@ public class PacketMgr {
 				}
 				fileInfoList.add(fileInfo);
 			}
-			ClientLauncher.getFrame().getFileListPanel().initialize();
-			ClientLauncher.getFrame().getFileListPanel().makeTree();
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getFileListPanel());
 			*/
 		}

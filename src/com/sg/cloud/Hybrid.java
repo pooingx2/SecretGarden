@@ -73,6 +73,7 @@ public class Hybrid {
 		System.out.println(fileName);
 		return fileName;
 	}
+	
 	public int upload(String file, String path) throws IOException {
 		//upload는 모두 transaction을 지켜야 하기 때문에 redo와 undo 처리가 필요
 		String fileName = getFileName(file);			//입력 받아야 함 file을 잘라서 맨 마지막꺼
@@ -91,6 +92,7 @@ public class Hybrid {
 
 		return 0;
 	}
+	
 	public int download() throws IOException {
 		String dirPath = "../";						//입력 필
 		String sourcePath = "this/is/a/test/";		//입력 필요
@@ -119,6 +121,7 @@ public class Hybrid {
 
 		return 0;
 	}
+	
 	public int deleteFile() {
 		return 0;
 	}
@@ -130,7 +133,7 @@ public class Hybrid {
 		while(st.hasMoreTokens()){
 			fixedName += st.nextToken();
 		}
-		fixedName = fixedName + "/";
+		fixedName = "/" + fixedName + "/";
 
 		return fixedName;
 	}

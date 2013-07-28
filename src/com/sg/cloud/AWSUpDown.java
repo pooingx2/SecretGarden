@@ -59,7 +59,7 @@ public class AWSUpDown implements PublicUpDown{
 	public int upload(String fileName, String userId, File targetFile, String dirPath) throws IOException {
 		// TODO Auto-generated method stub
 		//버킷 만들고 키파일 설정 포함
-		//파일 업로드 ㄱㄱ...
+		//파일 업로드 ...
 		String bucketName = "secretgarden"+userId;			//입력 받아야 함. 키파일과 연결도 해야 함		
 		String keyName = dirPath + fileName;				 //입력 받아야 함. 버킷네임+고유id들 (디렉토리 패스 포함)
 

@@ -62,7 +62,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		BufferedInputStream readFile = new BufferedInputStream(new FileInputStream(targetFile));
 		readFile.read(buf, 0, 1048576);
 
-		Files sendingFile = new Files(fileName,"secretgarden"+userId+dirPath+"/", optionNum, buf, userId);
+		Files sendingFile = new Files(fileName,"secretgarden"+userId+dirPath, optionNum, buf, userId);
 		objOutput = new ObjectOutputStream(writer);
 		objOutput.writeObject(sendingFile);
 		objOutput.flush();
