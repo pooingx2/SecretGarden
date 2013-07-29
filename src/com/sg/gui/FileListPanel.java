@@ -62,8 +62,34 @@ public class FileListPanel extends JPanel {
 		bgImg.setBounds(0,0,width,height);
 
 		handler = new ActionHandler();
-		
-		// 버튼 그룹 패널 생성
+
+
+		// TreeModel 등록
+		root = new DefaultMutableTreeNode("root");
+		model= new DefaultTreeModel(root);
+
+		// File view Tree 등록
+		fileTree = new JTree();
+		fileTree.setRowHeight(20);
+		fileTree.setModel(model);
+		fileTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {	
+			@Override
+			public void valueChanged(TreeSelectionEvent event) {
+				selectedNode = getSelectedNode();
+				//selectedNode.getPath();
+			}
+		});
+		fileTree.setEditable(true);
+		fileTree.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		fileTree.setCellRenderer(new MyTreeRenderer());
+		setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
+		// scroll 등록
+		scroll = new JScrollPane(fileTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll.setBounds(50, 100, 250, 360);
+
+		// 버튼
 		btnGroupPanel = new JPanel();
 		btnGroupPanel.setBounds(400,100,350,80);
 		btnGroupPanel.setBackground(Constants.backColor);

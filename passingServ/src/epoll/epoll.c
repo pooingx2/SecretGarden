@@ -1,4 +1,6 @@
 #include "epoll.h"
+#include "macAddressCapture.h"
+
 
 
 void init_data0(Peer *peer)
@@ -94,32 +96,37 @@ void epoll_cli_add(int cli_fd)
   struct epoll_event events;
 
   /* event control set for read event */
-  events.events = EPOLLIN;
+  events.events = EPOLLIN|EPOLLET;
   events.data.fd = cli_fd;
 
   if( epoll_ctl(g_epoll_fd, EPOLL_CTL_ADD, cli_fd, &events) < 0 )
   {
-     printf("[ETEST] Epoll control fails.in epoll_cli_add\n");
+     printf("Event Callback Fail \n");
   }
 
-  printf("client epoll create \n");
+  printf("Unknown Client Join \n");
 }
 
-void userpool_add(int cli_fd,char *cli_ip, Peer *peer)
+void userpool_add(int cli_fd, char *cli_ip, Peer *peer)
 {
-  /* get empty element */
+  char *ID  = "undefined";
+  char *MAC = "undefined";
+  char *Accessable_Directory = "None";
   register int i;
 
+  /* Empty Client Array */
   for( i = 0 ; i < MAX_CLIENT ; i++ )
   {
      if(peer[i].socket == -1) break;
   }
+
   if( i >= MAX_CLIENT ) close(cli_fd);
 
-  peer[i].socket = cli_fd;
-  memset(&peer[i].ip[0],0,20);
-  strcpy(&peer[i].ip[0],cli_ip);
-
+  /* Align Client [ip, id, socket, mac, acceable_directory] */
+  peer[i].socket = cli_fd;		// socket allign
+  memset(&peer[i].ip[0],0,20);		// ip align
+  strcpy(&peer[i].ip[0],cli_ip);	// mac align
+ 
 }
 
 void userpool_delete(int cli_fd, Peer *peer)
@@ -157,27 +164,37 @@ void userpool_send(char *buffer, Peer *peer)
 void client_recv(int event_fd, Peer *peer)
 {
 
-  unsigned char headerBuf[HEADERSIZE]; 
-  unsigned char dataBuf[DATASIZE];
+  unsigned char headerBuf[HEADERSIZE*5]; 
+  unsigned char dataBuf[DATASIZE*5];
   int len;
+  int flag = fcntl(event_fd, F_GETFL, 0);
+  fcntl(event_fd, F_SETFL, flag|O_NONBLOCK);
 
-  memset(headerBuf, 0x00, HEADERSIZE);
-  memset(dataBuf,   0x00, DATASIZE);
+
+  memset(headerBuf, 0x00, HEADERSIZE*5);
+  memset(dataBuf,   0x00, DATASIZE*5);
 
   Peer t_peer;
   t_peer.socket = event_fd;
 
-  printf("recv start \n");
+  printf("blocking....\n");
+  /*
+  packet = pcap_next(handle, &header);
+  printf("Jacked a packet length : %d \n", header.len);
+  */
+  //alarm(2);
+  
   len =  recvFrom(&t_peer, headerBuf, dataBuf);  
-  printf("recv end \n");
 
   int type = byteToInt(headerBuf, 0);
+ // printf("type : %d \n",type);
 
   if( len < 0 || len == 0 )
   {
-      userpool_delete(event_fd, peer);
-      close(event_fd);
-      return;
+	
+     	  userpool_delete(event_fd, peer);
+     	  close(event_fd);
+  	  return;    
   }
   
   switch(type)
@@ -185,12 +202,11 @@ void client_recv(int event_fd, Peer *peer)
 	case ERROR_REPORT : 
 	{
 		// Auth, dir, HDFS Error Reporting Packet Protocol
-		// 
 		Peer client;
 		client.socket = byteToInt(headerBuf, 4);
 
-		sendTo(&client, 0, g_epoll_auth ,strlen(dataBuf), dataBuf);
-
+		sendTo(&client, 0, g_epoll_auth ,strlen((char *)dataBuf), dataBuf);
+		
 
 		break;
 	}
@@ -199,14 +215,13 @@ void client_recv(int event_fd, Peer *peer)
 	{
 		if(g_epoll_auth == 0)
 		{
-			//Exception
 			printf("auth server not running \n");
 			break;
 		}
 		Peer auth;
 		auth.socket = g_epoll_auth;	
 		
-                sendTo(&auth, 1, event_fd, strlen(dataBuf), dataBuf);
+        len = sendTo(&auth, 1, event_fd, strlen((char *) dataBuf), dataBuf);
 
 		break;
 	}
@@ -215,8 +230,10 @@ void client_recv(int event_fd, Peer *peer)
 		Peer client;
 		client.socket = byteToInt(headerBuf, 4);
 
-		sendTo(&client, 2, g_epoll_auth ,strlen(dataBuf), dataBuf);
-
+		/* Align User to Admin Table  */
+		sendTo(&client, 2, g_epoll_auth ,strlen((char *) dataBuf), dataBuf);
+		//userpool_add(client.socket, client.ip,  	
+		
 		break;
 	}
 	case LOGOUT_REQUEST :
@@ -224,15 +241,16 @@ void client_recv(int event_fd, Peer *peer)
 		Peer client;
 		client.socket = event_fd;
 		
-		sendTo(&client, 4, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&client, 4, event_fd, strlen((char *) dataBuf), dataBuf);
 		userpool_delete(client.socket, peer);
 		//close(client.socket);
 		printf("delete\n");
 		break;
 	}
+
 	case LOGOUT_RESPONSE :
 	{
-		
+		/* This is not Server Responsibility */	
 	}
 
 	case SIGNUP_REQUEST :
@@ -247,17 +265,19 @@ void client_recv(int event_fd, Peer *peer)
 			break;
 		}	
 		
-                sendTo(&auth, 5, event_fd, strlen(dataBuf), dataBuf);
+                sendTo(&auth, 5, event_fd, strlen((char *) dataBuf), dataBuf);
   		break;
 	}
+
 	case SIGNUP_RESPONSE :
 	{
 		Peer client;
 		client.socket = byteToInt(headerBuf, 4);
-		sendTo(&client, 6, g_epoll_dir ,strlen(dataBuf), dataBuf);
+		sendTo(&client, 6, g_epoll_dir ,strlen((char *) dataBuf), dataBuf);
 		break;
 
 	}
+
 	case DIR_LIST_REQUEST :
 	{
 		Peer dirServ;
@@ -268,7 +288,7 @@ void client_recv(int event_fd, Peer *peer)
 			printf("dir server not running \n");
 			break;
 		}
-		sendTo(&dirServ, 7, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&dirServ, 7, event_fd, strlen((char *) dataBuf), dataBuf);
 	}
 
 	case DIR_LIST_RESPONSE :
@@ -276,7 +296,7 @@ void client_recv(int event_fd, Peer *peer)
 		Peer client;
 		client.socket = byteToInt(headerBuf, 4);
 
-		sendTo(&client, 8, event_fd, strlen(dataBuf), dataBuf);		
+		sendTo(&client, 8, event_fd, strlen((char *) dataBuf), dataBuf);		
 		break;
 	}
 
@@ -291,7 +311,7 @@ void client_recv(int event_fd, Peer *peer)
 			break;
 		}
 		
-		sendTo(&dirServ, 9, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&dirServ, 9, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
 	
@@ -299,7 +319,7 @@ void client_recv(int event_fd, Peer *peer)
 	{
 		Peer peer;
 		peer.socket = byteToInt(headerBuf, 4);
-		sendTo(&peer, 10, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&peer, 10, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
 
@@ -314,7 +334,7 @@ void client_recv(int event_fd, Peer *peer)
 			break;
 		}
 		
-		sendTo(&dirServ, 11, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&dirServ, 11, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 		
 	}
@@ -323,7 +343,7 @@ void client_recv(int event_fd, Peer *peer)
 	{
 		Peer peer;
 		peer.socket = byteToInt(headerBuf, 4);
-		sendTo(&peer, 12, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&peer, 12, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
 
@@ -338,7 +358,7 @@ void client_recv(int event_fd, Peer *peer)
 			break;
 		}
 		
-		sendTo(&dirServ, 13, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&dirServ, 13, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;	
 	}
 
@@ -346,7 +366,7 @@ void client_recv(int event_fd, Peer *peer)
 	{
 		Peer peer;
 		peer.socket = byteToInt(headerBuf, 4);
-		sendTo(&peer, 14, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&peer, 14, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
 
@@ -362,7 +382,7 @@ void client_recv(int event_fd, Peer *peer)
 		}
 		
 		/* event fd 클라이언트 소켓 디스크립터 번호 */
-		sendTo(&dirServ, 15, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&dirServ, 15, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
 
@@ -370,7 +390,32 @@ void client_recv(int event_fd, Peer *peer)
 	{
 		Peer peer;
 		peer.socket = byteToInt(headerBuf, 4);
-		sendTo(&peer, 16, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&peer, 16, event_fd, strlen((char *) dataBuf), dataBuf);
+		break;
+	}
+
+
+	case META_DOWNLOAD_REQUEST:
+	{
+		Peer dirServ;
+		dirServ.socket = g_epoll_dir;
+
+		if(g_epoll_dir == 0)
+		{
+			printf("dir server not running \n");
+			break;
+		}
+
+		/* event fd 클라이언트 소켓 디스크립터 번호 */
+		sendTo(&dirServ, 17, event_fd, strlen((char *) dataBuf), dataBuf);
+		break;
+	}
+
+	case META_DOWNLOAD_RESPONSE:
+	{
+		Peer peer;
+		peer.socket = byteToInt(headerBuf, 4);
+		sendTo(&peer, 18, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
 
@@ -388,7 +433,7 @@ void client_recv(int event_fd, Peer *peer)
 			break;
 		}
 
-		sendTo(&hdfs, 30, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&hdfs, 30, event_fd, strlen((char *) dataBuf), dataBuf);
 
 		break;
 	}
@@ -405,7 +450,7 @@ void client_recv(int event_fd, Peer *peer)
 			break;
 		}
 
-		sendTo(&dirServ, 31, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&dirServ, 31, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
 
@@ -421,7 +466,7 @@ void client_recv(int event_fd, Peer *peer)
 			break;
 		}
 
-		sendTo(&hdfs, 32, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&hdfs, 32, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
 
@@ -436,7 +481,7 @@ void client_recv(int event_fd, Peer *peer)
 			break;
 		}
 
-		sendTo(&dirServ, 31, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&dirServ, 33, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
 
@@ -447,7 +492,7 @@ void client_recv(int event_fd, Peer *peer)
 		Peer client;
 		client.socket = event_fd;
 		
-		sendTo(&client, PROGRAM_EXIT_RESPONSE, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&client, PROGRAM_EXIT_RESPONSE, event_fd, strlen((char *) dataBuf), dataBuf);
 		
 		userpool_delete(event_fd, peer);
 		close(client.socket);
@@ -468,7 +513,7 @@ void client_recv(int event_fd, Peer *peer)
 		Peer auth;
                 auth.socket  = g_epoll_auth;
 
-		sendTo(&auth, 104, event_fd , strlen(dataBuf), dataBuf);
+		sendTo(&auth, 104, event_fd , strlen((char *) dataBuf), dataBuf);
 
 		printf("Auth Serv Binding End \n");
  		break;
@@ -489,7 +534,7 @@ void client_recv(int event_fd, Peer *peer)
 		dir.socket  = g_epoll_dir;
 
 		
-		sendTo(&dir, 105, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&dir, 105, event_fd, strlen((char *)dataBuf), dataBuf);
 
 		printf("Dir Serv Binding End \n");
 		break;
@@ -502,13 +547,13 @@ void client_recv(int event_fd, Peer *peer)
 		HDFS.socket  = g_epoll_HDFS;
 
 		
-		sendTo(&HDFS, 106, event_fd, strlen(dataBuf), dataBuf);
+		sendTo(&HDFS, 106, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
  
 	default :
 	{
-		printf("default\n");
+		printf("default : %s\n", dataBuf);
 		break;
 	}
   }
@@ -520,7 +565,24 @@ void server_process(Peer *peer)
   struct sockaddr_in cli_addr;
   int i,nfds;
   int socket;
+
+  //char ebuf[PCAP_ERRBUF_SIZE];
+  //pcap_t *pd;
+  //char dev = "eth0";
+
+  /* pcap의 이용설정 */
+  /*
+  if((pd = pcap_open_live(dev, 68, 1, 1000, ebuf)) == NULL )
+  {
+	  printf("pcap open fail \n");
+  }
+  */
+ // if(pcap_loop(pd, -1, packet_
+
+
   int cli_len = sizeof(cli_addr);
+
+
   //printf("Server init()\n");
   nfds = epoll_wait(g_epoll_fd,g_events,MAX_EVENTS,100); /* timeout 100ms */
 
@@ -535,39 +597,41 @@ void server_process(Peer *peer)
   {
       if(g_events[i].data.fd == g_svr_sockfd)
       {
-          socket = accept(g_svr_sockfd,
-		 (struct sockaddr *)&cli_addr,
-		 (socklen_t *)&cli_len);
+          socket = accept(g_svr_sockfd, (struct sockaddr *)&cli_addr, (socklen_t *)&cli_len);
 
           if(socket < 0) /* accept error */
           {
-
+			printf("Accept Error \n");
           }
           else
           {
-             printf("[ETEST][Accpet] New client connected. fd:%d,ip:%s\n",
-		socket,
-		inet_ntoa(cli_addr.sin_addr));
 
-             userpool_add(socket,
-			  inet_ntoa(cli_addr.sin_addr),
-			  peer);
+             // Mac Address Add 
+			 int flag = fcntl(socket, F_GETFL, 0);
+			 fcntl(socket, F_SETFL, flag|O_NONBLOCK);
+			 userpool_add(socket, inet_ntoa(cli_addr.sin_addr), peer);
              epoll_cli_add(socket);
-          }
-          continue; /* next fd */
+			 printf("flag is : %d \n", flag);
+			 printf("New client connected and Set Async fd : %d, ip : %s \n", socket , inet_ntoa(cli_addr.sin_addr));
+			 
+          
+		  }
+          continue; 
       }
       
      // 이벤트가 발생한 소켓에 대해서 데이터를 읽어들인다.
-     // Thread Creadte
-     printf("Event Create \n");
+	 int flag = fcntl(socket, F_GETFL, 0);
+	 fcntl(socket, F_SETFL, flag|O_NONBLOCK);
+	 printf("flag is : %d \n", flag);		
      client_recv(g_events[i].data.fd, peer);   
-     printf("Event End \n");
-  } /* end of for 0-nfds */
+  }
 }
 /*------------------------------- end of function server_process */
 
+/*
 void *fThread(void *data)
 {
+	
 	int n;
 	int cSocket;
 	unsigned char headerBuf[HEADERSIZE];
@@ -578,17 +642,18 @@ void *fThread(void *data)
 
         Peer *peer;
 
-	peer = (Peer *)data;
+	peer 	= (Peer *)data;
 	cSocket = peer->socket;
-        ip   = peer->ip;
+    ip  	= peer->ip;
  
 	memset(headerBuf, 0x00, HEADERSIZE);
 	memset(headerBuf, 0x00, DATASIZE);
 	
 	readHeader(cSocket, headerBuf, HEADERSIZE);		
+	
 }
 
-
+*/
 
 
 

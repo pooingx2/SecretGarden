@@ -3,16 +3,29 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <sys/socket.h>
 #include <sys/epoll.h>
+
 #include <arpa/inet.h>
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
 #include "protocol.h"
 
+#include <sys/time.h>
+#include <netinet/in.h>
+#include <netinet/in_systm.h>
+#include <netinet/ip.h>
+#include <netinet/if_ether.h>
+
+#include <fcntl.h>
+#include <errno.h>
+
+#include <pcap.h>
+
 // 최대 사용자수, 기본 포트번호, 최대 수용가능한 이벤트 갯수
-#define MAX_CLIENT   10000
+#define MAX_CLIENT   3000
 #define DEFAULT_PORT 12500
 #define MAX_EVENTS   10000
 

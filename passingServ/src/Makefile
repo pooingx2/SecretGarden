@@ -2,14 +2,17 @@
 
 TARGET	:= passingServ
 TOPDIR	:= $(shell /bin/pwd)
-SUBDIRS	:= main epoll protocol
+SUBDIRS	:= main epoll protocol xmlHandler packetAnalyzer
+LIBXML  := /usr/local/xml/include/libxml2
+OPTX    := xml2
+PCAP    := pcap
 
 ##################################################
 
 include $(TOPDIR)/Config.mk
 
 all : compile $(OBJS)
-	$(CC) $(OBJS) $(addsuffix /built-in.o,$(SUBDIRS)) -o $(TARGET) 
+	$(CC) $(OBJS) $(addsuffix /built-in.o,$(SUBDIRS)) -o $(TARGET) -I$(LIBXML) -l$(OPTX) -l$(PCAP)
 
 include $(TOPDIR)/Rules.mk
 

@@ -74,12 +74,15 @@ typedef unsigned char byte;
 typedef char 	      data_bytes;
 
 // 통신중 에러 및 송수신자의 정보를 확인하기 위한 소켓 구조체
-typedef struct Peer {
+typedef struct Peer 
+{
 		int socket;
 		SSL		*sslHandle;
 		SSL_CTX *sslContext;
 		char ip[20];
-		char mac_address[50];
+		//char mac_address[50];
+		//char accessable_directory[200];
+		int isAuth;
 }Peer;
 
 

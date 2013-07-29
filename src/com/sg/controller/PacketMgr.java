@@ -190,7 +190,18 @@ public class PacketMgr {
 			ClientLauncher.getFrame().getFileListPanel().initialize();
 		}
 		
+		// 메타데이터 업로드
+		if(type==Constants.PacketType.FileCreateResponse.getType()) 
+		{	
+			System.out.println("meta path is : " + token[0]);
+		}
 		
+		// 메타데이터 다운로드
+		if(type==Constants.PacketType.FileDownloadResponse.getType())
+		{
+			System.out.println("meta data is : " + token[0]);	
+		}		
+
 		// 폴더 및 디렉토리 셋팅(공유와 관련된)패킷 수신
 		if(type==Constants.PacketType.SettingResponse.getType())
 		{
@@ -206,7 +217,7 @@ public class PacketMgr {
 			
 		}
 		
-		
-		
 	}
+		
 }
+
