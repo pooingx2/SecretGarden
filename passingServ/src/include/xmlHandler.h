@@ -23,4 +23,6 @@ xmlNodePtr getdocRoot(xmlDocPtr doc);
 char* showChildNodes(xmlDocPtr doc, xmlNodePtr cur, char *buf);
 int parseDoc(char *docname, xmlDocPtr *doc);
 
+int build_up_log();
+int append_log();
 

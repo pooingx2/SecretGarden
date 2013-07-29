@@ -3,19 +3,69 @@
 #include <string.h>
 #include <signal.h> 
 #include <sys/epoll.h>
+#include <signal.h>
 
 #include "protocol.h"
 #include "epoll.h"
+#include "xmlHandler.h"
+#include "macAddressCapture.h"
 
 #define MAXLINE 1024
 
 //Peer peer[MAX_CLIENT];
 ;
+
+/* extern variable - pcap lib */
+
+
 int main(int argc, char **argv)
 {	
+ 
+  printf("program start \n");
+  Peer peer[4000];
   
-  Peer peer[MAX_CLIENT];
-			
+  strcat(dev, "eth0");
+  strcat(filter_exp, "port 12600");
+
+  
+  printf("dev set : %s \n", dev);
+  if(pcap_lookupnet(dev, &net, &mask, errBuf) == -1)
+  {
+	  	fprintf(stderr, "Can't get netmask for device %s \n", dev);
+	    net = 0;
+		mask =0;	
+  }
+
+  handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errBuf);
+  if(handle == NULL )
+  {
+	  printf("Couldn't parse filter %s : %s \n", dev, errBuf);
+	  return(2);
+  }
+
+  if(pcap_compile(handle, &fp, filter_exp, 0, net) == -1)
+  {
+	  printf("Err pcap Compile \n");
+  }
+
+  if(pcap_setfilter(handle, &fp) == -1)
+  {
+	  printf("Err set filter \n");
+  }
+  
+  pid_t pid;
+  pid = fork();
+
+  if(pid == 0)
+  {
+	printf("process init() \n");
+	if(pcap_loop(handle, -1, callback, NULL) < 0 )
+	{
+		printf("err\n");
+		exit(1);
+	}
+  }
+  else{
   printf("[ETEST][START] epoll test server v1.2 (simple epoll test server)\n");
   /* entry , argument check and process */
   if(argc < 3) g_svr_port = atoi(argv[1]);//DEFAULT_PORT;
@@ -47,5 +97,6 @@ int main(int argc, char **argv)
      server_process(peer);  /* accept process. */
   } /* infinite loop while end. */
 
+  }
 }
 

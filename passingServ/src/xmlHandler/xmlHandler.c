@@ -1,6 +1,9 @@
 #include "xmlHandler.h":wq
 
 
+
+
+
 int getNodeInfo(xmlNodePtr cur, char *nodeInfo)
 {
 	xmlChar *id;

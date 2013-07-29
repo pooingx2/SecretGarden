@@ -7,19 +7,25 @@ readHeader
 
 		int readSize;
 		int needSize;
+		
 
 		readSize=0;
 		needSize=headerSize;
 			
-
 		while(needSize > 0){
 				
 				readSize+=read(peer->socket, headerBuf, needSize);
+			//	printf("readheader : %d \n", readSize);
+				if(readSize < 0 || readSize == 0)
+				{
+			//		printf("return \n");
+					return 0;
+				}
 				needSize=needSize-readSize;
 				
 		}
 
-		printf("readSize : %d \n", readSize);
+	//	printf("readSize : %d \n", readSize);
 		return readSize;
 }
 
@@ -52,7 +58,7 @@ recvFrom
 		
 		if(headerSize < 1 )
 		{
-			printf("Non Header \n");
+	//		printf("Non Header \n");
 			return 0;
 		}
  
