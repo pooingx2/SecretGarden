@@ -147,7 +147,7 @@ public class Hybrid {
 			System.out.println("aws download error...");
 			return -1;
 		}else{
-			System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
+			
 			awsBuf = awsReceiveFile.getFileBuf();
 		}
 		//hdfs download
@@ -169,7 +169,7 @@ public class Hybrid {
 		try{
 			bos.write(awsBuf);
 		} catch (NullPointerException es){
-			
+			System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
 		}
 		bos.close();
 

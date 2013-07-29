@@ -276,7 +276,7 @@ public class FileMngPanel extends JPanel {
 					}
 					else{
 						String sourcePath = "/root/hi/test.txt";
-						String destPath = "/home/sungjin/downloadtest/";
+						String destPath = "/home/sungjin/downloadtest/";//home/secret_garden_userId/;
 						try {
 							ClientLauncher.getHybrid().download(sourcePath, destPath);
 						} catch (IOException e) {

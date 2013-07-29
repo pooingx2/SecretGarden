@@ -107,7 +107,7 @@ public class AWSUpDown implements PublicUpDown{
 		// TODO Auto-generated method stub
 		//키파일 인증 포함
 		String bucketName = "secretgarden" + request.getUserId();
-		byte[] downBuf = new byte[30];
+		byte[] downBuf = new byte[100];
 		Files receivFile = null;
 		int optionNum = request.getOptionNum();
 		System.out.println(request.getDirPath()+request.getFileName());
