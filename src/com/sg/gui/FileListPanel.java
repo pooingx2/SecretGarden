@@ -89,6 +89,7 @@ public class FileListPanel extends JPanel {
 			@Override
 			public void valueChanged(TreeSelectionEvent event) {
 				selectedNode = getSelectedNode();
+				//selectedNode.getPath();
 			}
 		});
 		fileTree.setEditable(true);

@@ -207,15 +207,16 @@ public class PacketMgr {
 		}
 		/*************************************************************************/
 		
-		if(type==Constants.PacketType.FileDownloadResponse.getType()) 
+		// 메타데이터 업로드
+		if(type==Constants.PacketType.FileCreateRequset.getType()) 
 		{	
-
+			System.out.println("meta path is : " + token[0]);
 		}
 		
 		// 메타데이터 다운로드
-		if(type==Constants.PacketType.MetaDownloadResponse.getType())
+		if(type==Constants.PacketType.FileDownloadResponse.getType())
 		{
-				
+			System.out.println("meta data is : " + token[0]);	
 					
 		}
 		

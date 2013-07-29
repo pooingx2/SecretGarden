@@ -10,5 +10,4 @@ interface PrivateUpDown1 {
 	public int deleteFile();
 	public int upload(String fileName, String userId, File targetFile, String dirPath) throws IOException;
 	public int download() throws IOException;
-
 }
