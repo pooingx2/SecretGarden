@@ -32,7 +32,8 @@ public class FileListPanel extends JPanel {
 	private int width;
 	private int height;
 	private boolean isSelected;
-
+	private boolean editMode;
+	
 	// Components
 	private JLabel bgImg;
 	private JScrollPane scroll;
@@ -106,7 +107,7 @@ public class FileListPanel extends JPanel {
 			public void valueChanged(TreeSelectionEvent event) {
 				selectedNode = getSelectedNode();
 				fileMngPanel.setStatus(0);
-				if (fileMngPanel.getStatus() == 0) {
+				if (fileMngPanel.getStatus() == 0 && !editMode) {
 					fileMngPanel.getLabel()[0].setText("Name : " + selectedNode.toString());
 					fileMngPanel.getLabel()[1].setText("Parent : " + selectedNode.getParent());
 					fileMngPanel.getLabel()[2].setText("Depth : " + selectedNode.getLevel());
@@ -134,10 +135,12 @@ public class FileListPanel extends JPanel {
 
 
 	public void initialize() { 
+		editMode=true;
 		makeTree();
 		((DefaultTreeModel)fileTree.getModel()).reload();
 		changePanel();
 		fileMngPanel.initialize();
+		editMode=false;
 	}
 
 	// fileInfoList에 저장된 node를 통해 tree를 만듬
