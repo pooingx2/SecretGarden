@@ -12,14 +12,15 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.sg.main.ClientLauncher;
-import com.sg.main.Constants;
 
 public class MainFrame extends JFrame  {
 	
 	private int width;
 	private int height;
+	private JPanel currentPanel;
 	private LoginPanel loginPanel;
 	private ActionBar actionBar;
+	private SharingPanel sharingPanel;
 	private ConnectionPanel connectionPanel;
 	private DirectoryListPanel directoryListPanel;
 	private FileListPanel fileListPanel;
@@ -77,11 +78,15 @@ public class MainFrame extends JFrame  {
 		fileListPanel = new FileListPanel(width, height-50);
 		fileListPanel.setBounds(0, 50, width, height-50);
 		
+		sharingPanel = new SharingPanel(width, height-50);
+		sharingPanel.setBounds(0, 50, width, height-50);
+		
 		// 상단 액션바패널 생성
 		actionBar = new ActionBar(width,50);
 		actionBar.setBounds(0, 0, width, 50);
 		
 		// 처음 로그인 패널을 띄움
+		currentPanel = loginPanel;
 		this.add(loginPanel);
 		
 //		this.add(actionBar);
@@ -95,26 +100,35 @@ public class MainFrame extends JFrame  {
 	// main frame 화면 전환을 위한 패널
 	public void changePanel(JPanel panel) {
 		this.getContentPane().removeAll();
-		if(panel != loginPanel){
+		System.out.println("Change : " + panel.getClass().getName());
+		
+		if(panel != loginPanel) {
 			this.add(actionBar);
 			if(panel == connectionPanel){
 				connectionPanel.initialize();
-				actionBar.setStatus(1);
 			}
 			else if(panel == directoryListPanel){
 				directoryListPanel.initialize();
-				actionBar.setStatus(2);
 			}
 			else if(panel == fileListPanel){
 				fileListPanel.initialize();
-				actionBar.setStatus(3);
-			}
-			else {
-				actionBar.setStatus(0);
 			}
 		}
-		else 
+		else {
 			loginPanel.initialize();
+			actionBar.initialize();
+		}
+		
+		// 뒤로가기 버튼을 누른 경우가 아니고 페이지가 변했다면 backStack에 현재 페이지를 저장
+		if(!actionBar.isBackBtnPress() && currentPanel != panel){
+			actionBar.getBackStack().push(currentPanel);
+		}
+		// 뒤로가기 버튼을 누른고 페이지가 변했다면 forwardStack에 현재 페이지를 저장
+		else if(actionBar.isBackBtnPress() && currentPanel != panel){
+			actionBar.getForwardStack().push(currentPanel);
+		}
+		
+		currentPanel = panel;
 		this.add(panel);
 		this.repaint();
 	}
@@ -150,6 +164,23 @@ public class MainFrame extends JFrame  {
 
 	public void setFileListPanel(FileListPanel fileListPanel) {
 		this.fileListPanel = fileListPanel;
+	}
+
+	public SharingPanel getSharingPanel() {
+		return sharingPanel;
+	}
+
+	public void setSharingPanel(SharingPanel sharingPanel) {
+		this.sharingPanel = sharingPanel;
+	}
+	
+
+	public ActionBar getActionBar() {
+		return actionBar;
+	}
+
+	public void setActionBar(ActionBar actionBar) {
+		this.actionBar = actionBar;
 	}
 
 }

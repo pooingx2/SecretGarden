@@ -36,6 +36,7 @@ public class Constants {
 		barBG("img/background/barBG.jpg"), 
 		connectionBG("img/background/connectionBG.jpg"),
 		settingsBG("img/background/settingsBG.jpg"),
+		shareBG("img/background/shareBG.jpg"),
 		privateBG1("img/background/privatePanelBG1.jpg"),
 		privateBG2("img/background/privatePanelBG2.jpg"),
 		publicBG1("img/background/publicPanelBG1.jpg"),
@@ -60,7 +61,7 @@ public class Constants {
 	
 	// 버튼 관련 이미지 경로
 	public static enum ButtonPath {
-
+		
 		loginBtn1("img/button/loginBtn1.jpg"), 
 		loginBtn2("img/button/loginBtn2.jpg"), 
 		signupBtn1("img/button/signupBtn1.jpg"), 
@@ -73,6 +74,8 @@ public class Constants {
 		backBtn2("img/button/backBtn2.jpg"),
 		forwardBtn1("img/button/forwardBtn1.jpg"),
 		forwardBtn2("img/button/forwardBtn2.jpg"),
+		shareBtn1("img/button/shareBtn1.jpg"),
+		shareBtn2("img/button/shareBtn2.jpg"),
 		connectBtn1("img/button/connectBtn1.jpg"), 
 		connectBtn2("img/button/connectBtn2.jpg"),
 		privateBtn1("img/button/privateBtn1.jpg"),
@@ -96,7 +99,11 @@ public class Constants {
 		downloadBtn1("img/button/downloadBtn1.jpg"),
 		downloadBtn2("img/button/downloadBtn2.jpg"),
 		loadKeyfileBtn1("img/button/loadKeyfileBtn1.jpg"),
-		loadKeyfileBtn2("img/button/loadKeyfileBtn2.jpg");
+		loadKeyfileBtn2("img/button/loadKeyfileBtn2.jpg"),
+		fileOpenBtn1("img/button/fileOpenBtn1.jpg"),
+		fileOpenBtn2("img/button/fileOpenBtn2.jpg"),		
+		downloadPathBtn1("img/button/downloadPathBtn1.jpg"),
+		downloadPathBtn2("img/button/downloadPathBtn2.jpg");
 		
 		final private String path;
 		private ButtonPath(String path) { this.path = path; }
@@ -126,15 +133,15 @@ public class Constants {
 		LogoutResponse(4),
 		SignupRequest(5), 
 		SignupResponse(6),
-		DirectoryListRequset(7), 
+		DirectoryListRequest(7), 
 		DirectoryListResponse(8),
-		DirectoryCreateRequset(9), 
+		DirectoryCreateRequest(9), 
 		DirectoryCreateResponse(10),
-		DirectoryAccessRequset(11), 
+		DirectoryAccessRequest(11), 
 		DirectoryAccessResponse(12),
-		FolderCreateRequset(13), 
+		FolderCreateRequest(13), 
 		FolderCreateResponse(14),
-		FileCreateRequset(15), 
+		FileCreateRequest(15), 
 		FileCreateResponse(16),
 		FileDownloadRequest(17),
 		FileDownloadResponse(18),

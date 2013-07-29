@@ -49,7 +49,6 @@ public class DirectoryListPanel extends JPanel {
 	public DirectoryListPanel(int w, int h) {
 
 		super();
-		boolean isAccessed = false;
 		this.width = w;
 		this.height = h;
 		this.isSelected = false;
@@ -98,8 +97,10 @@ public class DirectoryListPanel extends JPanel {
 							isSelected = true;
 							dirMngPanel.setStatus(0);
 							if (dirMngPanel.getStatus() == 0) {
-								dirMngPanel.setSelectedValue(table.getValueAt(
-										table.getSelectedRow(), 0).toString());
+								dirMngPanel.getLabel()[0].setText(
+										"Directory index : " + table.getValueAt(table.getSelectedRow(), 0).toString());
+								dirMngPanel.getLabel()[1].setText(
+										"Directory Name : " + table.getValueAt(table.getSelectedRow(), 1).toString());
 							}
 							changePanel();
 						}
@@ -171,6 +172,8 @@ public class DirectoryListPanel extends JPanel {
 	}
 
 	public void initialize() {
+		this.isSelected = false;
+		this.isAccessed = false;
 		dirMngPanel.initialize();
 	}
 
@@ -228,7 +231,7 @@ public class DirectoryListPanel extends JPanel {
 			id = ClientLauncher.getFrame().getLoginPanel().getId();
 
 			data = dir + "\t" + private_cloud + "\t" + public_cloud + "\t" + id;
-			type = Constants.PacketType.DirectoryCreateRequset.getType();
+			type = Constants.PacketType.DirectoryCreateRequest.getType();
 			length = data.length();
 
 			// 디렉토리 생성 요청 패킷을 전송
@@ -236,7 +239,7 @@ public class DirectoryListPanel extends JPanel {
 
 			// 추가된 Directory를 포함한 디렉토리 정보를 반영하기 위해 조회 패킷 전송
 			data = id + "\t" + private_cloud + "\t" + public_cloud;
-			type = Constants.PacketType.DirectoryListRequset.getType();
+			type = Constants.PacketType.DirectoryListRequest.getType();
 			length = data.length();
 
 			// 디렉토리 리시트 조회 요청 패킷 전송
@@ -245,20 +248,25 @@ public class DirectoryListPanel extends JPanel {
 			// 디렉토리 생성을 반영하기 위한 패널 새로고침
 			changePanel();
 		}
-		else
-		{
-			JOptionPane.showMessageDialog(null,
-					"create Folder");
-		}
-		
 	}
 
 	// 디렉토리 접근 최종 확인 버튼 클릭시 실행
-	public void access() {
+	public void access(String key) {
 		// 액세스시 폴더 리스트를 가져와야 한다
 		isAccessed = true;
-		JOptionPane.showMessageDialog(null,
-				"access directory");
+		
+		// 하부 폴더에 접근하기 위하여 Keyfile을 서버로 전송한다 
+		String id   = ClientLauncher.getFrame().getDirectoryListPanel().getDirectoryID();
+		String name = "none";
+		
+		String data = key + "\t" + id + "\t" + name;
+		
+		int type = Constants.PacketType.DirectoryAccessRequest.getType();
+		int length = data.length();
+		
+		// 인증 및 폴더 리스트 요청
+		ClientLauncher.getFileMgr().setRootDirID(id);
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 	}
 
 	// 디렉토리 삭제 최종 확인 클릭시 실행
@@ -268,7 +276,7 @@ public class DirectoryListPanel extends JPanel {
 	public void settings() {
 	}
 
-	public String get_directory_Id() {
+	public String getDirectoryID() {
 		return table.getValueAt(table.getSelectedRow(), 0).toString();
 	}
 

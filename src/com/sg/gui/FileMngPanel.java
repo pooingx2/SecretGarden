@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -53,7 +54,7 @@ public class FileMngPanel extends JPanel {
 		super();
 		this.width = w;
 		this.height = h;
-		this.status = 0;
+		this.status = 1;
 		this.file = null;
 		this.filePath = null;
 		this.setLayout(null);
@@ -76,35 +77,33 @@ public class FileMngPanel extends JPanel {
 		// font 설정
 		inputFont = Constants.Font1;
 
-		label = new JLabel[2];
+		label = new JLabel[5];
 		textField = new JTextField[2];
-		btn = new JButton[3];
+		btn = new JButton[4];
 
 		handler = new ActionHandler();
 
-		label[0] = new JLabel("Drectory Name");
-		label[0].setBounds(20,100,250,30);
-		label[0].setFont(inputFont);
-
-		label[1] = new JLabel();
-		label[1].setBounds(20,20,300,30);
-		label[1].setFont(Constants.Font2);
-
+		for(int i=0;i<5;i++){
+			label[i] = new JLabel();
+			label[i].setBounds(30,50+(i*30),300,30);
+			label[i].setFont(Constants.Font1);
+		}
+		
 		textField[0] = new JTextField();		// directory name
-		textField[0].setBounds(20,140,200,30);
+		textField[0].setBounds(30,140,250,30);
 		textField[0].setFont(inputFont);
 
 		textField[1] = new JTextField();		// file path
-		textField[1].setBounds(20,140,250,30);
+		textField[1].setBounds(30,140,300,30);
 		textField[1].setEditable(false);
 		textField[1].setFont(inputFont);
 
 		handler = new ActionHandler();
 		
-		// file load 버튼
-		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.loadKeyfileBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.loadKeyfileBtn2.getPath()));
-		btn[0].setBounds(20,100,100,30);
+		// open file 버튼
+		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.fileOpenBtn1.getPath()));
+		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.fileOpenBtn2.getPath()));
+		btn[0].setBounds(280,80,40,40);
 		btn[0].addActionListener(handler);
 
 		// 확인버튼
@@ -113,21 +112,31 @@ public class FileMngPanel extends JPanel {
 		btn[1].setBounds(150,200,80,30);
 		btn[1].addActionListener(handler);
 
-		// 취서버튼
+		// 취소버튼
 		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
 		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
 		btn[2].setBounds(250,200,80,30);
 		btn[2].addActionListener(handler);
+		
+		// download Path 버튼
+		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.downloadPathBtn1.getPath()));
+		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.downloadPathBtn2.getPath()));
+		btn[3].setBounds(280,100,30,30);
+		btn[3].addActionListener(handler);
 
 		this.add(bgImg[1]);
 	}
 
-
 	public void initialize() { 
+		this.status=1;
 		textField[0].setText("");
 		textField[1].setText("");
 		label[0].setText("");
 		label[1].setText("");
+		label[2].setText("");
+		label[3].setText("");
+		label[4].setText("");
+		changePanel();
 	}
 
 	public int getStatus() {
@@ -138,13 +147,28 @@ public class FileMngPanel extends JPanel {
 		this.status = status;
 	}
 
-	public void setSelectedValue(String value){
-		label[1].setText(value);
+	public JLabel[] getLabel() {
+		return label;
+	}
+
+
+
+	public void setLabel(JLabel[] label) {
+		this.label = label;
 	}
 	
-	public void getUploadFilePath(){
+	public void setUploadFilePath(){
 		String path = ClientLauncher.getFileMgr().loadUploadFile();
-		
+		if(path != null){
+			textField[1].setText(path);
+		}
+	}
+	
+	public void setDownloadFilePath(){
+		String path = ClientLauncher.getFileMgr().getDownloadPath();
+		if(path != null){
+			textField[1].setText(path);
+		}
 	}
 
 	// 각종 status에 따라  Directory관리 패널을 변경
@@ -153,12 +177,15 @@ public class FileMngPanel extends JPanel {
 		this.removeAll();
 		switch(this.status){
 		case 0 : 	// Default
+			this.add(label[0]);
 			this.add(label[1]);
+			this.add(label[2]);
+			this.add(label[3]);
+			this.add(label[4]);
 			break;
 		case 1 : 	// Information
 			break;
 		case 2 : 	// Create 
-			this.add(label[0]);
 			this.add(textField[0]);
 			this.add(btn[1]);
 			this.add(btn[2]);
@@ -170,6 +197,8 @@ public class FileMngPanel extends JPanel {
 			this.add(btn[2]);
 			break;
 		case 4 : 	//	Download
+			this.add(textField[1]);
+			this.add(btn[3]);
 			this.add(btn[1]);
 			this.add(btn[2]);
 			break;
@@ -188,12 +217,10 @@ public class FileMngPanel extends JPanel {
 	private class ActionHandler implements ActionListener {
 		private String dirName;
 		
-		/********************************/
 		/* Uplade되는 파일 이름 */
 		private String fileName;
 		/* Upload되는 메타데이터 */
 		private MetaData m_data;
-		/********************************/
 		
 		
 		@Override
@@ -201,31 +228,65 @@ public class FileMngPanel extends JPanel {
 
 			// fileload버튼을 누르면 유저 컴퓨터에서 file을 선택하도록 함
 			if(event.getSource()==btn[0]){
-				getUploadFilePath();
+				setUploadFilePath();
+			}
+			
+			// download할 경로 설정
+			if(event.getSource()==btn[3]){
+				setDownloadFilePath();
 			}
 
 			// 확인버튼을 누르면 해당 상태에 맞는 함수를 call 
 			if(event.getSource()==btn[1]){
 				dirName	= textField[0].getText();
-				fileName	= textField[1].getText();
+				fileName = textField[1].getText();
+				
+				// create
 				if(status == 2) {
-					ClientLauncher.getFrame().getFileListPanel().create(dirName);
+					if(dirName.indexOf('.')!=-1){
+						JOptionPane.showMessageDialog(null, "Incorrect dirName");
+					}
+					else{
+						ClientLauncher.getFrame().getFileListPanel().create(dirName);
+					}
 				}
+				// upload
 				else if(status == 3) {
-					/*********************************************************************************/
-					/* 성진이가 파일 업로드 할 부분 메타데이터 제외하고 분할된 파일을 전송하는것까지 구성 */
-					/* Upload Module 위치할 부분 */
-					/*********************************************************************************/
-					ClientLauncher.getFrame().getFileListPanel().file_to_cloud();
-					
-					/* 메타데이터 전송 */
-					MetaData m_data = new MetaData();
-					ClientLauncher.getFrame().getFileListPanel().upload(fileName, m_data);
+					if(fileName.equals("")){
+						JOptionPane.showMessageDialog(null, "Load file");
+					}
+					else{
+						String dirPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+						try {
+							ClientLauncher.getHybrid().upload(fileName,dirPath);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						ClientLauncher.getFrame().getFileListPanel().file_to_cloud();
+						
+						/* 메타데이터 전송 */
+						MetaData m_data = new MetaData();
+						ClientLauncher.getFrame().getFileListPanel().upload(fileName, m_data);
+					}
 				}
+				// download
 				else if(status == 4) {
-					
-					ClientLauncher.getFrame().getFileListPanel().download();
+					if(fileName.equals("")){
+						JOptionPane.showMessageDialog(null, "Load file");
+					}
+					else{
+						String sourcePath = "/root/hi/test.txt";
+						String destPath = "/home/sungjin/downloadtest/";
+						try {
+							ClientLauncher.getHybrid().download(sourcePath, destPath);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						ClientLauncher.getFrame().getFileListPanel().download();
+					}
 				}
+				// delete
 				else if(status == 5) {
 					ClientLauncher.getFrame().getFileListPanel().delete();
 				}

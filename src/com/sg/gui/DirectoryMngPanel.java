@@ -29,8 +29,7 @@ public class DirectoryMngPanel extends JPanel {
 	*/
 	private int status;
 	private String key;
-	private String id;
-	private String name;
+
 	
 	// Components
 	private Font inputFont;
@@ -45,10 +44,11 @@ public class DirectoryMngPanel extends JPanel {
 		super();
 		this.width = w;
 		this.height = h;
-		this.status = 0;
+		this.status = 1;
 		this.setLayout(null);
 		this.setBackground(Constants.backColor);
 		this.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		this.key=null;
 
 		// 디렉토리를 관리하기 위한 배경 이미지 (Create, Access, Delete,  ...
 		bgImg = new JLabel[6];
@@ -66,19 +66,17 @@ public class DirectoryMngPanel extends JPanel {
 		// font 설정
 		inputFont = Constants.Font1;
 
-		label = new JLabel[2];
+		label = new JLabel[5];
+		for(int i=0;i<5;i++){
+			label[i] = new JLabel();
+			label[i].setBounds(30,50+(i*30),250,30);
+			label[i].setFont(Constants.Font1);
+		}
+		
 		textField = new JTextField[2];
 		btn = new JButton[3];
 
 		handler = new ActionHandler();
-
-		label[0] = new JLabel();
-		label[0].setBounds(20,100,250,30);
-		label[0].setFont(inputFont);
-
-		label[1] = new JLabel();
-		label[1].setBounds(20,20,300,30);
-		label[1].setFont(Constants.Font2);
 
 		textField[0] = new JTextField();		// directory name
 		textField[0].setBounds(20,140,200,30);
@@ -112,12 +110,24 @@ public class DirectoryMngPanel extends JPanel {
 		this.add(bgImg[1]);
 	}
 
+	public JLabel[] getLabel() {
+		return label;
+	}
+
+	public void setLabel(JLabel[] label) {
+		this.label = label;
+	}
 
 	public void initialize() { 
+		this.key=null;
+		this.status=1;
 		textField[0].setText("");
 		textField[1].setText("");
 		label[0].setText("");
 		label[1].setText("");
+		label[2].setText("");
+		label[3].setText("");
+		label[4].setText("");
 	}
 
 	public int getStatus() {
@@ -127,11 +137,15 @@ public class DirectoryMngPanel extends JPanel {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-
-	public void setSelectedValue(String value){
-		label[1].setText(value);
-	}
 	
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
 	// JFleChoose를 통한 파일 선택 함수
 	public void loadFile() {
 		Vector<String> fileInfo = ClientLauncher.getFileMgr().loadKeyFile();
@@ -145,7 +159,11 @@ public class DirectoryMngPanel extends JPanel {
 		this.removeAll();
 		switch(this.status){
 		case 0 : 	// Default
+			this.add(label[0]);
 			this.add(label[1]);
+			this.add(label[2]);
+			this.add(label[3]);
+			this.add(label[4]);
 			break;
 		case 1 : 	// Information
 			break;
@@ -193,18 +211,14 @@ public class DirectoryMngPanel extends JPanel {
 					ClientLauncher.getFrame().getDirectoryListPanel().create(dirName);
 				}
 				else if(status == 3) {
-					ClientLauncher.getFrame().getDirectoryListPanel().access();
-					
-					// 하부 폴더에 접근하기 위하여 Keyfile을 서버로 전송한다 
-					id   = ClientLauncher.getFrame().getDirectoryListPanel().get_directory_Id();
-					name = "none";
-					String data = key + "\t" + id + "\t" + name;
-					int type = Constants.PacketType.DirectoryAccessRequset.getType();
-					int length = data.length();
-					
-					// 인증 및 폴더 리스트 요청
-					ClientLauncher.getFileMgr().set_root_dir_index(id);
-					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+					key = getKey();
+//					if(key!=null){
+//						ClientLauncher.getFrame().getDirectoryListPanel().access(key);
+//					}
+//					else
+//						JOptionPane.showMessageDialog(null, "Load Key file");
+					ClientLauncher.getFrame().getDirectoryListPanel().access(key);
+
 				}
 				else if(status == 4) {
 					ClientLauncher.getFrame().getDirectoryListPanel().delete();
@@ -212,18 +226,16 @@ public class DirectoryMngPanel extends JPanel {
 				else if(status == 5) {
 					ClientLauncher.getFrame().getDirectoryListPanel().settings();
 				}
-				btn[2].doClick();
+				initialize();
 			}
 
 			// 취소버튼을 누르면 초기화
 			if(event.getSource()==btn[2]){
-				textField[0].setText("");
-				textField[1].setText("");
+				initialize();
 				if(ClientLauncher.getFrame().getDirectoryListPanel().getIsSelected()){
 					setStatus(0);
 				}
 				else {
-					
 					label[1].setText("");
 					setStatus(1);
 				}

@@ -40,6 +40,7 @@ public class HDFSClient implements PrivateUpDown1 {
 			return false;
 		} catch (IOException e) {
 			System.out.println("IOException");
+			return false;
 		}
 		System.out.println("networking established");
 		return true;
@@ -53,19 +54,20 @@ public class HDFSClient implements PrivateUpDown1 {
 	}
 
 	@Override
-	public int upload(String fileName, String userId, File targetFile, String dirPath) throws IOException {
+	public int upload(Files fileDescript, File targetFile) throws IOException {
 		/*
 		  디렉토리 중복 여부 확인 필요
-		  
 		 */	
 		int optionNum = 1;
 		byte[] buf = new byte[1048576];
 		BufferedInputStream readFile = new BufferedInputStream(new FileInputStream(targetFile));
 		readFile.read(buf, 0, 1048576);
-
-		Files sendingFile = new Files(fileName,"secretgarden"+userId+"/"+dirPath, optionNum, buf, userId);
+		fileDescript.setFileBuf(buf);
+//		Files sendingFile = new Files(fileName,"secretgarden"+userId+"/"+dirPath+"/", optionNum, buf, userId);
+		System.out.println("hdfs upload Start!");
+		
 		objOutput = new ObjectOutputStream(writer);
-		objOutput.writeObject(sendingFile);
+		objOutput.writeObject(fileDescript);
 		objOutput.flush();
 		System.out.println("일단은 보냇음...");
 		
@@ -76,11 +78,9 @@ public class HDFSClient implements PrivateUpDown1 {
 	
 
 	@Override
-	public byte[] download(String sourcePath, String userId, String fileName) throws IOException {
+	public Files download(Files request) throws IOException {
 		//BufferedOutputStream bos = null;
-		int optionNum = 2;
 		
-		Files request = new Files(fileName, sourcePath, optionNum, userId);
 		
 		//request
 		objOutput = new ObjectOutputStream(writer);
@@ -92,17 +92,17 @@ public class HDFSClient implements PrivateUpDown1 {
 			objInput = new ObjectInputStream(reader);
 			recievFile = (Files)objInput.readObject();
 		} catch (IOException e) {
-			System.out.println("object 수신 실");
+			System.out.println("object 수신 실패");
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("클래스를 찾지 못했습니다. 왜???");
+		
 		}
 		
 		objInput.close();
 		objOutput.close();
 		
-		return recievFile.getFileBuf();
+		return recievFile;
 	}
 
 	
