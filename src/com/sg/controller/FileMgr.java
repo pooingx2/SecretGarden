@@ -93,7 +93,7 @@ public class FileMgr {
 		}
 	}
 
-	// file을 load함 
+	// key file을 load함 
 	// return 	vector(0) : filePath
 	//			vector(1) : key
 	public Vector<String> loadKeyFile(){
@@ -135,6 +135,7 @@ public class FileMgr {
 		return result;
 	}
 	
+	// upload할 file path를 return
 	public String loadUploadFile(){
 		String path=null;
 		JFileChooser fileDialog = new JFileChooser(new File(homePath));
@@ -149,5 +150,18 @@ public class FileMgr {
 		return path;
 	}
 	
-	
+	// download할 path를 return
+	public String getDownloadPath(){
+		String path=null;
+		JFileChooser fileDialog = new JFileChooser(new File(homePath));
+		int isSelected = fileDialog.showSaveDialog(null);
+		if(isSelected == JFileChooser.APPROVE_OPTION) {
+			File file = fileDialog.getSelectedFile();
+			BufferedReader in = null;
+			if(file != null) {
+				path = file.getAbsolutePath();
+			}
+		}
+		return path;
+	}
 }

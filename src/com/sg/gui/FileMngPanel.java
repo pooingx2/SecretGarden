@@ -54,7 +54,7 @@ public class FileMngPanel extends JPanel {
 		super();
 		this.width = w;
 		this.height = h;
-		this.status = 0;
+		this.status = 1;
 		this.file = null;
 		this.filePath = null;
 		this.setLayout(null);
@@ -79,19 +79,10 @@ public class FileMngPanel extends JPanel {
 
 		label = new JLabel[5];
 		textField = new JTextField[2];
-		btn = new JButton[3];
+		btn = new JButton[4];
 
 		handler = new ActionHandler();
 
-		/*
-		label[0] = new JLabel();
-		label[0].setBounds(20,50,250,30);
-		label[0].setFont(inputFont);
-
-		label[1] = new JLabel();
-		label[1].setBounds(20,100,300,30);
-		label[1].setFont(Constants.Font2);
-*/
 		for(int i=0;i<5;i++){
 			label[i] = new JLabel();
 			label[i].setBounds(30,50+(i*30),300,30);
@@ -121,20 +112,31 @@ public class FileMngPanel extends JPanel {
 		btn[1].setBounds(150,200,80,30);
 		btn[1].addActionListener(handler);
 
-		// 취서버튼
+		// 취소버튼
 		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
 		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
 		btn[2].setBounds(250,200,80,30);
 		btn[2].addActionListener(handler);
+		
+		// download Path 버튼
+		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.downloadPathBtn1.getPath()));
+		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.downloadPathBtn2.getPath()));
+		btn[3].setBounds(280,100,30,30);
+		btn[3].addActionListener(handler);
 
 		this.add(bgImg[1]);
 	}
 
 	public void initialize() { 
+		this.status=1;
 		textField[0].setText("");
 		textField[1].setText("");
 		label[0].setText("");
 		label[1].setText("");
+		label[2].setText("");
+		label[3].setText("");
+		label[4].setText("");
+		changePanel();
 	}
 
 	public int getStatus() {
@@ -158,7 +160,13 @@ public class FileMngPanel extends JPanel {
 	public void setUploadFilePath(){
 		String path = ClientLauncher.getFileMgr().loadUploadFile();
 		if(path != null){
-			System.out.println(path);
+			textField[1].setText(path);
+		}
+	}
+	
+	public void setDownloadFilePath(){
+		String path = ClientLauncher.getFileMgr().getDownloadPath();
+		if(path != null){
 			textField[1].setText(path);
 		}
 	}
@@ -189,6 +197,8 @@ public class FileMngPanel extends JPanel {
 			this.add(btn[2]);
 			break;
 		case 4 : 	//	Download
+			this.add(textField[1]);
+			this.add(btn[3]);
 			this.add(btn[1]);
 			this.add(btn[2]);
 			break;
@@ -220,6 +230,11 @@ public class FileMngPanel extends JPanel {
 			if(event.getSource()==btn[0]){
 				setUploadFilePath();
 			}
+			
+			// download할 경로 설정
+			if(event.getSource()==btn[3]){
+				setDownloadFilePath();
+			}
 
 			// 확인버튼을 누르면 해당 상태에 맞는 함수를 call 
 			if(event.getSource()==btn[1]){
@@ -228,44 +243,48 @@ public class FileMngPanel extends JPanel {
 				
 				// create
 				if(status == 2) {
-					if(dirName.indexOf('.')==-1){
-						ClientLauncher.getFrame().getFileListPanel().create(dirName);
+					if(dirName.indexOf('.')!=-1){
+						JOptionPane.showMessageDialog(null, "Incorrect dirName");
 					}
 					else{
-						JOptionPane.showMessageDialog(null, "Incorrect dirName");
+						ClientLauncher.getFrame().getFileListPanel().create(dirName);
 					}
 				}
 				// upload
 				else if(status == 3) {
-					String dirPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-					try {
-						ClientLauncher.getHybrid().upload(fileName,dirPath);
-					} catch (IOException e) {
-						e.printStackTrace();
+					if(fileName.equals("")){
+						JOptionPane.showMessageDialog(null, "Load file");
 					}
-					ClientLauncher.getFrame().getFileListPanel().file_to_cloud();
-					
-					/* 메타데이터 전송 */
-					MetaData m_data = new MetaData();
-					ClientLauncher.getFrame().getFileListPanel().upload(fileName, m_data);
-
+					else{
+						String dirPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+						try {
+							ClientLauncher.getHybrid().upload(fileName,dirPath);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						ClientLauncher.getFrame().getFileListPanel().file_to_cloud();
+						
+						/* 메타데이터 전송 */
+						MetaData m_data = new MetaData();
+						ClientLauncher.getFrame().getFileListPanel().upload(fileName, m_data);
+					}
 				}
 				// download
 				else if(status == 4) {
-					/*접근 할 경로 + 파일 명 형식 : /root/asd/C:UsersSSM123.bkg*/
-					//String sourcePath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-					//System.out.println("sourcePath : " + sourcePath);
-					String sourcePath = "/root/hi/test.txt";
-					/*destPath : local 에 다운로드 할 dir 경, 어디에 다운로드할지 경로 설정 필요*/
-					String destPath = "/home/sungjin/downloadtest/";
-					/**/
-					try {
-						ClientLauncher.getHybrid().download(sourcePath, destPath);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					if(fileName.equals("")){
+						JOptionPane.showMessageDialog(null, "Load file");
 					}
-					ClientLauncher.getFrame().getFileListPanel().download();
+					else{
+						String sourcePath = "/root/hi/test.txt";
+						String destPath = "/home/sungjin/downloadtest/";
+						try {
+							ClientLauncher.getHybrid().download(sourcePath, destPath);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						ClientLauncher.getFrame().getFileListPanel().download();
+					}
 				}
 				// delete
 				else if(status == 5) {

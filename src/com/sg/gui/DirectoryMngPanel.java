@@ -44,7 +44,7 @@ public class DirectoryMngPanel extends JPanel {
 		super();
 		this.width = w;
 		this.height = h;
-		this.status = 0;
+		this.status = 1;
 		this.setLayout(null);
 		this.setBackground(Constants.backColor);
 		this.setBorder(new LineBorder(Color.LIGHT_GRAY));
@@ -120,6 +120,7 @@ public class DirectoryMngPanel extends JPanel {
 
 	public void initialize() { 
 		this.key=null;
+		this.status=1;
 		textField[0].setText("");
 		textField[1].setText("");
 		label[0].setText("");

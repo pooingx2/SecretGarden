@@ -101,7 +101,9 @@ public class Constants {
 		loadKeyfileBtn1("img/button/loadKeyfileBtn1.jpg"),
 		loadKeyfileBtn2("img/button/loadKeyfileBtn2.jpg"),
 		fileOpenBtn1("img/button/fileOpenBtn1.jpg"),
-		fileOpenBtn2("img/button/fileOpenBtn2.jpg");
+		fileOpenBtn2("img/button/fileOpenBtn2.jpg"),		
+		downloadPathBtn1("img/button/downloadPathBtn1.jpg"),
+		downloadPathBtn2("img/button/downloadPathBtn2.jpg");
 		
 		final private String path;
 		private ButtonPath(String path) { this.path = path; }

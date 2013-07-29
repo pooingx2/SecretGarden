@@ -49,7 +49,6 @@ public class DirectoryListPanel extends JPanel {
 	public DirectoryListPanel(int w, int h) {
 
 		super();
-		boolean isAccessed = false;
 		this.width = w;
 		this.height = h;
 		this.isSelected = false;
@@ -173,6 +172,8 @@ public class DirectoryListPanel extends JPanel {
 	}
 
 	public void initialize() {
+		this.isSelected = false;
+		this.isAccessed = false;
 		dirMngPanel.initialize();
 	}
 

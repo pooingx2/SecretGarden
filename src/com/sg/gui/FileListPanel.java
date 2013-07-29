@@ -111,8 +111,8 @@ public class FileListPanel extends JPanel {
 					fileMngPanel.getLabel()[1].setText("Parent : " + selectedNode.getParent());
 					fileMngPanel.getLabel()[2].setText("Depth : " + selectedNode.getLevel());
 					fileMngPanel.getLabel()[3].setText("Path : " + getSelectedPath());
+					fileMngPanel.changePanel();
 				}
-				changePanel();
 			}
 		});
 		fileTree.setEditable(false);
@@ -137,6 +137,7 @@ public class FileListPanel extends JPanel {
 		makeTree();
 		((DefaultTreeModel)fileTree.getModel()).reload();
 		changePanel();
+		fileMngPanel.initialize();
 	}
 
 	// fileInfoList에 저장된 node를 통해 tree를 만듬
@@ -204,7 +205,7 @@ public class FileListPanel extends JPanel {
 	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
 		this.remove(bgImg);
-		fileMngPanel.changePanel();
+		fileMngPanel.initialize();
 		this.add(scroll);
 		this.add(fileMngPanel);
 		this.add(bgImg);
@@ -288,8 +289,12 @@ public class FileListPanel extends JPanel {
 
 			selectedNode = getSelectedNode();
 			
+			if(selectedNode == null){
+				JOptionPane.showMessageDialog(null, "Not Selected");
+			}
+			
 			// Create
-			if(event.getSource()==btn[0]){
+			else if(event.getSource()==btn[0]){
 				if(selectedNode.toString().indexOf('.') == -1){
 					fileMngPanel.setStatus(2);
 					fileMngPanel.changePanel();
@@ -298,7 +303,7 @@ public class FileListPanel extends JPanel {
 					JOptionPane.showMessageDialog(null, "Select upload folder");
 			}
 			// Upload
-			if(event.getSource()==btn[1]){
+			else if(event.getSource()==btn[1]){
 				if(selectedNode.toString().indexOf('.') == -1){
 					fileMngPanel.setStatus(3);
 					fileMngPanel.changePanel();
@@ -308,13 +313,13 @@ public class FileListPanel extends JPanel {
 				
 			}
 			// Download
-			if(event.getSource()==btn[2]){
+			else if(event.getSource()==btn[2]){
 				fileMngPanel.setStatus(4);
 				fileMngPanel.changePanel();
 			}
 
 			// Delete
-			if(event.getSource()==btn[3]){
+			else if(event.getSource()==btn[3]){
 				fileMngPanel.setStatus(5);
 				fileMngPanel.changePanel();
 			}
