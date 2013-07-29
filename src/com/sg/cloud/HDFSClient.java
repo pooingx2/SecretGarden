@@ -101,8 +101,8 @@ public class HDFSClient implements PrivateUpDown1 {
 		
 		}
 		
-		objInput.close();
-		objOutput.close();
+		//objInput.close();
+		//objOutput.close();
 		
 		return recievFile;
 	}

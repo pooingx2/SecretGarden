@@ -63,11 +63,10 @@ public class FileListPanel extends JPanel {
 
 		handler = new ActionHandler();
 
-
 		// TreeModel 등록
 		root = new DefaultMutableTreeNode("root");
-		model= new DefaultTreeModel(root);
-
+		model = new DefaultTreeModel(root);
+		
 		// File view Tree 등록
 		fileTree = new JTree();
 		fileTree.setRowHeight(20);
@@ -76,18 +75,28 @@ public class FileListPanel extends JPanel {
 			@Override
 			public void valueChanged(TreeSelectionEvent event) {
 				selectedNode = getSelectedNode();
-				//selectedNode.getPath();
+				fileMngPanel.setStatus(0);
+				if (fileMngPanel.getStatus() == 0 && !editMode) {
+					fileMngPanel.getLabel()[0].setText("Name : " + selectedNode.toString());
+					fileMngPanel.getLabel()[1].setText("Parent : " + selectedNode.getParent());
+					fileMngPanel.getLabel()[2].setText("Depth : " + selectedNode.getLevel());
+					fileMngPanel.getLabel()[3].setText("Path : " + getSelectedPath());
+					fileMngPanel.changePanel();
+				}
 			}
 		});
-		fileTree.setEditable(true);
+		fileTree.setEditable(false);
 		fileTree.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		fileTree.setCellRenderer(new MyTreeRenderer());
-		setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
 		// scroll 등록
 		scroll = new JScrollPane(fileTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setBounds(50, 100, 250, 360);
+
+		// File을 관리할 수 있는 패널 등록
+		fileMngPanel = new FileMngPanel(350,250);
+		fileMngPanel.setBounds(400,200,350,250);
 
 		// 버튼
 		btnGroupPanel = new JPanel();
@@ -115,47 +124,12 @@ public class FileListPanel extends JPanel {
 			btn[i].addActionListener(handler);
 			btnGroupPanel.add(btn[i]);
 		}
-
-		// File을 관리할 수 있는 패널 등록
-		fileMngPanel = new FileMngPanel(350,250);
-		fileMngPanel.setBounds(400,200,350,250);
-
-		// TreeModel 등록
-		root = new DefaultMutableTreeNode("root");
-		model= new DefaultTreeModel(root);
-		
-		// File view Tree 등록
-		fileTree = new JTree();
-		fileTree.setRowHeight(20);
-		fileTree.setModel(model);
-		fileTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {	
-			@Override
-			public void valueChanged(TreeSelectionEvent event) {
-				selectedNode = getSelectedNode();
-				fileMngPanel.setStatus(0);
-				if (fileMngPanel.getStatus() == 0 && !editMode) {
-					fileMngPanel.getLabel()[0].setText("Name : " + selectedNode.toString());
-					fileMngPanel.getLabel()[1].setText("Parent : " + selectedNode.getParent());
-					fileMngPanel.getLabel()[2].setText("Depth : " + selectedNode.getLevel());
-					fileMngPanel.getLabel()[3].setText("Path : " + getSelectedPath());
-					fileMngPanel.changePanel();
-				}
-			}
-		});
-		fileTree.setEditable(false);
-		fileTree.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-		fileTree.setCellRenderer(new MyTreeRenderer());
-		fileMngPanel.initialize();
-
-		// scroll 등록
-		scroll = new JScrollPane(fileTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scroll.setBounds(50, 100, 250, 360);
 		
 		this.add(scroll);
 		this.add(btnGroupPanel);
 		this.add(fileMngPanel);
 		this.add(bgImg);
+		
 		this.repaint();
 	}
 
@@ -192,7 +166,6 @@ public class FileListPanel extends JPanel {
 					if(temp.toString().equals(fileInfo.getParent()) && 
 							temp.getLevel() == (Integer.parseInt(fileInfo.getDepth())-1)){
 						temp.add(node);
-						System.out.println("add child " + node.toString() +" to " + temp.getParent() + " : "+ temp);
 					}
 					temp = temp.getNextNode();
 				}
@@ -227,10 +200,19 @@ public class FileListPanel extends JPanel {
 		for(int i=0;i<(selectedNode.getPath().length);i++){
 			path += "/" + selectedNode.getPath()[i];
 		}
-		System.out.println(path);
-
 		return path;
 	}
+	
+//	public String getCloudDownloadPath(){
+//		String path="";
+//		for(int i=0;i<(selectedNode.getPath().length);i++){
+//			path += "/" + selectedNode.getPath()[i];
+//		}
+//		System.out.println(path);
+//
+//		return path;
+//	}
+	
 	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
 		this.remove(bgImg);
@@ -298,14 +280,9 @@ public class FileListPanel extends JPanel {
 			System.out.println("index " + fileInfo.getIndex());
 		}
 	}
-	
-	public void file_to_cloud() {
-		
-		
-	}
 
 	// 버튼 이벤트, 마우스 이벤트 리스너 등록
-	private class ActionHandler implements ActionListener, MouseListener{
+	private class ActionHandler implements ActionListener{
 
 
 		/* 	status
@@ -353,35 +330,6 @@ public class FileListPanel extends JPanel {
 				fileMngPanel.changePanel();
 			}
 			
-		}
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			if(e.getButton()==MouseEvent.BUTTON1) {
-				if(e.getClickCount()==2) {
-					btn[1].doClick();
-				}
-			}
-		}
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
 		}
 	}
 }

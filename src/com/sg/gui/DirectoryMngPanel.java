@@ -217,7 +217,7 @@ public class DirectoryMngPanel extends JPanel {
 //					}
 //					else
 //						JOptionPane.showMessageDialog(null, "Load Key file");
-					ClientLauncher.getFrame().getDirectoryListPanel().access(key);
+					ClientLauncher.getFrame().getDirectoryListPanel().access("none");
 
 				}
 				else if(status == 4) {

@@ -16,9 +16,9 @@ import com.sg.model.FileInfo;
 public class FileMgr {
 
 	private String homePath;
+	private String downloadPath;
 	private Vector<FileInfo> fileInfoList;
 	private int maxDepth;		//fileInfoList의 maxDepth
-
 	private String rootDirIndex;						//폴더들의 부모 디렉토리 인덱스.
 														//디렉토리 내부의 폴더들의 루트 인덱스를 의미한다.
 													    //디렉토리 내부에 아무런 폴더가없는 상태에서 폴더를 추가할시 참조한다.
@@ -26,6 +26,8 @@ public class FileMgr {
 	// file을 관리
 	public FileMgr(){
 		homePath = System.getProperty("user.home");
+//		downloadPath = homePath+"\\SecretGarden";
+		downloadPath = homePath;
 		fileInfoList = new Vector<FileInfo>();
 		maxDepth = 0;
 	}
@@ -56,6 +58,22 @@ public class FileMgr {
 		this.rootDirIndex = dirId;
 	}
 	
+	public String getHomePath() {
+		return homePath;
+	}
+
+	public void setHomePath(String homePath) {
+		this.homePath = homePath;
+	}
+
+	public void setDownloadPath(String downloadPath) {
+		this.downloadPath = downloadPath;
+	}
+
+	public String getDownloadPath() {
+		return downloadPath;
+	}
+
 	public void initFileInfo(){
 		maxDepth = 0;
 		fileInfoList.removeAllElements();
@@ -150,18 +168,18 @@ public class FileMgr {
 		return path;
 	}
 	
-	// download할 path를 return
-	public String getDownloadPath(){
-		String path=null;
-		JFileChooser fileDialog = new JFileChooser(new File(homePath));
-		int isSelected = fileDialog.showSaveDialog(null);
-		if(isSelected == JFileChooser.APPROVE_OPTION) {
-			File file = fileDialog.getSelectedFile();
-			BufferedReader in = null;
-			if(file != null) {
-				path = file.getAbsolutePath();
-			}
-		}
-		return path;
-	}
+//	// download할 path를 return
+//	public String getDownloadPath(){
+//		String path=null;
+//		JFileChooser fileDialog = new JFileChooser(new File(homePath));
+//		int isSelected = fileDialog.showSaveDialog(null);
+//		if(isSelected == JFileChooser.APPROVE_OPTION) {
+//			File file = fileDialog.getSelectedFile();
+//			BufferedReader in = null;
+//			if(file != null) {
+//				path = file.getAbsolutePath();
+//			}
+//		}
+//		return path;
+//	}
 }
