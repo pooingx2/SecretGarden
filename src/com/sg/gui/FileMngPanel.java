@@ -78,8 +78,8 @@ public class FileMngPanel extends JPanel {
 		inputFont = Constants.Font1;
 
 		label = new JLabel[5];
-		textField = new JTextField[2];
-		btn = new JButton[4];
+		textField = new JTextField[3];
+		btn = new JButton[3];
 
 		handler = new ActionHandler();
 
@@ -97,6 +97,11 @@ public class FileMngPanel extends JPanel {
 		textField[1].setBounds(30,140,300,30);
 		textField[1].setEditable(false);
 		textField[1].setFont(inputFont);
+		
+		textField[2] = new JTextField();		// download Path
+		textField[2].setBounds(30,140,300,30);
+		textField[2].setEditable(false);
+		textField[2].setFont(inputFont);
 
 		handler = new ActionHandler();
 		
@@ -118,12 +123,6 @@ public class FileMngPanel extends JPanel {
 		btn[2].setBounds(250,200,80,30);
 		btn[2].addActionListener(handler);
 		
-		// download Path 버튼
-		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.downloadPathBtn1.getPath()));
-		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.downloadPathBtn2.getPath()));
-		btn[3].setBounds(280,100,30,30);
-		btn[3].addActionListener(handler);
-
 		this.add(bgImg[1]);
 	}
 
@@ -131,6 +130,7 @@ public class FileMngPanel extends JPanel {
 		this.status=1;
 		textField[0].setText("");
 		textField[1].setText("");
+		textField[2].setText("");
 		label[0].setText("");
 		label[1].setText("");
 		label[2].setText("");
@@ -197,8 +197,8 @@ public class FileMngPanel extends JPanel {
 			this.add(btn[2]);
 			break;
 		case 4 : 	//	Download
-			this.add(textField[1]);
-			this.add(btn[3]);
+			textField[2].setText(ClientLauncher.getFileMgr().getDownloadPath());
+			this.add(textField[2]);
 			this.add(btn[1]);
 			this.add(btn[2]);
 			break;
@@ -216,12 +216,9 @@ public class FileMngPanel extends JPanel {
 	// 버튼에 따른 이벤트 핸들러
 	private class ActionHandler implements ActionListener {
 		private String dirName;
-		
-		/* Uplade되는 파일 이름 */
-		private String fileName;
-		/* Upload되는 메타데이터 */
-		private MetaData m_data;
-		
+		private String localUploadPath;	// upload fileName
+		private MetaData m_data;	// upload metaData
+		private String localDownloadPath;
 		
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -233,13 +230,15 @@ public class FileMngPanel extends JPanel {
 			
 			// download할 경로 설정
 			if(event.getSource()==btn[3]){
-				setDownloadFilePath();
+//				setDownloadFilePath();
 			}
 
 			// 확인버튼을 누르면 해당 상태에 맞는 함수를 call 
 			if(event.getSource()==btn[1]){
+				
 				dirName	= textField[0].getText();
-				fileName = textField[1].getText();
+				localUploadPath = textField[1].getText();
+				localDownloadPath = textField[2].getText();
 				
 				// create
 				if(status == 2) {
@@ -252,33 +251,33 @@ public class FileMngPanel extends JPanel {
 				}
 				// upload
 				else if(status == 3) {
-					if(fileName.equals("")){
+					if(localUploadPath.equals("")){
 						JOptionPane.showMessageDialog(null, "Load file");
 					}
 					else{
-						String dirPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
 						try {
-							ClientLauncher.getHybrid().upload(fileName,dirPath);
+							ClientLauncher.getHybrid().upload(localUploadPath,selectedPath);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-						ClientLauncher.getFrame().getFileListPanel().file_to_cloud();
 						
 						/* 메타데이터 전송 */
 						MetaData m_data = new MetaData();
-						ClientLauncher.getFrame().getFileListPanel().upload(fileName, m_data);
+						ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
 					}
 				}
 				// download
 				else if(status == 4) {
-					if(fileName.equals("")){
+					if(localDownloadPath.equals("")){
 						JOptionPane.showMessageDialog(null, "Load file");
 					}
 					else{
-						String sourcePath = "/root/hi/test.txt";
-						String destPath = "/home/sungjin/downloadtest/";
+//						String sourcePath = "/root/hi/test.txt";
+//						String destPath = "/home/sungjin/downloadtest/";
+						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
 						try {
-							ClientLauncher.getHybrid().download(sourcePath, destPath);
+							ClientLauncher.getHybrid().download(selectedPath, localDownloadPath);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
