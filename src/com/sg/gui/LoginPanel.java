@@ -126,7 +126,7 @@ public class LoginPanel extends JPanel {
 				int length = data.length();
 				
 				//id와 password 패킷 전송
-				ClientLauncher.getHybrid().setUserId(id);
+				
 				ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 
 			}

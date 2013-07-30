@@ -15,12 +15,11 @@ public class Hybrid {
 
 	private HDFSClient hdfsModule;
 	private AWSUpDown aWSModule;
-	private String userId;
+	
 	
 	public Hybrid(){
 		hdfsModule = new HDFSClient();
 		aWSModule = new AWSUpDown();
-		this.userId = null;
 	}
 
 	public boolean auth(String type, String id, String pw) {
@@ -35,7 +34,7 @@ public class Hybrid {
 			aWSModule.setKey(key);
 			aWSModule.setKeyId(keyId);
 			
-			isConnected= aWSModule.auth(userId);
+			isConnected= aWSModule.auth(ClientLauncher.getUser().getId());
 			break;
 
 		case Constants.hadoop : 		// hdfs connect
@@ -99,7 +98,7 @@ public class Hybrid {
 	
 		
 		File targetFile = new File(sourceFile);
-		sendingFile = new Files(fixedFileName, fixedDestPath, 1, this.userId);
+		sendingFile = new Files(fixedFileName, fixedDestPath, 1, ClientLauncher.getUser().getId());
 		//aws s3 upload
 		if (aWSModule.upload( sendingFile, targetFile) == -1) {
 			System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
@@ -136,7 +135,7 @@ public class Hybrid {
 		request.setDirPath(fixedSourcePath);
 		request.setFileName(fixedFileName);
 		request.setOptionNum(2);
-		request.setUserId(userId);
+		request.setUserId(ClientLauncher.getUser().getId());
 		
 
 		byte[] awsBuf = null;
@@ -187,14 +186,6 @@ public class Hybrid {
 	}
 
 	
-	public String getUserId() {
-		return userId;
-	}
-
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 	public HDFSClient getHdfsModule() {
 		return hdfsModule;
 	}
