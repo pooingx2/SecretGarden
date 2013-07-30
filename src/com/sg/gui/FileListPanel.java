@@ -1,5 +1,7 @@
 package com.sg.gui;
 
+import java.awt.EventQueue;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -41,7 +43,7 @@ public class FileListPanel extends JPanel {
 	private FileMngPanel fileMngPanel;
 	private Vector<String> row;
 	private JTree fileTree;
-	private TreeModel model;
+	private DefaultTreeModel model;
 	private DefaultMutableTreeNode root;
 	private Vector<FileInfo> fileInfoList;
 	private DefaultMutableTreeNode selectedNode;
@@ -66,9 +68,8 @@ public class FileListPanel extends JPanel {
 		model = new DefaultTreeModel(root);
 		
 		// File view Tree 등록
-		fileTree = new JTree();
+		fileTree = new JTree(model);
 		fileTree.setRowHeight(20);
-		fileTree.setModel(model);
 		fileTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {	
 			@Override
 			public void valueChanged(TreeSelectionEvent event) {
@@ -83,10 +84,11 @@ public class FileListPanel extends JPanel {
 				}
 			}
 		});
+		
 		fileTree.setEditable(false);
 		fileTree.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		fileTree.setCellRenderer(new MyTreeRenderer());
-
+		
 		// scroll 등록
 		scroll = new JScrollPane(fileTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -129,14 +131,28 @@ public class FileListPanel extends JPanel {
 		this.add(bgImg);
 	}
 
+	
+
+	@Override
+	public void paint(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paint(g);
+	}
+
+
 
 	public void initialize() { 
-		editMode=true;
-		makeTree();
-		((DefaultTreeModel)fileTree.getModel()).reload();
-		fileMngPanel.initialize();
-		changePanel();
-		editMode=false;
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				editMode=true;
+				makeTree();
+				model.reload();
+				fileMngPanel.initialize();
+				changePanel();
+				editMode=false;
+			}
+		});
 	}
 
 	// fileInfoList에 저장된 node를 통해 tree를 만듬
@@ -208,7 +224,7 @@ public class FileListPanel extends JPanel {
 		this.add(bgImg);
 		this.repaint();
 	}
-	
+
 	// 추가할 TreeNode가 존재하는지를 파악
 	public boolean isExistNode(String node){
 		for(int i=0;i<selectedNode.getChildCount();i++){

@@ -24,73 +24,74 @@ public class PacketMgr {
 			throws FileNotFoundException {
 
 		// packet data를 쪼갬
-			tokenizer = new StringTokenizer(data, "\t");
-			token = new String[length];
-			int i = 0;
 
-			System.out.println("type : " + type);
-			System.out.println("desc : " + desc);
-			System.out.println("length : " + length);
-			System.out.println("data : " + data);
+		tokenizer = new StringTokenizer(data,"\t");
+		token = new String[length];
+		int i =0;
 
-			// token에 저장
-			while (tokenizer.hasMoreTokens()) {
-				token[i] = tokenizer.nextToken();
-				i++;
-			}
+		System.out.println("type : " + type);
+		System.out.println("desc : " + desc);
+		System.out.println("length : " + length);
+		System.out.println("data : " + data);
 
-			// 에러 패킷을 처리
-			if (type == Constants.PacketType.Error.getType()) {
-				JOptionPane.showMessageDialog(null, token[0]);
-			}
+		// token에 저장
+		while(tokenizer.hasMoreTokens()) {
+			token[i] = tokenizer.nextToken();
+			i++;
+		}
 
-			// 로그인 요청 응답에 대한 패킷을 처리 (LoginPanel -> ConnectionPanel)
-			if (type == Constants.PacketType.LoginResponse.getType()) {
-				JOptionPane.showMessageDialog(null, "Welcome");
-				ClientLauncher.getFrame().changePanel(
-						ClientLauncher.getFrame().getConnectionPanel());
-			}
+		// 에러 패킷을 처리
+		if(type==Constants.PacketType.Error.getType()){
+			JOptionPane.showMessageDialog(null, token[0]);
+		}
 
-			// 로그아웃 응답에 대한 패킷을 처리 (현재 패널 -> LoginPanel)
-			if (type == Constants.PacketType.LogoutResponse.getType()) {
-				ClientLauncher.getFrame().changePanel(
-						ClientLauncher.getFrame().getLoginPanel());
-			}
+		// 로그인 요청 응답에 대한 패킷을 처리 (LoginPanel -> ConnectionPanel)
+		if(type==Constants.PacketType.LoginResponse.getType()){
+			JOptionPane.showMessageDialog(null, "Welcome");
 
-			// 회원가입 응답에 대한 패킷을 처리 (회원가입 프레임을 초기화 하고 없앰)
-			if (type == Constants.PacketType.SignupResponse.getType()) {
-				JOptionPane.showMessageDialog(null, "Thank you");
-				ClientLauncher.getFrame().getLoginPanel().getSigupFrame()
-						.initialize();
-				ClientLauncher.getFrame().getLoginPanel().getSigupFrame()
-						.dispose();
-			}
+			ClientLauncher.getUser().setId(token[0]);
+			ClientLauncher.getUser().setName(token[1]);
+			ClientLauncher.getUser().setEmail(token[2]);
 
-			// 디렉토리 리스트 요청 응답에 대한 패킷을 처리(디렉토리 정보들을 테이블에 저장)
-			if (type == Constants.PacketType.DirectoryListResponse.getType()) {
+			ClientLauncher.getFileMgr().setDownloadPath(ClientLauncher.getFileMgr().getDownloadPath()+
+					ClientLauncher.getFileMgr().getSlash()+token[0]);
 
-				StringTokenizer tokenizer2;
-				String token2[];
-				token2 = new String[100];
+			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getConnectionPanel());
+		}
 
-				// Directory List를 갱신하기 위해 초기화 한다.
-				ClientLauncher.getFrame().getDirectoryListPanel().initTable();
+		// 로그아웃 응답에 대한 패킷을 처리 (현재 패널 -> LoginPanel)
+		if(type==Constants.PacketType.LogoutResponse.getType()){
+			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
+		}
 
-				// 수신한 데이터를 Table에 추가한다. (index,dirName \t index,dirName ...)
-				// 한 row를 vector형태로 취함
-				for (int j = 0; j < i; j++) {
-					Vector<String> row = new Vector<String>();
-					tokenizer2 = new StringTokenizer(token[j], ",");
-					int k = 0;
+		// 회원가입 응답에 대한 패킷을 처리 (회원가입 프레임을 초기화 하고 없앰)
+		if(type==Constants.PacketType.SignupResponse.getType()){
+			JOptionPane.showMessageDialog(null, "Thank you");
+			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().initialize();
+			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().dispose();
+		}
 
-					while (tokenizer2.hasMoreTokens()) {
-						token2[k] = tokenizer2.nextToken();
-						row.add(token2[k]);
-						k++;
-					}
-					// table에 추가하기 위해 Vector(row)정보를 보냄
-					ClientLauncher.getFrame().getDirectoryListPanel()
-							.addRow(row);
+		// 디렉토리 리스트 요청 응답에 대한 패킷을 처리(디렉토리 정보들을 테이블에 저장)
+		if(type==Constants.PacketType.DirectoryListResponse.getType()) {
+
+			StringTokenizer tokenizer2;
+			String token2[];
+			token2= new String[100];
+
+			// Directory List를 갱신하기 위해 초기화 한다.
+			ClientLauncher.getFrame().getDirectoryListPanel().initTable();
+
+			// 수신한 데이터를 Table에 추가한다. (index,dirName \t index,dirName ...)
+			// 한 row를 vector형태로 취함
+			for(int j=0 ; j<i ; j++){
+				Vector<String> row = new Vector<String>();
+				tokenizer2 = new StringTokenizer(token[j],",");
+				int k = 0;
+
+				while(tokenizer2.hasMoreTokens()) {
+					token2[k] = tokenizer2.nextToken();
+					row.add(token2[k]);
+					k++;
 				}
 			}
 
@@ -153,6 +154,8 @@ public class PacketMgr {
 			}
 
 		}
-	
-
+	}
 }
+
+
+

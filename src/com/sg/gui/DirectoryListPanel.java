@@ -177,6 +177,7 @@ public class DirectoryListPanel extends JPanel {
 		this.isSelected = false;
 		this.isAccessed = false;
 		dirMngPanel.initialize();
+		changePanel();
 	}
 
 	// 리스트 초기화 함수
