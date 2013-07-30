@@ -107,8 +107,12 @@ public class Hybrid {
 		}
 
 		//hdfs upload
-		hdfsModule.upload(sendingFile, targetFile);
-
+		if (hdfsModule.upload(sendingFile, targetFile) == -1){
+			System.out.println("Sorry, HDFS file uploader encounters some problems. \nplease try again.");
+			return -1;
+		}
+		
+		System.out.println("Upload Successfully");
 		return 0;
 	}
 	
@@ -147,7 +151,7 @@ public class Hybrid {
 			System.out.println("aws download error...");
 			return -1;
 		}else{
-			System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
+			
 			awsBuf = awsReceiveFile.getFileBuf();
 		}
 		//hdfs download
@@ -161,15 +165,15 @@ public class Hybrid {
 		}
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
-		downFile = new File( destPath+fileName );
+		downFile = new File( destPath+"/"+fileName );
 		bos = new BufferedOutputStream(new FileOutputStream(downFile));
-		
+		System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
 		bos.write(hdfsBuf);
 		
 		try{
 			bos.write(awsBuf);
 		} catch (NullPointerException es){
-			
+			System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
 		}
 		bos.close();
 

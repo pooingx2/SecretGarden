@@ -268,9 +268,9 @@ public class FileMngPanel extends JPanel {
 						JOptionPane.showMessageDialog(null, "Load file");
 					}
 					else{
-//						String sourcePath = "/root/hi/test.txt";
-//						String destPath = "/home/sungjin/downloadtest/";
-						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+						//String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+						
+						String selectedPath = "/root/hey/test.txt";
 						try {
 							ClientLauncher.getHybrid().download(selectedPath, localDownloadPath);
 						} catch (IOException e) {

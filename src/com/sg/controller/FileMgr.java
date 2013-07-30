@@ -29,7 +29,7 @@ public class FileMgr {
 		homePath = System.getProperty("user.home");
 		setSlash();
 		System.out.println("Slash : "+getSlash());
-		downloadPath = homePath+"\\SecretGarden";
+		downloadPath = homePath+slash+"SecretGarden";
 		fileInfoList = new Vector<FileInfo>();
 		maxDepth = 0;
 	}

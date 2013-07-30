@@ -45,6 +45,8 @@ public class DirectoryListPanel extends JPanel {
 	private JTableHeader header;
 	private DefaultTableCellRenderer renderer;
 	private Vector<String> row;
+	
+	
 
 	public DirectoryListPanel(int w, int h) {
 
