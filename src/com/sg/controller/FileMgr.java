@@ -17,6 +17,7 @@ public class FileMgr {
 
 	private String homePath;
 	private String downloadPath;
+	private String slash;
 	private Vector<FileInfo> fileInfoList;
 	private int maxDepth;		//fileInfoList의 maxDepth
 	private String rootDirIndex;						//폴더들의 부모 디렉토리 인덱스.
@@ -26,6 +27,8 @@ public class FileMgr {
 	// file을 관리
 	public FileMgr(){
 		homePath = System.getProperty("user.home");
+		setSlash();
+		System.out.println("Slash : "+getSlash());
 		downloadPath = homePath+"\\SecretGarden";
 		fileInfoList = new Vector<FileInfo>();
 		maxDepth = 0;
@@ -71,6 +74,26 @@ public class FileMgr {
 
 	public String getDownloadPath() {
 		return downloadPath;
+	}
+	
+
+	public String getRootDirIndex() {
+		return rootDirIndex;
+	}
+
+	public void setRootDirIndex(String rootDirIndex) {
+		this.rootDirIndex = rootDirIndex;
+	}
+	
+	public String getSlash() {
+		return slash;
+	}
+
+	public void setSlash() {
+		if(System.getProperty("os.name").contains("Window"))
+			this.slash = "\\";
+		else
+			this.slash = "/";
 	}
 
 	public void initFileInfo(){

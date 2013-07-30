@@ -228,11 +228,6 @@ public class FileMngPanel extends JPanel {
 				setUploadFilePath();
 			}
 			
-			// download할 경로 설정
-			if(event.getSource()==btn[3]){
-//				setDownloadFilePath();
-			}
-
 			// 확인버튼을 누르면 해당 상태에 맞는 함수를 call 
 			if(event.getSource()==btn[1]){
 				
