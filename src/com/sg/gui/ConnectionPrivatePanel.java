@@ -174,8 +174,8 @@ public class ConnectionPrivatePanel extends JPanel {
 				pwdField.setText("");
 
 				ClientLauncher.getFrame().getConnectionPanel().setPrivate(id);
-				connection = ClientLauncher.getHybrid().auth(Constants.hadoop,id,pwd);
-//				connection = true;
+//				connection = ClientLauncher.getHybrid().auth(Constants.hadoop,id,pwd);
+				connection = true;
 
 				if(connection){
 					changeStatusPanel();
