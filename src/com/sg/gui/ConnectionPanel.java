@@ -22,6 +22,12 @@ public class ConnectionPanel extends JPanel {
 	private JLabel bgImg;
 	private ConnectionPrivatePanel privatePanel;
 	private ConnectionPublicPanel publicPanel;
+	
+	/* Private 관련 연결정보 */
+	private String p_ip;
+	private int p_portNum;
+	
+	
 
 	public ConnectionPanel(int w, int h) {
 		
@@ -88,5 +94,23 @@ public class ConnectionPanel extends JPanel {
 	{
 		return public_cloud;
 	}
+
+	public String getP_ip() {
+		return p_ip;
+	}
+
+	public void setP_ip(String p_ip) {
+		this.p_ip = p_ip;
+	}
+
+	public int getP_portNum() {
+		return p_portNum;
+	}
+
+	public void setP_portNum(int p_portNum) {
+		this.p_portNum = p_portNum;
+	}
+	
+	
 }
 

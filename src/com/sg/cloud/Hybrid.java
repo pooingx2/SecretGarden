@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 import com.sg.model.Files;
 
@@ -50,7 +51,7 @@ public class Hybrid {
 		return isConnected;
 	}
 	public int disconnected() {
-		// 제거 모듈 만들어 줘야 함
+		hdfsModule.disconnected();
 		return 0;
 	}
 	
@@ -113,6 +114,7 @@ public class Hybrid {
 		}
 		
 		System.out.println("Upload Successfully");
+		
 		return 0;
 	}
 	
@@ -165,7 +167,7 @@ public class Hybrid {
 		}
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
-		downFile = new File( destPath+"/"+fileName );
+		downFile = new File( destPath+ClientLauncher.getFileMgr().getSlash()+fileName );
 		bos = new BufferedOutputStream(new FileOutputStream(downFile));
 		System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
 		bos.write(hdfsBuf);

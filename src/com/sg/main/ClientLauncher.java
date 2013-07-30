@@ -41,6 +41,7 @@ public class ClientLauncher{
 			connector.getDis().close();
 			connector.getDos().close();
 			connector.getSocket().close();
+			hybrid.disconnected();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

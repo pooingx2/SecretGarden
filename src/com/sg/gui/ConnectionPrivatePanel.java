@@ -169,16 +169,20 @@ public class ConnectionPrivatePanel extends JPanel {
 
 				id = textField.getText();
 				pwd = pwdField.getText();
+				/*portNum 입력도 필*/
 
 				textField.setText("");
 				pwdField.setText("");
 
 				ClientLauncher.getFrame().getConnectionPanel().setPrivate(id);
-//				connection = ClientLauncher.getHybrid().auth(Constants.hadoop,id,pwd);
-				connection = true;
+				connection = ClientLauncher.getHybrid().auth(Constants.hadoop,id,pwd);
+//				connection = true;
 
 				if(connection){
 					changeStatusPanel();
+					//ClientLauncher.getFrame().getConnectionPanel().setP_ip(id);
+					/*port넘버를 받는거로 바꿔줘야 함.*/
+					//ClientLauncher.getFrame().getConnectionPanel().setP_portNum(15000);
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Connect Error");
