@@ -259,7 +259,7 @@ public class DirectoryListPanel extends JPanel {
 		String id   = ClientLauncher.getFrame().getDirectoryListPanel().getDirectoryID();
 		String name = "none";
 		
-		String data = key + "\t" + id + "\t" + name;
+		String data = id + "\t" + key + "\t" + name;
 		
 		int type = Constants.PacketType.DirectoryAccessRequest.getType();
 		int length = data.length();

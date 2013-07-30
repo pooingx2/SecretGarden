@@ -41,6 +41,29 @@ public class Connector implements Runnable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void newConnector()
+	{
+		System.out.println("new Connection");
+		pkMgr = ClientLauncher.getPkMgr();
+
+		try {
+			socket = new Socket(Constants.serverIP, Constants.serverPort);
+			dis = new DataInputStream(socket.getInputStream());
+			dos = new DataOutputStream(socket.getOutputStream());
+			
+			runable = true;
+			
+			// 패킷을 받기 위한 스레드
+			client = new Thread(this);
+			client.start();
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public Socket getSocket() {
 		return socket;

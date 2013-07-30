@@ -166,10 +166,12 @@ void client_recv(int event_fd, Peer *peer)
 
   unsigned char headerBuf[HEADERSIZE*5]; 
   unsigned char dataBuf[DATASIZE*5];
+  
   int len;
+  /*
   int flag = fcntl(event_fd, F_GETFL, 0);
   fcntl(event_fd, F_SETFL, flag|O_NONBLOCK);
-
+  */
 
   memset(headerBuf, 0x00, HEADERSIZE*5);
   memset(dataBuf,   0x00, DATASIZE*5);
@@ -611,7 +613,6 @@ void server_process(Peer *peer)
 			 fcntl(socket, F_SETFL, flag|O_NONBLOCK);
 			 userpool_add(socket, inet_ntoa(cli_addr.sin_addr), peer);
              epoll_cli_add(socket);
-			 printf("flag is : %d \n", flag);
 			 printf("New client connected and Set Async fd : %d, ip : %s \n", socket , inet_ntoa(cli_addr.sin_addr));
 			 
           
@@ -622,7 +623,6 @@ void server_process(Peer *peer)
      // 이벤트가 발생한 소켓에 대해서 데이터를 읽어들인다.
 	 int flag = fcntl(socket, F_GETFL, 0);
 	 fcntl(socket, F_SETFL, flag|O_NONBLOCK);
-	 printf("flag is : %d \n", flag);		
      client_recv(g_events[i].data.fd, peer);   
   }
 }

@@ -52,6 +52,9 @@ public class PacketMgr {
 		// 로그아웃 응답에 대한 패킷을 처리 (현재 패널 -> LoginPanel)
 		if(type==Constants.PacketType.LogoutResponse.getType()){
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
+			ClientLauncher.exit();
+			ClientLauncher.getConnector().newConnector();
+			
 		}
 		
 		// 회원가입 응답에 대한 패킷을 처리 (회원가입 프레임을 초기화 하고 없앰)
@@ -90,7 +93,8 @@ public class PacketMgr {
 
 		// 디렉토리 생성에 따른 키 데이터를 수신하여 파일로 변환하는 과정
 		if(type==Constants.PacketType.DirectoryCreateResponse.getType()) {
-//			fileMgr.saveFile(token[0]);
+			/* 키파일 저장 */
+			fileMgr.saveFile(token[0]);
 		}
 		
 		// 디렉토리 액세스 리스판스(Key file 인증에 따른 디렉토리 접속 키 부여) 
