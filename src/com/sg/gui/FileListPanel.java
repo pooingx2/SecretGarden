@@ -2,8 +2,6 @@ package com.sg.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -129,8 +127,6 @@ public class FileListPanel extends JPanel {
 		this.add(btnGroupPanel);
 		this.add(fileMngPanel);
 		this.add(bgImg);
-		
-		this.repaint();
 	}
 
 
@@ -138,8 +134,8 @@ public class FileListPanel extends JPanel {
 		editMode=true;
 		makeTree();
 		((DefaultTreeModel)fileTree.getModel()).reload();
-		changePanel();
 		fileMngPanel.initialize();
+		changePanel();
 		editMode=false;
 	}
 
@@ -148,11 +144,10 @@ public class FileListPanel extends JPanel {
 		Vector<FileInfo> fileInfoList;
 		DefaultMutableTreeNode node;
 		root.removeAllChildren();
+		root.setUserObject("root"+ClientLauncher.getFileMgr().getRootDirID());
 		fileTree.removeAll();
-		int maxDepth;
 		
 		fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
-		maxDepth     = ClientLauncher.getFileMgr().getMaxDepth();
 		
 		for(FileInfo fileInfo : fileInfoList){
 			node = new DefaultMutableTreeNode(fileInfo.getName());
@@ -205,19 +200,32 @@ public class FileListPanel extends JPanel {
 	
 	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
-		this.remove(bgImg);
+		this.removeAll();
 		fileMngPanel.initialize();
 		this.add(scroll);
+		this.add(btnGroupPanel);
 		this.add(fileMngPanel);
 		this.add(bgImg);
 		this.repaint();
+	}
+	
+	// 추가할 TreeNode가 존재하는지를 파악
+	public boolean isExistNode(String node){
+		for(int i=0;i<selectedNode.getChildCount();i++){
+			System.out.println("\t\t\t getchild : "+selectedNode.getChildAt(i));
+			if(selectedNode.getChildAt(i).toString().equals(node))
+				return true;
+		}
+		return false;
 	}
 
 	public void create(String folderName){
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a parent directory");
+		else if(isExistNode(folderName)) {
+			JOptionPane.showMessageDialog(null, folderName + " is already exist");
+		}
 		else{
-			
 			int type = Constants.PacketType.FolderCreateRequest.getType();
 			String data = folderName + "\t" + selectedNode.toString() + "\t" + 
 					((selectedNode.getLevel()+1)+"") + "\t" + ClientLauncher.getFileMgr().getRootDirID();
@@ -230,10 +238,14 @@ public class FileListPanel extends JPanel {
 	public void upload(String fileName, MetaData Object){
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a parent directory");
+		else if(isExistNode(fileName)) {
+			JOptionPane.showMessageDialog(null, fileName + " is already exist");
+		}
 		else {
 			int type = Constants.PacketType.FileUploadRequest.getType();
 			String data = fileName + "\t" + selectedNode.toString() + "\t" + 
-					((selectedNode.getLevel()+1)+"") + "\t" + ClientLauncher.getFileMgr().getRootDirID();
+					((selectedNode.getLevel()+1)+"") + "\t" + 
+					ClientLauncher.getFileMgr().getRootDirID() +"\t"+"defaultMetadata";
 			int length = data.length();
 			
 			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
