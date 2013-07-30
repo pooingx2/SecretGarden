@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import com.sg.main.ClientLauncher;
 import com.sg.model.Files;
 
 
@@ -31,6 +32,7 @@ public class HDFSClient implements PrivateUpDown1 {
 	
 	private boolean connectToHDFS() {
 		try {
+			
 			sock = new Socket(destIp, destPort);
 			reader = sock.getInputStream();
 			writer = sock.getOutputStream();
@@ -71,7 +73,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		objOutput.flush();
 		System.out.println("일단은 보냇음...");
 		
-		objOutput.close();
+		//objOutput.close();
 		readFile.close();
 		return 0;
 	}
@@ -99,8 +101,8 @@ public class HDFSClient implements PrivateUpDown1 {
 		
 		}
 		
-		objInput.close();
-		objOutput.close();
+		//objInput.close();
+		//objOutput.close();
 		
 		return recievFile;
 	}

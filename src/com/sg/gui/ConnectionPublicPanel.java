@@ -171,7 +171,7 @@ public class ConnectionPublicPanel extends JPanel {
 				pwd = pwdField.getText();
 
 				ClientLauncher.getFrame().getConnectionPanel().setPublic(id);
-//				connection = ClientLauncher.getHybrid().auth(Constants.amazon,id,pwd);
+				//connection = ClientLauncher.getHybrid().auth(Constants.amazon,id,pwd);
 				connection = true;
 				
 				if(connection){

@@ -99,7 +99,7 @@ public class PacketMgr {
 		
 		// 디렉토리 액세스 리스판스(Key file 인증에 따른 디렉토리 접속 키 부여) 
 		if(type==Constants.PacketType.DirectoryAccessResponse.getType()) {
-
+			
 			StringTokenizer tokenizer2;
 			String token2[];
 			token2= new String[100];
@@ -110,6 +110,7 @@ public class PacketMgr {
 			fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
 			// 수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName ...)
 			// (type,name,parent,depth,index \t type,name,parent,depth,index ... )
+
 			for(int j=0 ; j<i ; j++){
 				fileInfo = new FileInfo();
 				tokenizer2 = new StringTokenizer(token[j],",");
@@ -129,8 +130,6 @@ public class PacketMgr {
 						break;
 					case 3 : 
 						fileInfo.setDepth(token2[k]); 
-						if(ClientLauncher.getFileMgr().getMaxDepth() < Integer.parseInt(fileInfo.getDepth())) 
-							ClientLauncher.getFileMgr().setMaxDepth(Integer.parseInt(fileInfo.getDepth()));
 						break;
 					case 4 : 
 						fileInfo.setIndex(token2[k]); 
@@ -178,8 +177,6 @@ public class PacketMgr {
 						break;
 					case 3 : 
 						fileInfo.setDepth(token2[k]); 
-						if(ClientLauncher.getFileMgr().getMaxDepth() < Integer.parseInt(fileInfo.getDepth())) 
-							ClientLauncher.getFileMgr().setMaxDepth(Integer.parseInt(fileInfo.getDepth()));
 						break;
 					case 4 : 
 						fileInfo.setIndex(token2[k]); 

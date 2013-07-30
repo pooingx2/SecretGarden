@@ -45,6 +45,8 @@ public class DirectoryListPanel extends JPanel {
 	private JTableHeader header;
 	private DefaultTableCellRenderer renderer;
 	private Vector<String> row;
+	
+	
 
 	public DirectoryListPanel(int w, int h) {
 
@@ -257,9 +259,7 @@ public class DirectoryListPanel extends JPanel {
 		
 		// 하부 폴더에 접근하기 위하여 Keyfile을 서버로 전송한다 
 		String id   = ClientLauncher.getFrame().getDirectoryListPanel().getDirectoryID();
-		String name = "none";
-		
-		String data = id + "\t" + key + "\t" + name;
+		String data = id + "\t" + key;
 		
 		int type = Constants.PacketType.DirectoryAccessRequest.getType();
 		int length = data.length();
