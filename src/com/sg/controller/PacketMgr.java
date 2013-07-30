@@ -93,67 +93,66 @@ public class PacketMgr {
 					row.add(token2[k]);
 					k++;
 				}
+				ClientLauncher.getFrame().getDirectoryListPanel().addRow(row);
+			}
+		}
+
+		// 디렉토리 생성에 따른 키 데이터를 수신하여 파일로 변환하는 과정
+		if (type == Constants.PacketType.DirectoryCreateResponse.getType()) {
+			fileMgr.saveFile(token[0]);
+		}
+
+		// 디렉토리 액세스 리스판스(Key file 인증에 따른 디렉토리 접속 키 부여)
+		if (type == Constants.PacketType.DirectoryAccessResponse.getType()) {
+
+			ClientLauncher.getFileMgr().init();
+
+			// 수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName...)
+			// (type,name,parent,depth,index \t type,name,parent,depth,index... )
+			for (int j = 0; j < i; j++) {
+				ClientLauncher.getFileMgr().addFileInfo(token[j]);
+			}
+			ClientLauncher.getFrame().changePanel(
+					ClientLauncher.getFrame().getFileListPanel());
+		}
+
+		// 폴더 생성
+		if (type == Constants.PacketType.FolderCreateResponse.getType()) {
+			ClientLauncher.getFileMgr().init();
+
+			for (int j = 0; j < i; j++) {
+				ClientLauncher.getFileMgr().addFileInfo(token[j]);
 			}
 
-			// 디렉토리 생성에 따른 키 데이터를 수신하여 파일로 변환하는 과정
-			if (type == Constants.PacketType.DirectoryCreateResponse.getType()) {
-				fileMgr.saveFile(token[0]);
+			ClientLauncher.getFrame().getFileListPanel().initialize();
+		}
+
+		// 메타데이터 업로드
+		if (type == Constants.PacketType.FileUploadResponse.getType()) {
+			ClientLauncher.getFileMgr().init();
+
+			for (int j = 0; j < i; j++) {
+				ClientLauncher.getFileMgr().addFileInfo(token[j]);
 			}
 
-			// 디렉토리 액세스 리스판스(Key file 인증에 따른 디렉토리 접속 키 부여)
-			if (type == Constants.PacketType.DirectoryAccessResponse.getType()) {
+			ClientLauncher.getFrame().getFileListPanel().initialize();
+		}
 
-				ClientLauncher.getFileMgr().init();
+		// 메타데이터 다운로드
+		if (type == Constants.PacketType.FileDownloadResponse.getType()) {
+			System.out.println("meta data is : " + token[0]);
+		}
 
-				// 수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName
-				// ...)
-				// (type,name,parent,depth,index \t type,name,parent,depth,index
-				// ... )
-				for (int j = 0; j < i; j++) {
-					ClientLauncher.getFileMgr().addFileInfo(token[j]);
-				}
-				ClientLauncher.getFrame().changePanel(
-						ClientLauncher.getFrame().getFileListPanel());
-			}
-
-			// 폴더 생성
-			if (type == Constants.PacketType.FolderCreateResponse.getType()) {
-				ClientLauncher.getFileMgr().init();
-
-				for (int j = 0; j < i; j++) {
-					ClientLauncher.getFileMgr().addFileInfo(token[j]);
-				}
-
-				ClientLauncher.getFrame().getFileListPanel().initialize();
-			}
-
-			// 메타데이터 업로드
-			if (type == Constants.PacketType.FileUploadResponse.getType()) {
-				ClientLauncher.getFileMgr().init();
-
-				for (int j = 0; j < i; j++) {
-					ClientLauncher.getFileMgr().addFileInfo(token[j]);
-				}
-
-				ClientLauncher.getFrame().getFileListPanel().initialize();
-			}
-
-			// 메타데이터 다운로드
-			if (type == Constants.PacketType.FileDownloadResponse.getType()) {
-				System.out.println("meta data is : " + token[0]);
-			}
-
-			// 폴더 및 디렉토리 셋팅(공유와 관련된)패킷 수신
-			if (type == Constants.PacketType.SettingResponse.getType()) {
-
-			}
-
-			// 프로그램 종료
-			if (type == Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()) {
-
-			}
+		// 폴더 및 디렉토리 셋팅(공유와 관련된)패킷 수신
+		if (type == Constants.PacketType.SettingResponse.getType()) {
 
 		}
+
+		// 프로그램 종료
+		if (type == Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()) {
+
+		}
+
 	}
 }
 
