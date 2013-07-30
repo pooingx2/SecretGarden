@@ -46,6 +46,14 @@ public class PacketMgr {
 		// 로그인 요청 응답에 대한 패킷을 처리 (LoginPanel -> ConnectionPanel)
 		if(type==Constants.PacketType.LoginResponse.getType()){
 			JOptionPane.showMessageDialog(null, "Welcome");
+			
+			ClientLauncher.getUser().setId(token[0]);
+			ClientLauncher.getUser().setName(token[1]);
+			ClientLauncher.getUser().setEmail(token[2]);
+			
+			ClientLauncher.getFileMgr().setDownloadPath(ClientLauncher.getFileMgr().getDownloadPath()+
+					ClientLauncher.getFileMgr().getSlash()+token[0]);
+			
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getConnectionPanel());
 		}
 		
