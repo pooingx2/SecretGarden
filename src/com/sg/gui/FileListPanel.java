@@ -254,9 +254,6 @@ public class FileListPanel extends JPanel {
 	public void upload(String fileName, MetaData Object){
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a parent directory");
-		else if(isExistNode(fileName)) {
-			JOptionPane.showMessageDialog(null, fileName + " is already exist");
-		}
 		else {
 			int type = Constants.PacketType.FileUploadRequest.getType();
 			String data = fileName + "\t" + selectedNode.toString() + "\t" + 
@@ -329,7 +326,7 @@ public class FileListPanel extends JPanel {
 					fileMngPanel.changePanel();
 				}
 				else
-					JOptionPane.showMessageDialog(null, "Select upload folder");
+					JOptionPane.showMessageDialog(null, "Select create directory path");
 			}
 			// Upload
 			else if(event.getSource()==btn[1]){
@@ -338,7 +335,7 @@ public class FileListPanel extends JPanel {
 					fileMngPanel.changePanel();
 				}
 				else
-					JOptionPane.showMessageDialog(null, "Select upload folder");
+					JOptionPane.showMessageDialog(null, "Select upload directory path");
 				
 			}
 			// Download

@@ -163,10 +163,9 @@ public class DirectoryListPanel extends JPanel {
 	}
 
 	public void initialize() {
-		this.isSelected = false;
+//		this.isSelected = false;
 		this.isAccessed = false;
 		dirMngPanel.initialize();
-//		tableModel
 		changePanel();
 	}
 
@@ -272,7 +271,7 @@ public class DirectoryListPanel extends JPanel {
 	}
 
 	// 버튼 이벤트, 마우스 이벤트 리스너 등록
-	private class ActionHandler implements ActionListener, MouseListener {
+	private class ActionHandler implements ActionListener {
 
 		private String id;
 		private String pwd;
@@ -293,7 +292,7 @@ public class DirectoryListPanel extends JPanel {
 					dirMngPanel.setStatus(0);
 					changePanel();
 					JOptionPane.showMessageDialog(null,
-							"For Access Choose a directory");
+							"For Access : Choose a directory");
 				}
 			}
 
@@ -308,43 +307,13 @@ public class DirectoryListPanel extends JPanel {
 					dirMngPanel.setStatus(0);
 					changePanel();
 					JOptionPane.showMessageDialog(null,
-							"For DeleteChoose a directory");
+							"For Delete : Choose a directory");
 				}
 			}
 
 			if (event.getSource() == btn[3]) {
 
 			}
-		}
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			if (e.getButton() == MouseEvent.BUTTON1) {
-				if (e.getClickCount() == 2) {
-					btn[1].doClick();
-				}
-			}
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
 		}
 	}
 }
