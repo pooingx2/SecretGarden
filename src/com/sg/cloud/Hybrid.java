@@ -22,10 +22,12 @@ public class Hybrid {
 		aWSModule = new AWSUpDown();
 	}
 
-	public boolean auth(String type, String id, String pw) {
+	public boolean auth(String type, String id, String port, String pw) {
 
 		boolean isConnected = false;	// 1: connected		0 : disConnected
-
+		
+			
+		
 		switch (type){
 
 		case Constants.amazon : 		// aws s3 connect
@@ -39,7 +41,7 @@ public class Hybrid {
 
 		case Constants.hadoop : 		// hdfs connect
 			String hdfsIp = id;			// 입력 받아야 함
-			int hdfsPort = 15000;		// 입력 받아야 함
+			int hdfsPort = Integer.parseInt(port);		// 입력 받아야 함
 			hdfsModule.setDestIp(hdfsIp);
 			hdfsModule.setDestPort(hdfsPort);
 			
@@ -117,7 +119,21 @@ public class Hybrid {
 		return 0;
 	}
 	
-
+	public String fileAlreadyExists(String fileName, int count) {
+		int i = 0;
+		
+		String fixedName;
+		StringTokenizer st = new StringTokenizer(fileName, ".");
+		String[] token = new String[fileName.length()/2];
+		//fileName.substring(fileName.lastIndexOf("."), fileName.length())
+		while(st.hasMoreElements()) {			
+			token[i] = st.nextToken();
+			i++;
+		}
+		fixedName = token[0] + "(" + count + ")." + token[1];
+		
+		return fixedName;
+	}
 
 	/* 각 클라우드에서 다운로드. 
 	 * sourcePath : 클라우드에 위치한 파일의 경로
@@ -166,9 +182,17 @@ public class Hybrid {
 		}
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
-		downFile = new File( destPath+ClientLauncher.getFileMgr().getSlash()+fileName );
+		downFile = new File( destPath+ClientLauncher.getFileMgr().getSlash() );
+		
+		if(!downFile.exists()) 
+			downFile.mkdirs();
+		downFile = new File(destPath+ClientLauncher.getFileMgr().getSlash()+fileName);
+		int fileCount = 1;
+		while (downFile.exists()) {
+			downFile = new File(destPath+ClientLauncher.getFileMgr().getSlash()+fileAlreadyExists(fileName, fileCount));
+			fileCount++;
+		}
 		bos = new BufferedOutputStream(new FileOutputStream(downFile));
-		System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
 		bos.write(hdfsBuf);
 		
 		try{
