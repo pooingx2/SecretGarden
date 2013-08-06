@@ -212,3 +212,23 @@ isRunning(int socket)
 {
 	
 }
+
+int
+getElements(byte *dataBuf, char *token, char *tokenBuf[])
+{
+	int last_index;
+	char *str;
+
+	str = dataBuf;
+	str = strtok(str, "\t");
+
+	while(str != NULL)
+	{
+		tokenBuf[last_index++] = str;
+		str = strtok(NULL, "\t");
+	}
+	last_index--;
+	printf("Nonce : %s, Timestamp : %s \n", tokenBuf[last_index-1], tokenBuf[last_index]);
+
+	return last_index;
+}

@@ -7,10 +7,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.JFileChooser;
 
+import com.sg.main.ClientLauncher;
 import com.sg.model.FileInfo;
 
 public class FileMgr {
@@ -96,11 +98,10 @@ public class FileMgr {
 			this.slash = "/";
 	}
 
-	public void initFileInfo(){
+	public void init(){
 		maxDepth = 0;
 		fileInfoList.removeAllElements();
 		fileInfoList.add(new FileInfo("folder","root"+rootDirIndex,"null","0",rootDirIndex));
-		maxDepth = 0;
 	}
 	
 	// file을 저장하기 위한 함수
@@ -188,6 +189,46 @@ public class FileMgr {
 			}
 		}
 		return path;
+	}
+
+	public void addFileInfo(String fileData) {
+		
+		// 수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName ...)
+		// (type,name,parent,depth,index \t type,name,parent,depth,index ... )
+		
+		StringTokenizer tokenizer;
+		String token[];
+		FileInfo fileInfo;
+		
+		token= new String[100];
+		fileInfo = new FileInfo();
+		tokenizer = new StringTokenizer(fileData,",");
+		
+		int i = 0;
+		while(tokenizer.hasMoreTokens()) {
+			token[i] = tokenizer.nextToken();
+			switch(i){
+			case 0 : 
+				fileInfo.setType(token[i]); 
+				break;
+			case 1 : 
+				fileInfo.setName(token[i]); 
+				break;
+			case 2 : 
+				fileInfo.setParent(token[i]); 
+				break;
+			case 3 : 
+				fileInfo.setDepth(token[i]); 
+				break;
+			case 4 : 
+				fileInfo.setIndex(token[i]); 
+				break;
+			default : 
+				break;
+			}
+			i++;
+		}
+		fileInfoList.add(fileInfo);
 	}
 	
 //	// download할 path를 return

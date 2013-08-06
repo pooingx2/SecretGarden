@@ -259,7 +259,7 @@ public class DirectoryListPanel extends JPanel {
 		
 		// 하부 폴더에 접근하기 위하여 Keyfile을 서버로 전송한다 
 		String id   = ClientLauncher.getFrame().getDirectoryListPanel().getDirectoryID();
-		String data = id + "\t" + key;
+		String data = id + "\t" + "BCFA3232E97F";
 		
 		int type = Constants.PacketType.DirectoryAccessRequest.getType();
 		int length = data.length();

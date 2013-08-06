@@ -1,7 +1,7 @@
 #include "macAddressCapture.h"
 
 /* Mac 주소 표시 */
-/*
+
 void print_hwadd(u_char *hwadd)
 {
 	 int i;
@@ -10,9 +10,9 @@ void print_hwadd(u_char *hwadd)
 	 {
 		 printf("%2x : ", hwadd[i]);
 	 }
-	 printf("%2x", hwadd[i]);
+	 printf("%2x ", hwadd[i]);
 }
-*/
+
 /* 패킷 데이터 표시 */
 /*
 void 
@@ -35,6 +35,7 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
 
 
 	printf("Call Callback function \n");
+	/*
 	struct ip *iph;
 	struct tcphdr *tcph;
 
@@ -43,7 +44,14 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
 	unsigned short ether_type;
 	int chcnt  = 0;
 	int length = pkthdr->len;
+	*/
 
+	struct ether_header *eth;
+	int i;
+
+	eth = (struct ether_header *) packet;
+
+	print_hwadd((u_char*)eth->ether_shost);
 
 
 	/*

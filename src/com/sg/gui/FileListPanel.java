@@ -203,16 +203,6 @@ public class FileListPanel extends JPanel {
 		return path;
 	}
 	
-//	public String getCloudDownloadPath(){
-//		String path="";
-//		for(int i=0;i<(selectedNode.getPath().length);i++){
-//			path += "/" + selectedNode.getPath()[i];
-//		}
-//		System.out.println(path);
-//
-//		return path;
-//	}
-	
 	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
 		this.remove(bgImg);
@@ -241,7 +231,12 @@ public class FileListPanel extends JPanel {
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a parent directory");
 		else {
-			System.out.println("upload");
+			int type = Constants.PacketType.FileUploadRequest.getType();
+			String data = fileName + "\t" + selectedNode.toString() + "\t" + 
+					((selectedNode.getLevel()+1)+"") + "\t" + ClientLauncher.getFileMgr().getRootDirID();
+			int length = data.length();
+			
+			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 		}
 	}
 	

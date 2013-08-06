@@ -100,47 +100,13 @@ public class PacketMgr {
 		// 디렉토리 액세스 리스판스(Key file 인증에 따른 디렉토리 접속 키 부여) 
 		if(type==Constants.PacketType.DirectoryAccessResponse.getType()) {
 			
-			StringTokenizer tokenizer2;
-			String token2[];
-			token2= new String[100];
-			Vector<FileInfo> fileInfoList;
-			FileInfo fileInfo;
+			ClientLauncher.getFileMgr().init();
 			
-			ClientLauncher.getFileMgr().initFileInfo();
-			fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
 			// 수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName ...)
 			// (type,name,parent,depth,index \t type,name,parent,depth,index ... )
-
 			for(int j=0 ; j<i ; j++){
-				fileInfo = new FileInfo();
-				tokenizer2 = new StringTokenizer(token[j],",");
-				int k = 0;
-				while(tokenizer2.hasMoreTokens()) {
-					token2[k] = tokenizer2.nextToken();
-					
-					switch(k){
-					case 0 : 
-						fileInfo.setType(token2[k]); 
-						break;
-					case 1 : 
-						fileInfo.setName(token2[k]); 
-						break;
-					case 2 : 
-						fileInfo.setParent(token2[k]); 
-						break;
-					case 3 : 
-						fileInfo.setDepth(token2[k]); 
-						break;
-					case 4 : 
-						fileInfo.setIndex(token2[k]); 
-//						ClientLauncher.getFileMgr().setRootDirID(token2[k]);
-						break;
-					default : 
-						break;
-					}
-					k++;
-				}
-				fileInfoList.add(fileInfo);
+				ClientLauncher.getFileMgr().addFileInfo(token[j]);
+				System.out.println("\t\t\t\t"+ClientLauncher.getFileMgr().getFileInfoList().size());
 			}
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getFileListPanel());
 		}
@@ -148,51 +114,59 @@ public class PacketMgr {
 		// 폴더 생성
 		if(type==Constants.PacketType.FolderCreateResponse.getType()) 
 		{	
-			StringTokenizer tokenizer2;
-			String token2[];
-			token2= new String[100];
-			Vector<FileInfo> fileInfoList;
-			FileInfo fileInfo;
+//			StringTokenizer tokenizer2;
+//			String token2[];
+//			token2= new String[100];
+//			Vector<FileInfo> fileInfoList;
+//			FileInfo fileInfo;
+//			
+//			ClientLauncher.getFileMgr().init();
+//			fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
+//			// 수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName ...)
+//			// (type,name,parent,depth,index \t type,name,parent,depth,index ... )
+//			for(int j=0 ; j<i ; j++){
+//				fileInfo = new FileInfo();
+//				tokenizer2 = new StringTokenizer(token[j],",");
+//				int k = 0;
+//				while(tokenizer2.hasMoreTokens()) {
+//					token2[k] = tokenizer2.nextToken();
+//					
+//					switch(k){
+//					case 0 : 
+//						fileInfo.setType(token2[k]); 
+//						break;
+//					case 1 : 
+//						fileInfo.setName(token2[k]); 
+//						break;
+//					case 2 : 
+//						fileInfo.setParent(token2[k]); 
+//						break;
+//					case 3 : 
+//						fileInfo.setDepth(token2[k]); 
+//						break;
+//					case 4 : 
+//						fileInfo.setIndex(token2[k]); 
+//						break;
+//					default : 
+//						break;
+//					}
+//					k++;
+//				}
+//				fileInfoList.add(fileInfo);
+//			}
+			ClientLauncher.getFileMgr().init();
 			
-			ClientLauncher.getFileMgr().initFileInfo();
-			fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
 			// 수신한 데이터를 FileInfo List에 저장한다. (index,dirName \t index,dirName ...)
 			// (type,name,parent,depth,index \t type,name,parent,depth,index ... )
 			for(int j=0 ; j<i ; j++){
-				fileInfo = new FileInfo();
-				tokenizer2 = new StringTokenizer(token[j],",");
-				int k = 0;
-				while(tokenizer2.hasMoreTokens()) {
-					token2[k] = tokenizer2.nextToken();
-					
-					switch(k){
-					case 0 : 
-						fileInfo.setType(token2[k]); 
-						break;
-					case 1 : 
-						fileInfo.setName(token2[k]); 
-						break;
-					case 2 : 
-						fileInfo.setParent(token2[k]); 
-						break;
-					case 3 : 
-						fileInfo.setDepth(token2[k]); 
-						break;
-					case 4 : 
-						fileInfo.setIndex(token2[k]); 
-						break;
-					default : 
-						break;
-					}
-					k++;
-				}
-				fileInfoList.add(fileInfo);
+				ClientLauncher.getFileMgr().addFileInfo(token[j]);
 			}
+			
 			ClientLauncher.getFrame().getFileListPanel().initialize();
 		}
 		
 		// 메타데이터 업로드
-		if(type==Constants.PacketType.FileCreateResponse.getType()) 
+		if(type==Constants.PacketType.FileUploadResponse.getType()) 
 		{	
 			System.out.println("meta path is : " + token[0]);
 		}

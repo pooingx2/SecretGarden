@@ -251,16 +251,23 @@ public class FileMngPanel extends JPanel {
 					}
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-						/*
-						try {
-							ClientLauncher.getHybrid().upload(localUploadPath,selectedPath);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						*/
 						/* 메타데이터 전송 */
+//						try {
+//							// return 0 = success	failure = -1
+//							if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
+//								/* 메타데이터 전송 */
+//								MetaData m_data = new MetaData();
+//								ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
+//							}
+//							else
+//								JOptionPane.showMessageDialog(null, "upload failure");
+//						} catch (IOException e) {
+//							e.printStackTrace();
+//						}
+						
 						MetaData m_data = new MetaData();
 						ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
+						
 					}
 				}
 				// download
@@ -269,15 +276,20 @@ public class FileMngPanel extends JPanel {
 						JOptionPane.showMessageDialog(null, "Load file");
 					}
 					else{
-						//String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+//						String selectedPath = "/root/hey/test.txt";
+//						try {
+//							// return 0 = success	failure = -1
+////							if(ClientLauncher.getHybrid().download(selectedPath, localDownloadPath) == 0){
+//								ClientLauncher.getFrame().getFileListPanel().download();
+//							}
+//							else
+//								JOptionPane.showMessageDialog(null, "download failure");
+//						} catch (IOException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
 						
-						String selectedPath = "/root/hey/test.txt";
-						try {
-							ClientLauncher.getHybrid().download(selectedPath, localDownloadPath);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 						ClientLauncher.getFrame().getFileListPanel().download();
 					}
 				}
