@@ -3,7 +3,6 @@ create Database SecretGarden;
 GRANT ALL ON SecretGarden.* To 'pooingx2' IDENTIFIED BY 'SSM2013';
 */
 
-
 CREATE TABLE User (
     user_id VARCHAR(20) NOT NULL,
     pwd VARCHAR(20) NOT NULL,
@@ -47,6 +46,13 @@ CREATE TABLE Share (
 
     PRIMARY KEY (share_id)
    
+)DEFAULT CHARSET=utf8;
+
+CREATE TABLE Nonce (
+    nonce   VARCHAR(255) NOT NULL,
+    time    VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY (nonce)
 )DEFAULT CHARSET=utf8;
 
 ALTER TABLE Share
