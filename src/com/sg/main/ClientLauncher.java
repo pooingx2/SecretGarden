@@ -56,6 +56,7 @@ public class ClientLauncher{
 			e.printStackTrace();
 		}
 	}
+	
 
 	public static Connector getConnector() {
 		return connector;

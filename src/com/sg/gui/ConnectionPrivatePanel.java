@@ -190,9 +190,11 @@ public class ConnectionPrivatePanel extends JPanel {
 				textField[1].setText("");
 				pwdField.setText("");
 
+
 				ClientLauncher.getFrame().getConnectionPanel().setPrivate(ip);
 				connection = ClientLauncher.getHybrid().auth(Constants.hadoop, ip, port, pwd);
 //				connection = true;
+
 
 				if(connection){
 					changeStatusPanel();

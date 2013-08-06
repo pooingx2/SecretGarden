@@ -62,6 +62,9 @@ public class PacketMgr {
 		// 로그아웃 응답에 대한 패킷을 처리 (현재 패널 -> LoginPanel)
 		if(type==Constants.PacketType.LogoutResponse.getType()){
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
+			ClientLauncher.exit();
+			ClientLauncher.getConnector().newConnector();
+			
 		}
 
 		// 회원가입 응답에 대한 패킷을 처리 (회원가입 프레임을 초기화 하고 없앰)

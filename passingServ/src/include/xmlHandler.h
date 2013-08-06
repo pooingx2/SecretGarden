@@ -8,6 +8,15 @@
 #include<libxml/xmlwriter.h>
 
 
+/* 로그를 기록할 문서를 생성하는 함수 */
+
+/* 문서의 포맷을 지정 */
+
+/* 로그를 기록 */
+
+/* 로그를 조회 - Shell Script 작성  */ 
+
+
 int getNodeInfo(xmlNodePtr cur, char* nodeInfo);
 int det_nodeCategory(xmlNodePtr cur);
 

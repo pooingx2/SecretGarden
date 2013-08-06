@@ -4,14 +4,17 @@
 #include <sys/time.h>
 
 #include <sys/socket.h>
+
 #include <netinet/in.h>
 #include <netinet/in_systm.h>
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
+
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
+#include <netinet/if_ether.h>
 #include <netinet/ip_icmp.h>
 
 #include <pcap.h>

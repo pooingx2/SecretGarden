@@ -25,7 +25,7 @@
 #include <pcap.h>
 
 // 최대 사용자수, 기본 포트번호, 최대 수용가능한 이벤트 갯수
-#define MAX_CLIENT   3000
+#define MAX_CLIENT   1000
 #define DEFAULT_PORT 12500
 #define MAX_EVENTS   10000
 

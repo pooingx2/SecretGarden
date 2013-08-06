@@ -13,6 +13,8 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+//#include <mysql.h>
+
 #ifndef protocol_H
 #define protocol_H
 
@@ -45,7 +47,7 @@
 #define SHARE_REQUEST		 	 19
 #define SHARE_RESPONSE		 	 20
 
-// 클라이언트간 전송 프로토콜
+//클라이언트간 전송 프로토콜
 #define DIR_TO_HDFS_FOR_UPLOAD_METADATA		30
 #define HDFS_TO_DIR_FOR_MODIFY_METAPATH		31
 #define DIR_TO_HDFS_FOR_DOWNLOAD_METADATA	32
@@ -55,7 +57,7 @@
 #define PROGRAM_EXIT_REQUEST     50
 #define PROGRAM_EXIT_RESPONSE    51
 
-//Serv Binding 프로토콜(101~150) VPN 구성
+//Serv Binding 프로토콜(101~110) VPN 구성
 #define AUTH_BINDING 		 	 101
 #define DIR_BINDING		 	 	 102
 #define HDFS_BINDING		 	 103
@@ -63,6 +65,13 @@
 #define DIR_BINDING_RESPONSE	 105
 #define HDFS_BINDING_RESPONSE	 106
 
+//Handshake 프로토콜
+#define NONECE_REQUEST			 113
+#define NONECE_RESPONSE			 114
+#define KEY_EXCHANGE_REUQEST	 115
+#define KEY_EXCHANGE_RESPONSE	 116
+#define SESSION_KEY_REQUEST	     117
+#define SESSION_KEY_RESPONSE	 118
 
 // 프로토콜에 정의된 헤더와 데이터 사이즈
 #define HEADERSIZE   		 12
@@ -86,7 +95,9 @@ typedef struct Peer
 }Peer;
 
 
-
+/* MYSQL 관련 변수 */
+//MYSQL *con;
+//MYSQL *row;
 
 // TCP 버퍼에 저장된 데이터를 프로토콜에 지정된 형식으로 읽어오기 위한 함수
 // peer : 상대 Host Program
@@ -135,12 +146,10 @@ joinToPassingServ(char *servIP, char *servPort, int servType);
 int 
 isRunning(int socket);
 
+int 
+getElements(byte *dataBuf, char *token, char *tokenBuf[]);
 
 //암호화 알고리즘
-
-
-
 #endif
-
 
 

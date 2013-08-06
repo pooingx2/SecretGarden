@@ -251,6 +251,7 @@ public class FileMngPanel extends JPanel {
 					}
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+
 						try {
 							// return 0 = success	failure = -1
 							if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
