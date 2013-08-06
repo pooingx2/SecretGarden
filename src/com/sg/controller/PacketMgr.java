@@ -99,7 +99,10 @@ public class PacketMgr {
 
 		// 디렉토리 생성에 따른 키 데이터를 수신하여 파일로 변환하는 과정
 		if (type == Constants.PacketType.DirectoryCreateResponse.getType()) {
-			fileMgr.saveFile(token[0]);
+			String test = fileMgr.saveFile(token[0]);
+			while(test==null){
+				test = fileMgr.saveFile(token[0]);
+			}
 		}
 
 		// 디렉토리 액세스 리스판스(Key file 인증에 따른 디렉토리 접속 키 부여)

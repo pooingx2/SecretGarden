@@ -104,17 +104,17 @@ public class FileMgr {
 	}
 	
 	// file을 저장하기 위한 함수
-	public void saveFile(String data){
+	public String saveFile(String data){
 		String path=null;
 		JFileChooser fileDialog = new JFileChooser(new File(homePath));
 		int isSelected = fileDialog.showSaveDialog(null);
 		if(isSelected == JFileChooser.APPROVE_OPTION) {
 			File file = fileDialog.getSelectedFile();
-			path = file.getAbsolutePath();
+			path = file.getAbsolutePath()+".key";
 			BufferedOutputStream out = null;
 			if(file != null) {
 				try{
-					out = new BufferedOutputStream(new FileOutputStream(file));
+					out = new BufferedOutputStream(new FileOutputStream(path));
 					out.write(data.getBytes());
 				}catch(FileNotFoundException e1){
 					e1.printStackTrace();
@@ -131,6 +131,7 @@ public class FileMgr {
 				}
 			}
 		}
+		return path;
 	}
 
 	// key file을 load함 

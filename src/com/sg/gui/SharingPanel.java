@@ -54,7 +54,7 @@ public class SharingPanel extends JPanel {
 
 		// 배경이미지 등록
 		bgImg = new JLabel(new ImageIcon(
-				Constants.BackgroudPath.shareBG.getPath()));
+				Constants.BackgroudPath.sharingBG.getPath()));
 		bgImg.setBounds(0, 0, width, height);
 
 		// 이벤트 핸들러 등록

@@ -146,7 +146,6 @@ public class DirectoryMngPanel extends JPanel {
 		this.key = key;
 	}
 
-	// JFleChoose를 통한 파일 선택 함수
 	public void loadFile() {
 		Vector<String> fileInfo = ClientLauncher.getFileMgr().loadKeyFile();
 		textField[1].setText(fileInfo.get(0));
@@ -194,6 +193,7 @@ public class DirectoryMngPanel extends JPanel {
 	// 버튼에 따른 이벤트 핸들러
 	private class ActionHandler implements ActionListener {
 		private String dirName;
+		private String keyPath;
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -210,13 +210,16 @@ public class DirectoryMngPanel extends JPanel {
 					ClientLauncher.getFrame().getDirectoryListPanel().create(dirName);
 				}
 				else if(status == 3) {
+					keyPath = textField[1].getText();
 					key = getKey();
-//					if(key!=null){
-//						ClientLauncher.getFrame().getDirectoryListPanel().access(key);
-//					}
-//					else
-//						JOptionPane.showMessageDialog(null, "Load Key file");
-					ClientLauncher.getFrame().getDirectoryListPanel().access("none");
+					if(key!=null  && !keyPath.equals("")){
+						ClientLauncher.getFrame().getDirectoryListPanel().access(key);
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "Load Key file");
+						return;
+					}
+//					ClientLauncher.getFrame().getDirectoryListPanel().access("none");
 
 				}
 				else if(status == 4) {

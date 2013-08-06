@@ -5,12 +5,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Map;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
+import com.sg.model.Nonce;
 
 public class Connector implements Runnable {
 	Socket socket;
@@ -18,11 +16,13 @@ public class Connector implements Runnable {
 	DataOutputStream dos;
 	Thread client;
 	boolean runable;
+	Nonce nonce;
 	PacketMgr pkMgr;
 
 	// 서버와 연결을 담당
 	public Connector() {
 		pkMgr = ClientLauncher.getPkMgr();
+		nonce = ClientLauncher.getNonce();
 
 		try {
 			socket = new Socket(Constants.serverIP, Constants.serverPort);
@@ -60,6 +60,10 @@ public class Connector implements Runnable {
 
 	// 패킷을 서버로 전송하는 함수 (C 서버와 통신을 위해 byte 변환)
 	public void sendPacket(int type, int redesc, int length, String data) {
+		
+		data = data +"\t" + nonce.getNonce() + "\t" + nonce.getStamp();
+		length = data.length();
+		
 		byte[] sendbuf = new byte[length + 12];
 
 		byte[] bytes = new byte[] { 

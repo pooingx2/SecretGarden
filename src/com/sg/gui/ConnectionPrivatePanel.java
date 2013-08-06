@@ -85,7 +85,7 @@ public class ConnectionPrivatePanel extends JPanel {
 		textField[1].setBounds(20,150,200,30);
 		textField[1].setFont(inputFont);
 		
-		label[3] = new JLabel("SSH key");
+		label[3] = new JLabel("Password");
 		label[3].setBounds(20,180,200,30);
 		label[3].setFont(inputFont);
 

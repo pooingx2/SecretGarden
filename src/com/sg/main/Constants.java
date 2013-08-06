@@ -36,7 +36,7 @@ public class Constants {
 		barBG("img/background/barBG.jpg"), 
 		connectionBG("img/background/connectionBG.jpg"),
 		settingsBG("img/background/settingsBG.jpg"),
-		shareBG("img/background/shareBG.jpg"),
+		sharingBG("img/background/sharingBG.jpg"),
 		privateBG1("img/background/privatePanelBG1.jpg"),
 		privateBG2("img/background/privatePanelBG2.jpg"),
 		publicBG1("img/background/publicPanelBG1.jpg"),
@@ -116,7 +116,13 @@ public class Constants {
 		privateIcon("img/icon/privateIcon.jpg"), 
 		publicIcon("img/icon/publicIcon.jpg"),
 		forderIcon("img/icon/forderIcon.jpg"),
-		fileIcon("img/icon/fileIcon.jpg");
+		fileIcon("img/icon/fileIcon.jpg"),
+		shareFromIcon1("img/icon/shareFromState1.jpg"),
+		shareFromIcon2("img/icon/shareFromState2.jpg"),
+		shareFromIcon3("img/icon/shareFromState3.jpg"),
+		shareToIcon1("img/icon/shareToState1.jpg"),
+		shareToIcon2("img/icon/shareToState2.jpg"),
+		shareToIcon3("img/icon/shareToState3.jpg");
 		
 		final private String path;
 		private IconPath(String path) { this.path = path; }

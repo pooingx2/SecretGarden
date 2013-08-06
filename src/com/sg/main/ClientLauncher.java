@@ -7,6 +7,7 @@ import com.sg.controller.Connector;
 import com.sg.controller.FileMgr;
 import com.sg.controller.PacketMgr;
 import com.sg.gui.MainFrame;
+import com.sg.model.Nonce;
 import com.sg.model.UserInfo;
 
 
@@ -18,9 +19,13 @@ public class ClientLauncher{
 	private static FileMgr fileMgr;
 	private static Hybrid hybrid;
 	private static UserInfo user;
+	private static Nonce nonce;
 	
 	public static void main(String[] args) {
 
+
+		// 재사용 공격을 막기 위한 nonce 생성
+		nonce = new Nonce();
 		// file을 load 및 save
 		fileMgr = new FileMgr();
 		// 받은 패킷을 처리 하는 함수
@@ -98,6 +103,14 @@ public class ClientLauncher{
 
 	public static void setUser(UserInfo user) {
 		ClientLauncher.user = user;
+	}
+
+	public static Nonce getNonce() {
+		return nonce;
+	}
+
+	public static void setNonce(Nonce nonce) {
+		ClientLauncher.nonce = nonce;
 	}
 	
 	
