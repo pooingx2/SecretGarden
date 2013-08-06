@@ -7,6 +7,7 @@ import com.sg.controller.Connector;
 import com.sg.controller.FileMgr;
 import com.sg.controller.PacketMgr;
 import com.sg.gui.MainFrame;
+import com.sg.model.UserInfo;
 
 
 public class ClientLauncher{
@@ -16,6 +17,7 @@ public class ClientLauncher{
 	private static PacketMgr pkMgr;
 	private static FileMgr fileMgr;
 	private static Hybrid hybrid;
+	private static UserInfo user;
 	
 	public static void main(String[] args) {
 
@@ -27,6 +29,8 @@ public class ClientLauncher{
 		connector = new Connector();
 		// cloud Controller module 실행
 		hybrid = new Hybrid();
+		// user에 대한 정보를 저장
+		user = new UserInfo();
 		
 		// 정상 연결시 frame을 띄움
 		if(connector.getSocket()!=null) {
@@ -41,6 +45,7 @@ public class ClientLauncher{
 			connector.getDis().close();
 			connector.getDos().close();
 			connector.getSocket().close();
+			hybrid.disconnected();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,6 +91,14 @@ public class ClientLauncher{
 
 	public static void setHybrid(Hybrid hybrid) {
 		ClientLauncher.hybrid = hybrid;
+	}
+
+	public static UserInfo getUser() {
+		return user;
+	}
+
+	public static void setUser(UserInfo user) {
+		ClientLauncher.user = user;
 	}
 	
 	

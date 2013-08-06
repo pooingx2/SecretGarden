@@ -30,7 +30,6 @@ public class FileMgr {
 	public FileMgr(){
 		homePath = System.getProperty("user.home");
 		setSlash();
-		System.out.println("Slash : "+getSlash());
 		downloadPath = homePath+slash+"SecretGarden";
 		fileInfoList = new Vector<FileInfo>();
 		maxDepth = 0;

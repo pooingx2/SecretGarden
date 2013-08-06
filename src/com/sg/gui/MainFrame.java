@@ -100,7 +100,6 @@ public class MainFrame extends JFrame  {
 	// main frame 화면 전환을 위한 패널
 	public void changePanel(JPanel panel) {
 		this.getContentPane().removeAll();
-		System.out.println("Change : " + panel.getClass().getName());
 		
 		if(panel != loginPanel) {
 			this.add(actionBar);
@@ -127,7 +126,7 @@ public class MainFrame extends JFrame  {
 		else if(actionBar.isBackBtnPress() && currentPanel != panel){
 			actionBar.getForwardStack().push(currentPanel);
 		}
-		
+        
 		currentPanel = panel;
 		this.add(panel);
 		this.repaint();

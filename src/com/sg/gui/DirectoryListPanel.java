@@ -45,8 +45,6 @@ public class DirectoryListPanel extends JPanel {
 	private JTableHeader header;
 	private DefaultTableCellRenderer renderer;
 	private Vector<String> row;
-	
-	
 
 	public DirectoryListPanel(int w, int h) {
 
@@ -136,26 +134,17 @@ public class DirectoryListPanel extends JPanel {
 		// 버튼 생성 (Create, Access, Delte)
 		btn = new JButton[4];
 
-		btn[0] = new JButton(new ImageIcon(
-				Constants.ButtonPath.createBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2
-				.getPath()));
-		// 버튼 생성 (Create, Access, Delte)
+		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.createBtn1.getPath()));
+		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2.getPath()));
 
-		btn[1] = new JButton(new ImageIcon(
-				Constants.ButtonPath.accessBtn1.getPath()));
-		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.accessBtn2
-				.getPath()));
+		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.accessBtn1.getPath()));
+		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.accessBtn2.getPath()));
 
-		btn[2] = new JButton(new ImageIcon(
-				Constants.ButtonPath.deleteBtn1.getPath()));
-		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2
-				.getPath()));
+		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.deleteBtn1.getPath()));
+		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2.getPath()));
 
-		btn[3] = new JButton(new ImageIcon(
-				Constants.ButtonPath.settingsBtn1.getPath()));
-		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.settingsBtn2
-				.getPath()));
+		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.settingsBtn1.getPath()));
+		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.settingsBtn2.getPath()));
 
 		for (int i = 0; i < 4; i++) {
 			btn[i].setBounds(11 + 70 * i, 5, 70, 70);
@@ -174,9 +163,10 @@ public class DirectoryListPanel extends JPanel {
 	}
 
 	public void initialize() {
-		this.isSelected = false;
+//		this.isSelected = false;
 		this.isAccessed = false;
 		dirMngPanel.initialize();
+		changePanel();
 	}
 
 	// 리스트 초기화 함수
@@ -281,7 +271,7 @@ public class DirectoryListPanel extends JPanel {
 	}
 
 	// 버튼 이벤트, 마우스 이벤트 리스너 등록
-	private class ActionHandler implements ActionListener, MouseListener {
+	private class ActionHandler implements ActionListener {
 
 		private String id;
 		private String pwd;
@@ -302,7 +292,7 @@ public class DirectoryListPanel extends JPanel {
 					dirMngPanel.setStatus(0);
 					changePanel();
 					JOptionPane.showMessageDialog(null,
-							"For Access Choose a directory");
+							"For Access : Choose a directory");
 				}
 			}
 
@@ -317,43 +307,13 @@ public class DirectoryListPanel extends JPanel {
 					dirMngPanel.setStatus(0);
 					changePanel();
 					JOptionPane.showMessageDialog(null,
-							"For DeleteChoose a directory");
+							"For Delete : Choose a directory");
 				}
 			}
 
 			if (event.getSource() == btn[3]) {
 
 			}
-		}
-
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			if (e.getButton() == MouseEvent.BUTTON1) {
-				if (e.getClickCount() == 2) {
-					btn[1].doClick();
-				}
-			}
-		}
-
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
 		}
 	}
 }

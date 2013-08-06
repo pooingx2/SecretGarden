@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 import com.sg.model.Files;
 
@@ -14,18 +15,19 @@ public class Hybrid {
 
 	private HDFSClient hdfsModule;
 	private AWSUpDown aWSModule;
-	private String userId;
+	
 	
 	public Hybrid(){
 		hdfsModule = new HDFSClient();
 		aWSModule = new AWSUpDown();
-		this.userId = null;
 	}
 
-	public boolean auth(String type, String id, String pw) {
+	public boolean auth(String type, String id, String port, String pw) {
 
 		boolean isConnected = false;	// 1: connected		0 : disConnected
-
+		
+			
+		
 		switch (type){
 
 		case Constants.amazon : 		// aws s3 connect
@@ -34,12 +36,12 @@ public class Hybrid {
 			aWSModule.setKey(key);
 			aWSModule.setKeyId(keyId);
 			
-			isConnected= aWSModule.auth(userId);
+			isConnected= aWSModule.auth(ClientLauncher.getUser().getId());
 			break;
 
 		case Constants.hadoop : 		// hdfs connect
 			String hdfsIp = id;			// 입력 받아야 함
-			int hdfsPort = 15000;		// 입력 받아야 함
+			int hdfsPort = Integer.parseInt(port);		// 입력 받아야 함
 			hdfsModule.setDestIp(hdfsIp);
 			hdfsModule.setDestPort(hdfsPort);
 			
@@ -50,7 +52,7 @@ public class Hybrid {
 		return isConnected;
 	}
 	public int disconnected() {
-		// 제거 모듈 만들어 줘야 함
+		hdfsModule.disconnected();
 		return 0;
 	}
 	
@@ -98,7 +100,7 @@ public class Hybrid {
 	
 		
 		File targetFile = new File(sourceFile);
-		sendingFile = new Files(fixedFileName, fixedDestPath, 1, this.userId);
+		sendingFile = new Files(fixedFileName, fixedDestPath, 1, ClientLauncher.getUser().getId());
 		//aws s3 upload
 		if (aWSModule.upload( sendingFile, targetFile) == -1) {
 			System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
@@ -113,10 +115,25 @@ public class Hybrid {
 		}
 		
 		System.out.println("Upload Successfully");
+		
 		return 0;
 	}
 	
-
+	public String fileAlreadyExists(String fileName, int count) {
+		int i = 0;
+		
+		String fixedName;
+		StringTokenizer st = new StringTokenizer(fileName, ".");
+		String[] token = new String[fileName.length()/2];
+		//fileName.substring(fileName.lastIndexOf("."), fileName.length())
+		while(st.hasMoreElements()) {			
+			token[i] = st.nextToken();
+			i++;
+		}
+		fixedName = token[0] + "(" + count + ")." + token[1];
+		
+		return fixedName;
+	}
 
 	/* 각 클라우드에서 다운로드. 
 	 * sourcePath : 클라우드에 위치한 파일의 경로
@@ -134,7 +151,7 @@ public class Hybrid {
 		request.setDirPath(fixedSourcePath);
 		request.setFileName(fixedFileName);
 		request.setOptionNum(2);
-		request.setUserId(userId);
+		request.setUserId(ClientLauncher.getUser().getId());
 		
 
 		byte[] awsBuf = null;
@@ -165,9 +182,17 @@ public class Hybrid {
 		}
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
-		downFile = new File( destPath+"/"+fileName );
+		downFile = new File( destPath+ClientLauncher.getFileMgr().getSlash() );
+		
+		if(!downFile.exists()) 
+			downFile.mkdirs();
+		downFile = new File(destPath+ClientLauncher.getFileMgr().getSlash()+fileName);
+		int fileCount = 1;
+		while (downFile.exists()) {
+			downFile = new File(destPath+ClientLauncher.getFileMgr().getSlash()+fileAlreadyExists(fileName, fileCount));
+			fileCount++;
+		}
 		bos = new BufferedOutputStream(new FileOutputStream(downFile));
-		System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
 		bos.write(hdfsBuf);
 		
 		try{
@@ -185,14 +210,6 @@ public class Hybrid {
 	}
 
 	
-	public String getUserId() {
-		return userId;
-	}
-
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
 	public HDFSClient getHdfsModule() {
 		return hdfsModule;
 	}

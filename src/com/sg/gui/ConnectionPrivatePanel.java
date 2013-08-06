@@ -23,14 +23,15 @@ public class ConnectionPrivatePanel extends JPanel {
 	private int width;
 	private int height;
 	private boolean connection;
-	private String id;
+	private String ip;
+	private String port;
 	private String pwd;
 
 	// Components
 	private Font inputFont;
 	private JLabel bgImg[];
 	private JLabel label[];
-	private JTextField textField;
+	private JTextField textField[];
 	private JPasswordField pwdField;
 	private JButton btn[];
 	private ActionHandler handler;
@@ -56,8 +57,8 @@ public class ConnectionPrivatePanel extends JPanel {
 		inputFont = Constants.Font1;
 
 		// 연결 설정을 위한 form
-		label = new JLabel[3];
-		textField = new JTextField();
+		label = new JLabel[4];
+		textField = new JTextField[2];
 		pwdField = new JPasswordField();
 
 		// btn[0] : main	btn[1] : connect	btn[2] : cancel
@@ -69,19 +70,27 @@ public class ConnectionPrivatePanel extends JPanel {
 		label[0].setBounds(5,5,230,55);
 
 		label[1] = new JLabel("Hadoop Master IP");
-		label[1].setBounds(20,80,200,30);
+		label[1].setBounds(20,60,200,30);
 		label[1].setFont(inputFont);
 
-		textField = new JTextField();
-		textField.setBounds(20,110,200,30);
-		textField.setFont(inputFont);
+		textField[0] = new JTextField();
+		textField[0].setBounds(20,90,200,30);
+		textField[0].setFont(inputFont);
 
-		label[2] = new JLabel("SSH key");
-		label[2].setBounds(20,150,200,30);
+		label[2] = new JLabel("Port");
+		label[2].setBounds(20,120,200,30);
 		label[2].setFont(inputFont);
+		
+		textField[1] = new JTextField();
+		textField[1].setBounds(20,150,200,30);
+		textField[1].setFont(inputFont);
+		
+		label[3] = new JLabel("SSH key");
+		label[3].setBounds(20,180,200,30);
+		label[3].setFont(inputFont);
 
 		pwdField = new JPasswordField();
-		pwdField.setBounds(20,180,200,30);
+		pwdField.setBounds(20,210,200,30);
 		pwdField.setFont(inputFont);
 
 		handler = new ActionHandler();
@@ -93,30 +102,34 @@ public class ConnectionPrivatePanel extends JPanel {
 
 		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
 		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
-		btn[1].setBounds(30,240,80,30);
+		btn[1].setBounds(30,250,80,30);
 		btn[1].addActionListener(handler);
 
 		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
 		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
-		btn[2].setBounds(130,240,80,30);
+		btn[2].setBounds(130,250,80,30);
 		btn[2].addActionListener(handler);
-
 
 		this.add(btn[0]);
 		this.add(bgImg[0]);
 	}
 
 	public void initialize() { 
-		textField.setText("");
+		textField[0].setText("");
+		textField[1].setText("");
 		pwdField.setText("");
 		this.connection = false;
 		changeStatusPanel();
 	}
 
-	public String getId() {
-		return id;
+	public String getIp() {
+		return ip;
 	}
-
+	
+	public String getPort() {
+		return port;
+	}
+	
 	public String getPwd() {
 		return pwd;
 	}
@@ -136,7 +149,9 @@ public class ConnectionPrivatePanel extends JPanel {
 		this.add(label[0]);
 		this.add(label[1]);
 		this.add(label[2]);
-		this.add(textField);
+		this.add(label[3]);
+		this.add(textField[0]);
+		this.add(textField[1]);
 		this.add(pwdField);
 		this.add(btn[1]);
 		this.add(btn[2]);
@@ -167,20 +182,25 @@ public class ConnectionPrivatePanel extends JPanel {
 
 			if(event.getSource()==btn[1]){
 
-				id = textField.getText();
+				ip = textField[0].getText();
+				port = textField[1].getText();
 				pwd = pwdField.getText();
 
-				textField.setText("");
+				textField[0].setText("");
+				textField[1].setText("");
 				pwdField.setText("");
 
-				ClientLauncher.getFrame().getConnectionPanel().setPrivate(id);
 
-//				connection = ClientLauncher.getHybrid().auth(Constants.hadoop,id,pwd);
-				connection = true;
+				ClientLauncher.getFrame().getConnectionPanel().setPrivate(ip);
+				connection = ClientLauncher.getHybrid().auth(Constants.hadoop, ip, port, pwd);
+//				connection = true;
 
 
 				if(connection){
 					changeStatusPanel();
+					//ClientLauncher.getFrame().getConnectionPanel().setP_ip(ip);
+					/*port넘버를 받는거로 바꿔줘야 함.*/
+					//ClientLauncher.getFrame().getConnectionPanel().setP_portNum(15000);
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Connect Error");
@@ -188,7 +208,7 @@ public class ConnectionPrivatePanel extends JPanel {
 				// private 과 public모두 연결되어 있다면 실행
 				if(isConnection() && ClientLauncher.getFrame().
 						getConnectionPanel().getPublicPanel().isConnection()){
-					/*********************/
+					
 					String id = ClientLauncher.getFrame().getLoginPanel().getId();
 					String private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
 					String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
@@ -201,7 +221,6 @@ public class ConnectionPrivatePanel extends JPanel {
 					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
 					// 디렉토리 리스트 요청 패킷을 전송
 					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-					/*********************/
 				}
 
 			}

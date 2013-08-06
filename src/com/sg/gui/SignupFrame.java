@@ -148,12 +148,22 @@ public class SignupFrame extends JFrame  {
 
 			// 확인 버튼을 눌렀을때
 			if(event.getSource()==btn[0]){
+				boolean isUpperCase=false;
+				
 				id=textField[0].getText();
 				name=textField[1].getText();
 				email=textField[2].getText();
 				pwd1=pwdField[0].getText();
 				pwd2=pwdField[1].getText();
 				
+				// ID에 대문자를 포함하는지 판별
+				for( int i = 0; i< id.length(); i++ ) {
+					if( Character.isUpperCase(id.charAt(i))) {
+						isUpperCase=true;
+						break;
+					}
+				}
+							
 				// 빈 Textfiled가 없도록 예외처리
 				if(id.equals("") || name.equals("") || email.equals("")
 									|| pwd1.equals("") || pwd2.equals("")){
@@ -163,6 +173,11 @@ public class SignupFrame extends JFrame  {
 				// pwd입력이 제대로 되었는지 확인
 				else if(!(pwd1.equals(pwd2))){
 					JOptionPane.showMessageDialog(null, "Password doesn't match the confirmation");
+				}
+				
+				// 대문자를 포함하는지를 확인
+				else if(isUpperCase){
+					JOptionPane.showMessageDialog(null, "ID should be in upper case");
 				}
 				
 				// 회원가입 패킷 전송

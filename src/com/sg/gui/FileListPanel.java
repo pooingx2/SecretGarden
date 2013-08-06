@@ -1,9 +1,9 @@
 package com.sg.gui;
 
+import java.awt.EventQueue;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -43,7 +43,7 @@ public class FileListPanel extends JPanel {
 	private FileMngPanel fileMngPanel;
 	private Vector<String> row;
 	private JTree fileTree;
-	private TreeModel model;
+	private DefaultTreeModel model;
 	private DefaultMutableTreeNode root;
 	private Vector<FileInfo> fileInfoList;
 	private DefaultMutableTreeNode selectedNode;
@@ -68,9 +68,8 @@ public class FileListPanel extends JPanel {
 		model = new DefaultTreeModel(root);
 		
 		// File view Tree 등록
-		fileTree = new JTree();
+		fileTree = new JTree(model);
 		fileTree.setRowHeight(20);
-		fileTree.setModel(model);
 		fileTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {	
 			@Override
 			public void valueChanged(TreeSelectionEvent event) {
@@ -85,10 +84,11 @@ public class FileListPanel extends JPanel {
 				}
 			}
 		});
+		
 		fileTree.setEditable(false);
 		fileTree.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		fileTree.setCellRenderer(new MyTreeRenderer());
-
+		
 		// scroll 등록
 		scroll = new JScrollPane(fileTree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, 
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -129,18 +129,30 @@ public class FileListPanel extends JPanel {
 		this.add(btnGroupPanel);
 		this.add(fileMngPanel);
 		this.add(bgImg);
-		
-		this.repaint();
+	}
+
+	
+
+	@Override
+	public void paint(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paint(g);
 	}
 
 
+
 	public void initialize() { 
-		editMode=true;
-		makeTree();
-		((DefaultTreeModel)fileTree.getModel()).reload();
-		changePanel();
-		fileMngPanel.initialize();
-		editMode=false;
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				editMode=true;
+				makeTree();
+				model.reload();
+				fileMngPanel.initialize();
+				changePanel();
+				editMode=false;
+			}
+		});
 	}
 
 	// fileInfoList에 저장된 node를 통해 tree를 만듬
@@ -148,11 +160,10 @@ public class FileListPanel extends JPanel {
 		Vector<FileInfo> fileInfoList;
 		DefaultMutableTreeNode node;
 		root.removeAllChildren();
+		root.setUserObject("root"+ClientLauncher.getFileMgr().getRootDirID());
 		fileTree.removeAll();
-		int maxDepth;
 		
 		fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
-		maxDepth     = ClientLauncher.getFileMgr().getMaxDepth();
 		
 		for(FileInfo fileInfo : fileInfoList){
 			node = new DefaultMutableTreeNode(fileInfo.getName());
@@ -205,19 +216,32 @@ public class FileListPanel extends JPanel {
 	
 	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
-		this.remove(bgImg);
+		this.removeAll();
 		fileMngPanel.initialize();
 		this.add(scroll);
+		this.add(btnGroupPanel);
 		this.add(fileMngPanel);
 		this.add(bgImg);
 		this.repaint();
 	}
 
+	// 추가할 TreeNode가 존재하는지를 파악
+	public boolean isExistNode(String node){
+		for(int i=0;i<selectedNode.getChildCount();i++){
+			System.out.println("\t\t\t getchild : "+selectedNode.getChildAt(i));
+			if(selectedNode.getChildAt(i).toString().equals(node))
+				return true;
+		}
+		return false;
+	}
+
 	public void create(String folderName){
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a parent directory");
+		else if(isExistNode(folderName)) {
+			JOptionPane.showMessageDialog(null, folderName + " is already exist");
+		}
 		else{
-			
 			int type = Constants.PacketType.FolderCreateRequest.getType();
 			String data = folderName + "\t" + selectedNode.toString() + "\t" + 
 					((selectedNode.getLevel()+1)+"") + "\t" + ClientLauncher.getFileMgr().getRootDirID();
@@ -233,7 +257,8 @@ public class FileListPanel extends JPanel {
 		else {
 			int type = Constants.PacketType.FileUploadRequest.getType();
 			String data = fileName + "\t" + selectedNode.toString() + "\t" + 
-					((selectedNode.getLevel()+1)+"") + "\t" + ClientLauncher.getFileMgr().getRootDirID();
+					((selectedNode.getLevel()+1)+"") + "\t" + 
+					ClientLauncher.getFileMgr().getRootDirID() +"\t"+"defaultMetadata";
 			int length = data.length();
 			
 			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
@@ -301,7 +326,7 @@ public class FileListPanel extends JPanel {
 					fileMngPanel.changePanel();
 				}
 				else
-					JOptionPane.showMessageDialog(null, "Select upload folder");
+					JOptionPane.showMessageDialog(null, "Select create directory path");
 			}
 			// Upload
 			else if(event.getSource()==btn[1]){
@@ -310,7 +335,7 @@ public class FileListPanel extends JPanel {
 					fileMngPanel.changePanel();
 				}
 				else
-					JOptionPane.showMessageDialog(null, "Select upload folder");
+					JOptionPane.showMessageDialog(null, "Select upload directory path");
 				
 			}
 			// Download

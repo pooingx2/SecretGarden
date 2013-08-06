@@ -155,7 +155,6 @@ public class DirectoryMngPanel extends JPanel {
 
 	// 각종 status에 따라  Directory관리 패널을 변경
 	public void changePanel() {
-
 		this.removeAll();
 		switch(this.status){
 		case 0 : 	// Default
