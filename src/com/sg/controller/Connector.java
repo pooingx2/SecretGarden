@@ -114,10 +114,11 @@ public class Connector implements Runnable {
 
 		try {
 			dos.write(sendbuf, 0, length + 12);
-			System.out.println("전송 데이터 길이 : " + i);
-			System.out.println("전송 데이터 타입 : " + type);
-			System.out.println("전송 데이터 디스크립터 : " + redesc);
-			System.out.println("전송 데이터 : " + data);
+			System.out.println("\n"+"< Send packet >");
+			System.out.println("type : " + type);
+			System.out.println("desc : " + redesc);
+			System.out.println("length : " + i);
+			System.out.println("data : " + data + "\n");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -169,9 +170,10 @@ public class Connector implements Runnable {
 		}
 		// return null;
 
-		System.out.println("수신 데이터 타입 : " + type);
-		System.out.println("수신 데이터 디스크립터 : " + desc);
-		System.out.println("수신 데이터 길이: " + length);
+		System.out.println("\n" + "< Receive packet >");
+		System.out.println("type : " + type);
+		System.out.println("desc : " + desc);
+		System.out.println("length : " + length);
 
 		byte[] dataBuf = new byte[length];
 		try {
@@ -179,11 +181,11 @@ public class Connector implements Runnable {
 			if (length != 0) {
 				dis.read(dataBuf);
 				String data = new String(dataBuf);
-				System.out.println("수신 데이터 : " + data);
+				System.out.println("Receive data : " + data+ "\n");
 				pkMgr.managePacket(type, desc, length, data);
 			} else {
 				String data = new String();
-				System.out.println("수신 데이터 : NULL ");
+				System.out.println("Receive data : NULL " + "\n");
 				pkMgr.managePacket(type, desc, length, "");
 			}
 

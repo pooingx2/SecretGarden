@@ -29,11 +29,6 @@ public class PacketMgr {
 		token = new String[length];
 		int i =0;
 
-		System.out.println("type : " + type);
-		System.out.println("desc : " + desc);
-		System.out.println("length : " + length);
-		System.out.println("data : " + data);
-
 		// token에 저장
 		while(tokenizer.hasMoreTokens()) {
 			token[i] = tokenizer.nextToken();

@@ -312,7 +312,17 @@ public class DirectoryListPanel extends JPanel {
 			}
 
 			if (event.getSource() == btn[3]) {
+				if (isSelected) {
+					dirMngPanel.setStatus(5);
+					changePanel();
+				}
 
+				else {
+					dirMngPanel.setStatus(0);
+					changePanel();
+					JOptionPane.showMessageDialog(null,
+							"For Setting : Choose a directory");
+				}
 			}
 		}
 	}

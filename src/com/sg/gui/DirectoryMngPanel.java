@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -12,8 +12,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
@@ -35,9 +38,12 @@ public class DirectoryMngPanel extends JPanel {
 	private Font inputFont;
 	private JLabel bgImg[];
 	private JLabel label[];
+	private JLabel settingsLabel[];
 	private JTextField textField[];
 	private JButton btn[];
 	private ActionHandler handler;
+	private JSlider slider;
+	private Hashtable labelTable;
 
 	public DirectoryMngPanel(int w, int h) {
 
@@ -87,6 +93,38 @@ public class DirectoryMngPanel extends JPanel {
 		textField[1].setEditable(false);
 		textField[1].setFont(inputFont);
 
+		// cloud settings 정보를 보여주기 위한 label
+		settingsLabel = new JLabel[2];
+		for(int i=0;i<2;i++){
+			settingsLabel[i] = new JLabel();
+			settingsLabel[i].setBounds(30,70+(i*40),250,30);
+			settingsLabel[i].setFont(Constants.Font1);
+		}
+		
+		settingsLabel[0].setText("Block Count : ");
+		settingsLabel[1].setText("Cloud Rate :  ( 5 : 5 )");
+		
+		// private와 public storage 비율 설정을 위한 slider
+	    slider = new JSlider(0,10,5);
+	    slider.setMajorTickSpacing(2);
+	    slider.setMinorTickSpacing(1);
+	    slider.setPaintTicks(true);
+	    slider.setFocusable(false);
+	    slider.setPaintLabels(true);
+	    slider.setBounds(25,140,250,50);
+	    slider.setBackground(Color.WHITE);
+	    slider.addChangeListener(new ChangeListener() {
+	    	public void stateChanged(ChangeEvent e) {
+	    		settingsLabel[1].setText("Cloud Rate :  ( "+
+	    				slider.getValue() + " : " + (10-slider.getValue())+ " )");
+	    	}
+	    });
+	    
+	    labelTable = new Hashtable();
+	    labelTable.put( new Integer( 0 ), new JLabel("Private") );
+	    labelTable.put( new Integer( 10 ), new JLabel("Public") );
+	    slider.setLabelTable( labelTable );
+	    
 		handler = new ActionHandler();
 		
 		// Accessfile load 버튼
@@ -181,6 +219,9 @@ public class DirectoryMngPanel extends JPanel {
 			this.add(btn[2]);
 			break;
 		case 5 : 	//	Settings
+		    this.add(settingsLabel[0]);
+		    this.add(settingsLabel[1]);
+		    this.add(slider);
 			this.add(btn[1]);
 			this.add(btn[2]);
 		default : 
