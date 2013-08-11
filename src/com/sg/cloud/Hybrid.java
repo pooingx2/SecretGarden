@@ -162,24 +162,17 @@ public class Hybrid {
 		Files hdfsReceiveFile = null;
 		
 		//aws s3 download
-		awsReceiveFile = aWSModule.download(request);
-		System.out.println("optnum : " + awsReceiveFile.getOptionNum());
-		if (awsReceiveFile.getOptionNum() == -1) {
-			System.out.println("aws download error...");
-			return -1;
-		}else{
-			
-			awsBuf = awsReceiveFile.getFileBuf();
-		}
+//		awsReceiveFile = aWSModule.download(request);
+//		System.out.println("optnum : " + awsReceiveFile.getOptionNum());
+//		if (awsReceiveFile.getOptionNum() == -1) {
+//			System.out.println("aws download error...");
+//			return -1;
+//		}else{
+//			
+//			awsBuf = awsReceiveFile.getFileBuf();
+//		}
 		//hdfs download
-		hdfsReceiveFile = hdfsModule.download(request);
 		
-		if (hdfsReceiveFile.getOptionNum() == -1) {
-			System.out.println("hdfs download error...\ndelete " + fixedSourcePath+fixedFileName+" in s3 bucket");
-			return -1;
-		} else{
-			hdfsBuf = hdfsReceiveFile.getFileBuf();
-		}
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
 		downFile = new File( destPath+ClientLauncher.getFileMgr().getSlash() );
@@ -192,14 +185,30 @@ public class Hybrid {
 			downFile = new File(destPath+ClientLauncher.getFileMgr().getSlash()+fileAlreadyExists(fileName, fileCount));
 			fileCount++;
 		}
-		bos = new BufferedOutputStream(new FileOutputStream(downFile));
-		bos.write(hdfsBuf);
 		
-		try{
-			bos.write(awsBuf);
-		} catch (NullPointerException es){
-			System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
-		}
+		// 파일로 쓰기
+		int bytesRead = 0;
+		boolean isFirst = true;
+		bos = new BufferedOutputStream(new FileOutputStream(downFile));
+		
+		
+		
+//		while (0 != (bytesRead = (hdfsBuf = hdfsModule.download(request, isFirst)).length)) {
+//			bos.write(hdfsBuf,0,bytesRead);
+//			bos.flush();
+//			System.out.println(hdfsBuf.length);
+//			isFirst=false;
+//		}
+		
+		if (hdfsReceiveFile.getOptionNum() == -1) {
+			System.out.println("hdfs download error...\ndelete " + fixedSourcePath+fixedFileName+" in s3 bucket");
+			return -1;
+		} 
+//		try{
+//			bos.write(awsBuf);
+//		} catch (NullPointerException es){
+//			System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
+//		}
 		bos.close();
 
 		return 0;

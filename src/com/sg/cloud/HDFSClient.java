@@ -37,7 +37,7 @@ public class HDFSClient implements PrivateUpDown1 {
 			reader = sock.getInputStream();
 			writer = sock.getOutputStream();
 			objOutput = new ObjectOutputStream(writer);
-			objInput  = new ObjectInputStream(reader);
+			objInput = new ObjectInputStream(reader);
 
 			System.out.println("here");
 		} catch (UnknownHostException e) {
@@ -64,45 +64,56 @@ public class HDFSClient implements PrivateUpDown1 {
 		 * 디렉토리 중복 여부 확인 필요
 		 */
 		int optionNum = 1;
-		
-		byte[] buf = new byte[1048576];
+		int bytesRead = 0;
+		byte[] buf = new byte[10240];
 		readFile = new BufferedInputStream(new FileInputStream(targetFile));
-		readFile.read(buf, 0, 1048576);
-		fileDescript.setFileBuf(buf);
+
 		System.out.println("hdfs upload Start!");
-		
-		
+
 		objOutput.writeObject(fileDescript);
 		objOutput.flush();
+
+		while (-1 != (bytesRead = readFile.read(buf, 0, buf.length))) {
+			writer.write(buf, 0, bytesRead);
+			writer.flush();
+		}
+
 		System.out.println("일단은 보냇음...");
 
-		// objOutput.close();
-		// readFile.close();
+		 objOutput.close();
+		 readFile.close();
 		// sock.close();
 		return 0;
 	}
 
 	@Override
-	public Files download(Files request) throws IOException {
+	public File download(Files request, boolean isFirst) throws IOException {
 
+		int bytesRead = 0;
+		byte[] buf=new byte[10240];
+		File tmpFile = null;
 		// request
-		
-		objOutput.writeObject(request);
-		objOutput.flush();
+		if (isFirst == true){
+			objOutput.writeObject(request);
+			objOutput.flush();
+			try {
+				recievFile = (Files) objInput.readObject();
+			} catch (IOException e) {
+				System.out.println("object 수신 실패");
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				System.out.println("클래스를 찾지 못했습니다. 왜???");
 
-		// download
-		try {	
-			recievFile = (Files) objInput.readObject();
-		} catch (IOException e) {
-			System.out.println("object 수신 실패");
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			System.out.println("클래스를 찾지 못했습니다. 왜???");
-
+			}
 		}
-
-		return recievFile;
+		// download
+		
+		bytesRead = reader.read(buf, 0, buf.length);
+		System.out.println("buf length :"+buf.length);
+			
+		return tmpFile;
 	}
+
 	public void disconnected() {
 		try {
 			sock.close();
