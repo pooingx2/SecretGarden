@@ -1,0 +1,70 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 2 (0x2)
+    Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=SM, ST=SSM, L=SSM, O=SSM, OU=SSM, CN=SSM/name=SSM/emailAddress=SSM
+        Validity
+            Not Before: Aug 13 09:57:58 2013 GMT
+            Not After : Aug 11 09:57:58 2023 GMT
+        Subject: C=SM, ST=SSM, L=SSM, O=SSM, OU=SSM, CN=SSM/name=SSM/emailAddress=SS,
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (1024 bit)
+                Modulus:
+                    00:c7:a8:e1:25:f3:e3:05:3e:a8:8a:3b:e3:c1:ff:
+                    f1:46:c5:db:29:22:6f:56:49:42:93:ff:9b:00:8d:
+                    9f:31:4e:b2:90:7d:12:83:bf:f3:49:e3:a8:ab:a4:
+                    12:20:8b:75:b7:da:70:f0:6a:95:4c:0b:95:f0:b3:
+                    73:ac:0a:23:21:5a:dd:b1:ea:50:7a:26:54:3d:fa:
+                    40:e5:4f:57:38:52:b3:9c:7e:c9:03:81:86:01:ad:
+                    49:80:c7:18:b3:d5:69:46:0f:9f:0b:4e:87:86:ff:
+                    a6:40:1b:ce:d0:71:53:b4:dd:f5:8d:51:37:f5:5f:
+                    70:30:a0:ab:cc:84:7c:a3:8d
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                Easy-RSA Generated Certificate
+            X509v3 Subject Key Identifier: 
+                DF:4C:9A:0A:49:F4:B4:63:7A:49:B0:45:F3:09:15:DF:C7:FC:5D:5F
+            X509v3 Authority Key Identifier: 
+                keyid:32:6A:FC:AD:78:23:14:29:E9:29:98:31:44:DB:75:EF:69:84:54:03
+                DirName:/C=SM/ST=SSM/L=SSM/O=SSM/OU=SSM/CN=SSM/name=SSM/emailAddress=SSM
+                serial:B6:7C:39:92:5E:9C:98:26
+
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication
+            X509v3 Key Usage: 
+                Digital Signature
+    Signature Algorithm: sha1WithRSAEncryption
+         6f:5a:41:d7:6a:0d:0d:1d:5e:56:95:3c:a3:27:d3:d7:a7:86:
+         19:93:24:31:c5:bf:8c:98:93:1d:6a:9a:4c:0c:53:ba:b9:10:
+         29:ab:02:49:fe:34:94:59:13:ec:fa:e2:52:3b:66:2a:19:45:
+         f7:3a:78:26:4b:36:a5:4a:81:a2:57:63:f2:66:6c:51:92:ca:
+         00:d0:1e:8a:12:9b:dc:f2:ad:68:93:83:af:14:6d:8c:7b:19:
+         54:e0:3f:a7:46:2f:85:fd:41:71:5d:e2:d0:d8:77:3a:70:24:
+         20:ee:3c:47:6b:78:b4:eb:70:3c:4e:79:88:8d:df:ee:48:82:
+         2c:57
+-----BEGIN CERTIFICATE-----
+MIIDizCCAvSgAwIBAgIBAjANBgkqhkiG9w0BAQUFADB1MQswCQYDVQQGEwJTTTEM
+MAoGA1UECBMDU1NNMQwwCgYDVQQHEwNTU00xDDAKBgNVBAoTA1NTTTEMMAoGA1UE
+CxMDU1NNMQwwCgYDVQQDEwNTU00xDDAKBgNVBCkTA1NTTTESMBAGCSqGSIb3DQEJ
+ARYDU1NNMB4XDTEzMDgxMzA5NTc1OFoXDTIzMDgxMTA5NTc1OFowdTELMAkGA1UE
+BhMCU00xDDAKBgNVBAgTA1NTTTEMMAoGA1UEBxMDU1NNMQwwCgYDVQQKEwNTU00x
+DDAKBgNVBAsTA1NTTTEMMAoGA1UEAxMDU1NNMQwwCgYDVQQpEwNTU00xEjAQBgkq
+hkiG9w0BCQEWA1NTLDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAx6jhJfPj
+BT6oijvjwf/xRsXbKSJvVklCk/+bAI2fMU6ykH0Sg7/zSeOoq6QSIIt1t9pw8GqV
+TAuV8LNzrAojIVrdsepQeiZUPfpA5U9XOFKznH7JA4GGAa1JgMcYs9VpRg+fC06H
+hv+mQBvO0HFTtN31jVE39V9wMKCrzIR8o40CAwEAAaOCASkwggElMAkGA1UdEwQC
+MAAwLQYJYIZIAYb4QgENBCAWHkVhc3ktUlNBIEdlbmVyYXRlZCBDZXJ0aWZpY2F0
+ZTAdBgNVHQ4EFgQU30yaCkn0tGN6SbBF8wkV38f8XV8wgacGA1UdIwSBnzCBnIAU
+Mmr8rXgjFCnpKZgxRNt172mEVAOheaR3MHUxCzAJBgNVBAYTAlNNMQwwCgYDVQQI
+EwNTU00xDDAKBgNVBAcTA1NTTTEMMAoGA1UEChMDU1NNMQwwCgYDVQQLEwNTU00x
+DDAKBgNVBAMTA1NTTTEMMAoGA1UEKRMDU1NNMRIwEAYJKoZIhvcNAQkBFgNTU02C
+CQC2fDmSXpyYJjATBgNVHSUEDDAKBggrBgEFBQcDAjALBgNVHQ8EBAMCB4AwDQYJ
+KoZIhvcNAQEFBQADgYEAb1pB12oNDR1eVpU8oyfT16eGGZMkMcW/jJiTHWqaTAxT
+urkQKasCSf40lFkT7PriUjtmKhlF9zp4Jks2pUqBoldj8mZsUZLKANAeihKb3PKt
+aJODrxRtjHsZVOA/p0Yvhf1BcV3i0Nh3OnAkIO48R2t4tOtwPE55iI3f7kiCLFc=
+-----END CERTIFICATE-----
