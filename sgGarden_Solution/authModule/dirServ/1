@@ -1,0 +1,310 @@
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <string.h>
+#include <signal.h> 
+#include <sys/epoll.h>
+#include <mysql.h>
+#include <openssl/bn.h>
+
+#include "dirs.h"
+#include "protocol.h"
+#include "header.h"
+
+#define MAXLINE 1024
+
+
+int main(int argc, char **argv)
+{
+   byte headerBuf[HEADERSIZE];
+   byte dataBuf[DATASIZE];
+   char directoryList[DATASIZE];
+   char fileList[DATASIZE];
+   char *tokenBuf[DATASIZE];
+   char directory_id[10];
+   
+   char *id[100];
+   char *pwd[100];
+   int   state = 1;
+   MYSQL *con;   
+
+   char *String = "OK";
+   char *NoneMs = "Error";
+   int type = 0;
+   int desc = 0;
+   int length = 0;
+   Peer messagingServ;  
+
+ 
+  
+   messagingServ.socket =  joinToPassingServ("127.0.0.1", argv[1], 102);	
+   
+    // DB connection 초기화
+	con = mysql_init(NULL);
+	if(con == NULL) 
+	{	
+		fprintf(stderr,"%s\n",mysql_error(con));
+	}
+		
+    // DB 연결
+	if(mysql_real_connect
+             (con,"localhost","root","32sm2u","SecretGarden", 0, NULL, 0) == NULL)
+ 	{
+		fprintf(stderr,"%s\n",mysql_error(con));
+    }
+	
+	// DB 인코딩
+	mysql_query(con, "set session character_set_connection=utf8");
+	mysql_query(con, "set session character_set_results=utf8");
+	mysql_query(con, "set session character_set_client=utf8");
+   
+    while(1) 
+    {
+		memset(headerBuf, 0x00, HEADERSIZE);
+		memset(dataBuf,   0x00, DATASIZE);
+		memset(tokenBuf,  0x00, DATASIZE);
+		memset(directoryList, 0x00, DATASIZE);
+		memset(fileList,  0x00, DATASIZE);
+		memset(directory_id , 0x00, 10);
+
+		int recv_len =  recvFrom(&messagingServ, headerBuf, dataBuf);
+	
+	/* Send */
+	if(recv_len > 0)
+	{
+			
+		type = byteToInt(headerBuf, 0);
+		desc = byteToInt(headerBuf, 4);
+		length = byteToInt(headerBuf, 8);
+		
+		switch(type)
+		{
+			case 7 :
+			{
+			
+			     /* 디렉토리 조회를 위한 인자 획득 */
+			     getElements(&dataBuf, '\t', tokenBuf);	
+			 
+			     /* User가 접속한 클라우드의 디렉토리 리스트 조회 */ 
+	     		     // 인자  리스트 :  User id, Public, Private
+			     state = getdirectoryList(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], directoryList);			   
+
+			     
+			     if(state == 1)
+			     {
+        		    	 sendTo(&messagingServ, 8,
+                             		    desc, strlen(directoryList), directoryList);
+			     }
+			     else
+			     {
+				 sendTo(&messagingServ, 0,
+                             		    desc, strlen(NoneMs), NoneMs);
+			     }
+                             break;
+
+			}
+			
+			// 디렉토리 생성 
+			case 9 :
+			{
+			     printf("before keygen\n");
+			     byte *key;
+			     char keyString[1024];
+			     char dir_id_String[10];
+				
+			     char *enc_data;
+			     int enc_data_len;
+			     int iRet;
+			     int size;
+			     int dir_id;
+
+			     memset(keyString, 0x00, 1024);
+			
+			     /* 디렉토리 생성을 위한 인자 획득 */
+			     getElements(dataBuf, '\t', tokenBuf);
+			
+			     // 암호화 키 생성 	
+                             key = (byte*)malloc(16 * sizeof(byte));
+			     keyGen(&size, &key);
+			     printf("Generation Secret Key String\n");
+			     printf("Secret Key String : %s \n", BinaryToBnHex(key));
+
+			     /* 디렉토리 생성 */
+			     // 인자 리스트 : 디렉토리 이름, 프라이빗 정보, 퍼블릭 정보, 유저ID
+			     state = createRootDir(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], BinaryToBnHex(key), tokenBuf[3]);	
+
+			     if(state == 1)
+			     {
+				/* 디렉토리가 제대로 생성되었으므로 암호화된 Keyfile을 보내준다 (예외 처리 필요) */
+				// 생성한 노드 인덱스 가져오기
+				printf("getCreateNode \n");
+				dir_id = getNodeIndex(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], tokenBuf[3], directory_id);				      
+				// 메세지 키 생성  
+				printf("build Key String \n");
+				strcat(keyString, directory_id);	
+				printf("before encrytion, Org message is %s \n", keyString);
+
+				// 암호화
+				enc_data = NULL;
+				enc_data_len;
+				
+					if(encryptAES(keyString, strlen(keyString)+1, key, &enc_data, &enc_data_len))
+					{
+						printf("AES encrytion \n");
+						printf("Encrypted message = %s \n", BinaryToBnHex(enc_data));
+						printf("Encrypted message len = %d \n", enc_data_len);
+					}
+				
+			    	sendTo(&messagingServ, 10, 
+				    	desc, strlen(BinaryToBnHex(enc_data)), BinaryToBnHex(enc_data));
+				}
+			    else
+			    {
+					sendTo(&messagingServ, 0, 
+					    desc, strlen(NoneMs), NoneMs);
+			    }
+
+				
+			     break;
+
+			}
+
+			// 디렉토리 엑세스
+			case 11 :
+			{
+			
+				// 디렉토리 액세스를 위한 인자(Key, dirid, dirName) 회득 
+				getElements(dataBuf, "\t", tokenBuf);				
+			
+				/*
+					// Key 일치 판정 - (id) 	
+					state = check_access_Key(con, tokenBuf[0], tokenBuf[1], tokenBuf[2]);
+				*/	
+
+				state = 1;
+				
+				if(state == 1)
+				{
+					state = getFileList(con, tokenBuf[1], fileList);
+				}				
+			
+
+				// 하부 리스트 전송  			
+				if(state == 1)
+				{
+				 	sendTo(&messagingServ, 12,
+                             		    desc, strlen(fileList), fileList);
+				}
+				else
+				{
+					sendTo(&messagingServ, 12,
+                             		    desc, strlen(NoneMs), NoneMs);
+				}
+			
+				break;
+			}
+			
+			// 폴더 생성
+			case 13 :
+			{
+				/* 폴더 생성을 위한 인자(name, parent, depth, root) 획득 */	
+				state = getElements(dataBuf, "\t", tokenBuf);
+
+				/* 폴더 생성(Insert Query) */
+				state = createFolder(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], tokenBuf[3]);
+
+				/* 디렉토리 하부 폴더 조회 */
+				//state = getFileList(con, tokenBuf[3], fileList);
+
+				/* 부모 노드와 자식노드 데이터 생성 */
+				strcat(fileList, tokenBuf[1]);
+				strcat(fileList, "\t");
+
+				strcat(flieList, tokenBuf[0]);
+				strcat(fileList, ",");
+				strcat(fileList, tokenBuf[2]);
+
+				/* 생성 결과 제공 */
+				if(state == 1)
+				{
+					sendTo(&messagingServ, 14, desc, strlen(fileList), fileList);
+				}
+				else
+				{
+					sendTo(&messagingServ, 0,  desc, strlen(NoneMs), NoneMs);
+				}
+
+				break;
+			}
+
+			// 파일(메타 데이터) 업로드
+			case 15 : 	
+			{	
+				char *request_meta = "upload meta data";
+
+				/* 파일 업로드를 위한 인자(name, parent, depth, root) 획득 */
+				state = getElements(dataBuf, "\t", tokenBuf);			
+	
+				/* 파일 생성(Insert Query) */		
+				createFile(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], tokenBuf[3]);
+					// 차후에 메타 패쓰를 수정하는 작업이 필요하다 //
+
+				/* file_id, meta_data build */
+
+
+				/* 메타 데이터 서버로 전송 */
+				if(state == 1)
+				{
+					sendTo(&messagingServ, 30, desc, strlen(request_meta), request_meta);
+				}
+				else
+				{
+					sendTo(&messagingServ, 0, desc, strlen(NoneMs), NoneMs);
+				}
+
+				break;
+			}
+			
+			// 파일(메타 데이터) 다운로드 
+			case 17 :
+			{
+				char file_id[1024];
+				char metaPath[1024];
+				state = getElements(dataBuf, "\t", tokenBuf);
+
+				/* 파일(메타 데이터) 다운로드를 위한 인자(name,parent,depth,root기반의 file id 조회)  */
+				get_file_id(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], tokenBuf[3], file_id);
+				get_meta_Path(con, file_id, metaPath);
+				
+				/* 메타 데이터 서버로 전송 요청 */
+				if(state == 0)
+					return 0;
+
+				sendTo(&messagingServ, 30, desc, strlen(metaPath), metaPath);
+					//
+
+				break;
+				/* 추가적인 보안 이슈 - Client RSA 비밀키, HDFS RSA 공개키 */
+			}
+
+
+			// 메타 데이터의 metaPath 설정
+			case 20	:
+			{
+				// 
+				break;
+			}
+
+			// 공유 기능
+			default  :
+			{
+			
+			     break;
+			}
+		}
+	
+	}
+	/* Send End */
+
+   }
+}
+

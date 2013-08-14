@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# MySQL settings
+mysql_user="root"
+mysql_password=""
+
+# Read MySQL password from stdin if empty
+if [ -z "${mysql_password}" ]; then
+	echo -n "Enter MySQL ${mysql_user} password: "
+	read -s mysql_password
+	echo
+fi
+
+# Check MySQL password
+echo exit | mysql -u"${mysql_user}" -p"${mysql_password}"
+if [ "$?" -gt 0 ]; then
+	echo "MySQL ${mysql_user} password incorrect"
+	exit 1
+else
+	echo "MySQL ${mysql_user} password correct."
+fi
+
+mysql -u"${mysql_user}" -p"${mysql_password}" -e"
+CREATE DATABASE NonceDB;"
+echo "Create Database NonceDB"
+
+mysql -u"${mysql_user}" -p"${mysql_password}" -e"
+GRANT ALL ON Nonce.* TO 'secret'@'localhost' IDENTIFIED BY 'garden';"
+echo "Create and Grant Database User \"secret\""
+
+mysql -u"${mysql_user}" -p"${mysql_password}" -e"
+CREATE TABLE SecretGarden.Nonce (
+	nonce_id VARCHAR(20) NOT NULL,
+	nonce_value VARCHAR(20) NOT NULL,
+	timeStamp VARCHAR(20) NOT NULL,
+	
+	PRIMARY KEY (user_id)
+)DEFAULT CHARSET=utf8;"
+echo "Create Table Nonce"
+
