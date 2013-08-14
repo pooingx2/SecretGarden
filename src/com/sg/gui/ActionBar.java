@@ -44,39 +44,39 @@ public class ActionBar extends JMenuBar{
 		this.isForwardBtnPress = false;
 		
 		// 배경이미지 등록
-		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.barBG.getPath()));
+		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.barBG.getPath())));
 		bgImg.setBounds(0,0,width,height);
 		
 		// 이벤트 핸들러 등록
 		handler = new ActionHandler();
 		
 		// home 버튼
-		homeBtn = new JButton(new ImageIcon(Constants.ButtonPath.homeBtn1.getPath()));
-		homeBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.homeBtn2.getPath()));
+		homeBtn = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.homeBtn1.getPath())));
+		homeBtn.setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.homeBtn2.getPath())));
 		homeBtn.setBounds(20,5,40,40);
 		homeBtn.addActionListener(handler);
 		
 		// 뒤로 버튼
-		backBtn = new JButton(new ImageIcon(Constants.ButtonPath.backBtn1.getPath()));
-		backBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.backBtn2.getPath()));
+		backBtn = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.backBtn1.getPath())));
+		backBtn.setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.backBtn2.getPath())));
 		backBtn.setBounds(70,5,40,40);
 		backBtn.addActionListener(handler);
 		
 		// 앞으로 버튼
-		forwardBtn = new JButton(new ImageIcon(Constants.ButtonPath.forwardBtn1.getPath()));
-		forwardBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.forwardBtn2.getPath()));
+		forwardBtn = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.forwardBtn1.getPath())));
+		forwardBtn.setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.forwardBtn2.getPath())));
 		forwardBtn.setBounds(120,5,40,40);
 		forwardBtn.addActionListener(handler);
 		
 		// 공유 버튼
-		shareBtn = new JButton(new ImageIcon(Constants.ButtonPath.shareBtn1.getPath()));
-		shareBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.shareBtn2.getPath()));
+		shareBtn = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.shareBtn1.getPath())));
+		shareBtn.setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.shareBtn2.getPath())));
 		shareBtn.setBounds(670,5,40,40);
 		shareBtn.addActionListener(handler);
 		
 		// 로그아웃 버튼
-		logoutBtn = new JButton(new ImageIcon(Constants.ButtonPath.logoutBtn1.getPath()));
-		logoutBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.logoutBtn2.getPath()));
+		logoutBtn = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.logoutBtn1.getPath())));
+		logoutBtn.setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.logoutBtn2.getPath())));
 		logoutBtn.setBounds(720,5,40,40);
 		logoutBtn.addActionListener(handler);
 		

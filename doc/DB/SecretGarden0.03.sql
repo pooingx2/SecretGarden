@@ -1,7 +1,7 @@
-/*
+
 create Database SecretGarden;
 GRANT ALL ON SecretGarden.* To 'pooingx2' IDENTIFIED BY 'SSM2013';
-*/
+
 
 CREATE TABLE User (
     user_id VARCHAR(20) NOT NULL,
@@ -18,6 +18,7 @@ CREATE TABLE Directory (
     private VARCHAR(20) NOT NULL,
     public VARCHAR(20) NOT NULL,
     accessKey VARCHAR(255) NOT NULL,
+	cloudRate VARCHAR(20) NOT NULL,
     master VARCHAR(20) NOT NULL,
 
     PRIMARY KEY (dir_id),
@@ -30,7 +31,8 @@ CREATE TABLE File (
     name VARCHAR(255) NOT NULL,
     parent VARCHAR(255) NOT NULL,
     metaPath VARCHAR(255) NOT NULL,
-    depth INTEGER NOT NULL,    
+    depth INTEGER NOT NULL,
+	size LONG NOT NULL,
     root INTEGER NOT NULL,
 
     PRIMARY KEY (file_id),
@@ -64,7 +66,8 @@ drop table User;
 SELECT * FROM User;
 INSERT INTO `SecretGarden`.`User` (`user_id`, `pwd`, `name`, `email`) VALUES ('test', 'test', '테스트', 'test@gmail.com');
 
-
+Select dir_id, name, master, cloudRate, sum(size) from directory natural join file
+group by dir_id;
 /*
 ALTER TABLE User_Root
 ADD FOREIGN KEY (idFile) REFERENCES User (idFile);

@@ -97,9 +97,9 @@ public class PacketMgr {
 
 		// 디렉토리 생성에 따른 키 데이터를 수신하여 파일로 변환하는 과정
 		if (type == Constants.PacketType.DirectoryCreateResponse.getType()) {
-			String test = fileMgr.saveFile(token[0]);
+			String test = fileMgr.saveKeyFile(token[0]);
 			while(test==null){
-				test = fileMgr.saveFile(token[0]);
+				test = fileMgr.saveKeyFile(token[0]);
 			}
 		}
 

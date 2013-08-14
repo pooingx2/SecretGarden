@@ -25,6 +25,7 @@ public class Connector implements Runnable {
 		nonce = ClientLauncher.getNonce();
 
 		try {
+			
 			socket = new Socket(Constants.serverIP, Constants.serverPort);
 			dis = new DataInputStream(socket.getInputStream());
 			dos = new DataOutputStream(socket.getOutputStream());
@@ -137,7 +138,7 @@ public class Connector implements Runnable {
 		try {
 			h_length = dis.read(headerBuf, 0, 12);
 			if(h_length == 0){
-				System.out.println("수신데이터 제로 ");
+				System.out.println("data : 0");
 				return;
 			}
 			
@@ -307,8 +308,7 @@ public class Connector implements Runnable {
 	// 패킷 정보를 받기 위한 스레드
 	@Override
 	public void run() {
-
-		System.out.println("Test");
+		
 		while (runable) {
 			byte[] header = null;
 

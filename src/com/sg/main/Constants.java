@@ -14,7 +14,7 @@ public class Constants {
 	public static final int frameH = 600;
 	
 	// msg passing server ip, port
-	public static final String serverIP= "112.108.39.224";
+	public static final String serverIP= "112.108.39.163";
 	public static final int serverPort = 12600;
 
 	// 기본 바탕색
@@ -31,28 +31,30 @@ public class Constants {
 	// 각종 패널 배경이미지 경로
 	public static enum BackgroudPath {
 		
-		loginBG("img/background/loginBG.jpg"),
-		signupBG("img/background/signupBG.jpg"),
-		barBG("img/background/barBG.jpg"), 
-		connectionBG("img/background/connectionBG.jpg"),
-		settingsBG("img/background/settingsBG.jpg"),
-		sharingBG("img/background/sharingBG.jpg"),
-		privateBG1("img/background/privatePanelBG1.jpg"),
-		privateBG2("img/background/privatePanelBG2.jpg"),
-		publicBG1("img/background/publicPanelBG1.jpg"),
-		publicBG2("img/background/publicPanelBG2.jpg"),
-		directoryListBG("img/background/directoryListBG.jpg"),
-		directoryMngBG1("img/background/directoryMngBG1.jpg"),
-		directoryMngBG2("img/background/directoryMngBG2.jpg"),
-		directoryMngBG3("img/background/directoryMngBG3.jpg"),
-		directoryMngBG4("img/background/directoryMngBG4.jpg"),
-		directoryMngBG5("img/background/directoryMngBG5.jpg"),
-		fileListBG("img/background/fileListBG.jpg"),
-		fileMngBG1("img/background/fileMngBG1.jpg"),
-		fileMngBG2("img/background/fileMngBG2.jpg"),
-		fileMngBG3("img/background/fileMngBG3.jpg"),
-		fileMngBG4("img/background/fileMngBG4.jpg"),
-		fileMngBG5("img/background/fileMngBG5.jpg");
+		loginBG("/images/background/loginBG.jpg"),
+		signupBG("/images/background/signupBG.jpg"),
+		barBG("/images/background/barBG.jpg"), 
+		connectionBG("/images/background/connectionBG.jpg"),
+		settingsBG("/images/background/settingsBG.jpg"),
+		sharingBG("/images/background/sharingBG.jpg"),
+		privateBG1("/images/background/privatePanelBG1.jpg"),
+		privateBG2("/images/background/privatePanelBG2.jpg"),
+		publicBG1("/images/background/publicPanelBG1.jpg"),
+		publicBG2("/images/background/publicPanelBG2.jpg"),
+		directoryListBG("/images/background/directoryListBG.jpg"),
+		directoryMngBG0("/images/background/directoryMngBG0.jpg"),
+		directoryMngBG1("/images/background/directoryMngBG1.jpg"),
+		directoryMngBG2("/images/background/directoryMngBG2.jpg"),
+		directoryMngBG3("/images/background/directoryMngBG3.jpg"),
+		directoryMngBG4("/images/background/directoryMngBG4.jpg"),
+		directoryMngBG5("/images/background/directoryMngBG5.jpg"),
+		fileListBG("/images/background/fileListBG.jpg"),
+		fileMngBG0("/images/background/fileMngBG0.jpg"),
+		fileMngBG1("/images/background/fileMngBG1.jpg"),
+		fileMngBG2("/images/background/fileMngBG2.jpg"),
+		fileMngBG3("/images/background/fileMngBG3.jpg"),
+		fileMngBG4("/images/background/fileMngBG4.jpg"),
+		fileMngBG5("/images/background/fileMngBG5.jpg");
 		
 		final private String path;
 		private BackgroudPath(String path) { this.path = path; }
@@ -62,48 +64,48 @@ public class Constants {
 	// 버튼 관련 이미지 경로
 	public static enum ButtonPath {
 		
-		loginBtn1("img/button/loginBtn1.jpg"), 
-		loginBtn2("img/button/loginBtn2.jpg"), 
-		signupBtn1("img/button/signupBtn1.jpg"), 
-		signupBtn2("img/button/signupBtn2.jpg"), 
-		logoutBtn1("img/button/logoutBtn1.jpg"), 
-		logoutBtn2("img/button/logoutBtn2.jpg"),
-		homeBtn1("img/button/homeBtn1.jpg"),
-		homeBtn2("img/button/homeBtn2.jpg"),
-		backBtn1("img/button/backBtn1.jpg"),
-		backBtn2("img/button/backBtn2.jpg"),
-		forwardBtn1("img/button/forwardBtn1.jpg"),
-		forwardBtn2("img/button/forwardBtn2.jpg"),
-		shareBtn1("img/button/shareBtn1.jpg"),
-		shareBtn2("img/button/shareBtn2.jpg"),
-		connectBtn1("img/button/connectBtn1.jpg"), 
-		connectBtn2("img/button/connectBtn2.jpg"),
-		privateBtn1("img/button/privateBtn1.jpg"),
-		privateBtn2("img/button/privateBtn2.jpg"),
-		publicBtn1("img/button/publicBtn1.jpg"),
-		publicBtn2("img/button/publicBtn2.jpg"),
-		confirmBtn1("img/button/confirmBtn1.jpg"),
-		confirmBtn2("img/button/confirmBtn2.jpg"),
-		cancelBtn1("img/button/cancelBtn1.jpg"), 
-		cancelBtn2("img/button/cancelBtn2.jpg"), 
-		createBtn1("img/button/createBtn1.jpg"), 
-		createBtn2("img/button/createBtn2.jpg"), 
-		deleteBtn1("img/button/deleteBtn1.jpg"), 
-		deleteBtn2("img/button/deleteBtn2.jpg"),
-		accessBtn1("img/button/accessBtn1.jpg"),
-		accessBtn2("img/button/accessBtn2.jpg"),
-		settingsBtn1("img/button/settingsBtn1.jpg"),
-		settingsBtn2("img/button/settingsBtn2.jpg"),	
-		uploadBtn1("img/button/uploadBtn1.jpg"),
-		uploadBtn2("img/button/uploadBtn2.jpg"),
-		downloadBtn1("img/button/downloadBtn1.jpg"),
-		downloadBtn2("img/button/downloadBtn2.jpg"),
-		loadKeyfileBtn1("img/button/loadKeyfileBtn1.jpg"),
-		loadKeyfileBtn2("img/button/loadKeyfileBtn2.jpg"),
-		fileOpenBtn1("img/button/fileOpenBtn1.jpg"),
-		fileOpenBtn2("img/button/fileOpenBtn2.jpg"),		
-		downloadPathBtn1("img/button/downloadPathBtn1.jpg"),
-		downloadPathBtn2("img/button/downloadPathBtn2.jpg");
+		loginBtn1("/images/button/loginBtn1.jpg"), 
+		loginBtn2("/images/button/loginBtn2.jpg"), 
+		signupBtn1("/images/button/signupBtn1.jpg"), 
+		signupBtn2("/images/button/signupBtn2.jpg"), 
+		logoutBtn1("/images/button/logoutBtn1.jpg"), 
+		logoutBtn2("/images/button/logoutBtn2.jpg"),
+		homeBtn1("/images/button/homeBtn1.jpg"),
+		homeBtn2("/images/button/homeBtn2.jpg"),
+		backBtn1("/images/button/backBtn1.jpg"),
+		backBtn2("/images/button/backBtn2.jpg"),
+		forwardBtn1("/images/button/forwardBtn1.jpg"),
+		forwardBtn2("/images/button/forwardBtn2.jpg"),
+		shareBtn1("/images/button/shareBtn1.jpg"),
+		shareBtn2("/images/button/shareBtn2.jpg"),
+		connectBtn1("/images/button/connectBtn1.jpg"), 
+		connectBtn2("/images/button/connectBtn2.jpg"),
+		privateBtn1("/images/button/privateBtn1.jpg"),
+		privateBtn2("/images/button/privateBtn2.jpg"),
+		publicBtn1("/images/button/publicBtn1.jpg"),
+		publicBtn2("/images/button/publicBtn2.jpg"),
+		confirmBtn1("/images/button/confirmBtn1.jpg"),
+		confirmBtn2("/images/button/confirmBtn2.jpg"),
+		cancelBtn1("/images/button/cancelBtn1.jpg"), 
+		cancelBtn2("/images/button/cancelBtn2.jpg"), 
+		createBtn1("/images/button/createBtn1.jpg"), 
+		createBtn2("/images/button/createBtn2.jpg"), 
+		deleteBtn1("/images/button/deleteBtn1.jpg"), 
+		deleteBtn2("/images/button/deleteBtn2.jpg"),
+		accessBtn1("/images/button/accessBtn1.jpg"),
+		accessBtn2("/images/button/accessBtn2.jpg"),
+		settingsBtn1("/images/button/settingsBtn1.jpg"),
+		settingsBtn2("/images/button/settingsBtn2.jpg"),	
+		uploadBtn1("/images/button/uploadBtn1.jpg"),
+		uploadBtn2("/images/button/uploadBtn2.jpg"),
+		downloadBtn1("/images/button/downloadBtn1.jpg"),
+		downloadBtn2("/images/button/downloadBtn2.jpg"),
+		loadKeyfileBtn1("/images/button/loadKeyfileBtn1.jpg"),
+		loadKeyfileBtn2("/images/button/loadKeyfileBtn2.jpg"),
+		fileOpenBtn1("/images/button/fileOpenBtn1.jpg"),
+		fileOpenBtn2("/images/button/fileOpenBtn2.jpg"),		
+		downloadPathBtn1("/images/button/downloadPathBtn1.jpg"),
+		downloadPathBtn2("/images/button/downloadPathBtn2.jpg");
 		
 		final private String path;
 		private ButtonPath(String path) { this.path = path; }
@@ -113,16 +115,17 @@ public class Constants {
 	// icon 관련 이미지 경로
 	public static enum IconPath {
 		
-		privateIcon("img/icon/privateIcon.jpg"), 
-		publicIcon("img/icon/publicIcon.jpg"),
-		forderIcon("img/icon/forderIcon.jpg"),
-		fileIcon("img/icon/fileIcon.jpg"),
-		shareFromIcon1("img/icon/shareFromState1.jpg"),
-		shareFromIcon2("img/icon/shareFromState2.jpg"),
-		shareFromIcon3("img/icon/shareFromState3.jpg"),
-		shareToIcon1("img/icon/shareToState1.jpg"),
-		shareToIcon2("img/icon/shareToState2.jpg"),
-		shareToIcon3("img/icon/shareToState3.jpg");
+		privateIcon("/images/icon/privateIcon.jpg"), 
+		publicIcon("/images/icon/publicIcon.jpg"),
+		forderIcon("/images/icon/forderIcon.jpg"),
+		fileIcon("/images/icon/fileIcon.jpg"),
+		keyFileIcon("/images/icon/keyFileIcon.jpg"),
+		shareFromIcon1("/images/icon/shareFromState1.jpg"),
+		shareFromIcon2("/images/icon/shareFromState2.jpg"),
+		shareFromIcon3("/images/icon/shareFromState3.jpg"),
+		shareToIcon1("/images/icon/shareToState1.jpg"),
+		shareToIcon2("/images/icon/shareToState2.jpg"),
+		shareToIcon3("/images/icon/shareToState3.jpg");
 		
 		final private String path;
 		private IconPath(String path) { this.path = path; }

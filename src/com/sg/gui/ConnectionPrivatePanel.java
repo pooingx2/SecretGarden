@@ -48,9 +48,9 @@ public class ConnectionPrivatePanel extends JPanel {
 
 		// 연결상태와 비연결 상태를 알려주는 배경이미지 등록
 		bgImg = new JLabel[2];
-		bgImg[0] = new JLabel(new ImageIcon(Constants.BackgroudPath.privateBG1.getPath()));
+		bgImg[0] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.privateBG1.getPath())));
 		bgImg[0].setBounds(0,0,width,height);
-		bgImg[1] = new JLabel(new ImageIcon(Constants.BackgroudPath.privateBG2.getPath()));
+		bgImg[1] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.privateBG2.getPath())));
 		bgImg[1].setBounds(0,0,width,height);
 
 		// 폰트 설정
@@ -66,7 +66,7 @@ public class ConnectionPrivatePanel extends JPanel {
 
 		handler = new ActionHandler();
 
-		label[0] = new JLabel(new ImageIcon(Constants.IconPath.privateIcon.getPath()));
+		label[0] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.IconPath.privateIcon.getPath())));
 		label[0].setBounds(5,5,230,55);
 
 		label[1] = new JLabel("Hadoop Master IP");
@@ -95,18 +95,18 @@ public class ConnectionPrivatePanel extends JPanel {
 
 		handler = new ActionHandler();
 
-		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.privateBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.privateBtn2.getPath()));
+		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.privateBtn1.getPath())));
+		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.privateBtn2.getPath())));
 		btn[0].setBounds(0,30,250,150);
 		btn[0].addActionListener(handler);
 
-		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
-		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
+		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn1.getPath())));
+		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn2.getPath())));
 		btn[1].setBounds(30,250,80,30);
 		btn[1].addActionListener(handler);
 
-		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
-		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
+		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn1.getPath())));
+		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn2.getPath())));
 		btn[2].setBounds(130,250,80,30);
 		btn[2].addActionListener(handler);
 

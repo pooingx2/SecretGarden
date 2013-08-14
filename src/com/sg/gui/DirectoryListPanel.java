@@ -57,8 +57,8 @@ public class DirectoryListPanel extends JPanel {
 		this.setLayout(null);
 
 		// 배경이미지 등록
-		bgImg = new JLabel(new ImageIcon(
-				Constants.BackgroudPath.directoryListBG.getPath()));
+		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(
+				Constants.BackgroudPath.directoryListBG.getPath())));
 		bgImg.setBounds(0, 0, width, height);
 
 		// 이벤트 핸들러 등록
@@ -95,12 +95,10 @@ public class DirectoryListPanel extends JPanel {
 					public void valueChanged(ListSelectionEvent event) {
 						if (!event.getValueIsAdjusting() && !editMode) {
 							isSelected = true;
-							dirMngPanel.setStatus(0);
-							if (dirMngPanel.getStatus() == 0) {
-								dirMngPanel.getLabel()[0].setText(
-										"Directory index : " + table.getValueAt(table.getSelectedRow(), 0).toString());
-								dirMngPanel.getLabel()[1].setText(
-										"Directory Name : " + table.getValueAt(table.getSelectedRow(), 1).toString());
+							dirMngPanel.setStatus(1);
+							if (dirMngPanel.getStatus() == 1) {
+								dirMngPanel.getLabel()[0].setText(table.getValueAt(table.getSelectedRow(), 0).toString());
+								dirMngPanel.getLabel()[1].setText(table.getValueAt(table.getSelectedRow(), 1).toString());
 							}
 							changePanel();
 						}
@@ -134,17 +132,17 @@ public class DirectoryListPanel extends JPanel {
 		// 버튼 생성 (Create, Access, Delte)
 		btn = new JButton[4];
 
-		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.createBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2.getPath()));
+		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn1.getPath())));
+		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn2.getPath())));
 
-		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.accessBtn1.getPath()));
-		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.accessBtn2.getPath()));
+		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.accessBtn1.getPath())));
+		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.accessBtn2.getPath())));
 
-		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.deleteBtn1.getPath()));
-		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2.getPath()));
+		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn1.getPath())));
+		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn2.getPath())));
 
-		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.settingsBtn1.getPath()));
-		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.settingsBtn2.getPath()));
+		btn[3] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.settingsBtn1.getPath())));
+		btn[3].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.settingsBtn2.getPath())));
 
 		for (int i = 0; i < 4; i++) {
 			btn[i].setBounds(11 + 70 * i, 5, 70, 70);
@@ -163,10 +161,12 @@ public class DirectoryListPanel extends JPanel {
 	}
 
 	public void initialize() {
-//		this.isSelected = false;
+		this.editMode = true;
+		this.isSelected = false;
 		this.isAccessed = false;
 		dirMngPanel.initialize();
-		changePanel();
+		table.clearSelection();
+		this.editMode = false;
 	}
 
 	// 리스트 초기화 함수
@@ -289,10 +289,9 @@ public class DirectoryListPanel extends JPanel {
 					dirMngPanel.setStatus(3);
 					changePanel();
 				} else {
-					dirMngPanel.setStatus(0);
-					changePanel();
 					JOptionPane.showMessageDialog(null,
 							"For Access : Choose a directory");
+					initialize();
 				}
 			}
 
@@ -304,10 +303,9 @@ public class DirectoryListPanel extends JPanel {
 				}
 
 				else {
-					dirMngPanel.setStatus(0);
-					changePanel();
 					JOptionPane.showMessageDialog(null,
 							"For Delete : Choose a directory");
+					initialize();
 				}
 			}
 
@@ -318,10 +316,9 @@ public class DirectoryListPanel extends JPanel {
 				}
 
 				else {
-					dirMngPanel.setStatus(0);
-					changePanel();
 					JOptionPane.showMessageDialog(null,
 							"For Setting : Choose a directory");
+					initialize();
 				}
 			}
 		}

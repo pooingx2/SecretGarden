@@ -58,7 +58,7 @@ public class FileListPanel extends JPanel {
 		this.setLayout(null);
 
 		// 배경이미지 등록
-		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.fileListBG.getPath()));
+		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileListBG.getPath())));
 		bgImg.setBounds(0,0,width,height);
 
 		handler = new ActionHandler();
@@ -74,12 +74,12 @@ public class FileListPanel extends JPanel {
 			@Override
 			public void valueChanged(TreeSelectionEvent event) {
 				selectedNode = getSelectedNode();
-				fileMngPanel.setStatus(0);
-				if (fileMngPanel.getStatus() == 0 && !editMode) {
-					fileMngPanel.getLabel()[0].setText("Name : " + selectedNode.toString());
-					fileMngPanel.getLabel()[1].setText("Parent : " + selectedNode.getParent());
-					fileMngPanel.getLabel()[2].setText("Depth : " + selectedNode.getLevel());
-					fileMngPanel.getLabel()[3].setText("Path : " + getSelectedPath());
+				fileMngPanel.setStatus(1);
+				if (fileMngPanel.getStatus() == 1 && !editMode) {
+					fileMngPanel.getLabel()[0].setText(selectedNode.toString());
+					fileMngPanel.getLabel()[1].setText(selectedNode.getParent()+"");
+					fileMngPanel.getLabel()[2].setText(selectedNode.getLevel()+"");
+					fileMngPanel.getLabel()[3].setText(getSelectedPath());
 					fileMngPanel.changePanel();
 				}
 			}
@@ -107,17 +107,17 @@ public class FileListPanel extends JPanel {
 		// 버튼 생성  (Create, Access, Delte)
 		btn = new JButton[4];
 
-		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.createBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2.getPath()));
+		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn1.getPath())));
+		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn2.getPath())));
 
-		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.uploadBtn1.getPath()));
-		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.uploadBtn2.getPath()));
+		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.uploadBtn1.getPath())));
+		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.uploadBtn2.getPath())));
 
-		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.downloadBtn1.getPath()));
-		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.downloadBtn2.getPath()));
+		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.downloadBtn1.getPath())));
+		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.downloadBtn2.getPath())));
 		
-		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.deleteBtn1.getPath()));
-		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2.getPath()));
+		btn[3] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn1.getPath())));
+		btn[3].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn2.getPath())));
 
 		for(int i=0;i<4;i++) {
 			btn[i].setBounds(20+80*i,5,70,70);
@@ -251,14 +251,14 @@ public class FileListPanel extends JPanel {
 		}
 	}
 	
-	public void upload(String fileName, MetaData Object){
+	public void upload(String filePath, Long fileSize, MetaData Object){
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a parent directory");
 		else {
 			int type = Constants.PacketType.FileUploadRequest.getType();
-			String data = fileName + "\t" + selectedNode.toString() + "\t" + 
+			String data = filePath + "\t" + selectedNode.toString() + "\t" + 
 					((selectedNode.getLevel()+1)+"") + "\t" + 
-					ClientLauncher.getFileMgr().getRootDirID() +"\t"+"defaultMetadata";
+					ClientLauncher.getFileMgr().getRootDirID() +"\t"+fileSize+"\t"+"defaultMetadata";
 			int length = data.length();
 			
 			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
@@ -306,8 +306,8 @@ public class FileListPanel extends JPanel {
 
 
 		/* 	status
-		0 : Default		1 : Information		2 : Create	
-		3 : Upload		4 : Download		5 : Delete 
+		0 : Information		1 : Selected		2 : Create	
+		3 : Upload			4 : Download		5 : Delete 
 		*/
 		
 		@Override
