@@ -1,5 +1,32 @@
 #include "dirs.h"
 
+int get_dir_size(MYSQL *con, char *dir_id, char dataBuf[])
+{
+    char query[255];
+	MYSQL_ROW row;
+	MYSQL_RES *result;
+
+	memset(query, 0x00, 255);
+	sprintf(query, "select sum(size) From Directory Natural join File  Where dir_id = '%s' ", dir_id);
+
+	if((result = mysql_query(con,query)) != NULL)
+	{
+		fprintf(stderr,"질의 실패 %s\n",mysql_error(con));
+		return 0;
+	}
+	
+	//질의를 한 결과를 출력한다.
+	result = mysql_store_result(con);
+	
+	while((row = mysql_fetch_row(result)) != NULL)
+	{
+		strcat(dataBuf, row[0]);
+	}
+	return 1;
+
+
+}
+
 int
 getdirectoryList(MYSQL *con, char *user_id,char *private, char *public, char dataBuf[])
 {
@@ -14,9 +41,12 @@ getdirectoryList(MYSQL *con, char *user_id,char *private, char *public, char dat
 	MYSQL_RES *result;
 
 	memset(query, 0x00, 255);
-	sprintf(query, "select Directory.dir_id, Directory.name From Directory, User Where user_id = '%s' && master = '%s' && private = '%s' && public = '%s' Order By dir_id", user_id, user_id, private, public);
-
-
+	
+	sprintf(query, "select Directory.dir_id, Directory.name, Directory.claudRate From Directory, User, File  Where user_id = '%s' && master = '%s' && private = '%s' && public = '%s' Order By dir_id", user_id, user_id, private, public);
+	
+	/*
+	sprintf(query, "select Directory.dir_id, Directory.name, Directory.claudRate, sum(size) From User ,Directory Natural join File Where user_id = '%s' && master = '%s' && private = '%s' && public = '%s' group by dir_id", user_id, user_id, private, public);
+    */
 	printf("query is %s \n", query);
  
 	if((result = mysql_query(con,query)) != NULL)
@@ -34,6 +64,10 @@ getdirectoryList(MYSQL *con, char *user_id,char *private, char *public, char dat
 		strcat(dataBuf, row[0]);
 		strcat(dataBuf, "," );	
 		strcat(dataBuf, row[1]);
+		strcat(dataBuf, "," );	
+		strcat(dataBuf, row[2]);
+		strcat(dataBuf, "," );	
+		get_dir_size(con, row[0], dataBuf);
 		strcat(dataBuf, "\t" );
 	}
 	
@@ -73,7 +107,7 @@ getNodeIndex(MYSQL *con, char *dirName, char *private, char *public, char *user_
 }
 
 int
-createRootDir(MYSQL *con, char *name, char *private, char *public,char *accessKey, char *user_id)
+createRootDir(MYSQL *con, char *name, char *private, char *public,char *accessKey, char *user_id, char *claudRate)
 {
 	char query[255];
 	char *dir_id = "NULL";
@@ -81,7 +115,7 @@ createRootDir(MYSQL *con, char *name, char *private, char *public,char *accessKe
 	printf("dir_name : %s, private address : %s, public_address : %s, user_id : %s \n",
 		name, private, public, user_id);
 
-	sprintf(query,"INSERT INTO SecretGarden.Directory(dir_id, name, private, public, accessKey, master) VALUES ('%s','%s', '%s', '%s', '%s', '%s')",dir_id , name, private, public, accessKey, user_id);
+	sprintf(query,"INSERT INTO SecretGarden.Directory(dir_id, name, private, public, accessKey, mastera, claudRate) VALUES ('%s','%s', '%s', '%s', '%s', '%s', '%s')",dir_id , name, private, public, accessKey, user_id, claudRate);
 
 	if (mysql_query(con, query)) 
 	{
@@ -297,7 +331,7 @@ get_meta_Path(MYSQL *con, char file_id[], char metaPath[])
 
 
 int 
-createFile(MYSQL *con, char *name, char *parent, char *depth, char *root)
+createFile(MYSQL *con, char *name, char *parent, char *depth, char *root, char *size)
 {
 	/* insert Query */
 	char *file_id = "NULL";
@@ -307,7 +341,7 @@ createFile(MYSQL *con, char *name, char *parent, char *depth, char *root)
 	byte dataBuf[DATASIZE];
 	printf("name : %s, parent : %s, depth : %s, root : %s", name, parent, depth, root);	
 
-	sprintf(query,"INSERT INTO SecretGarden.File(file_id, type, name, parent, metaPath, depth ,root) VALUES ('%s', '%s', '%s','%s','%s','%s','%s')",file_id, type, name, parent,metaPath, depth, root);
+	sprintf(query,"INSERT INTO SecretGarden.File(file_id, type, name, parent, metaPath, depth ,root, size) VALUES ('%s', '%s', '%s','%s','%s','%s','%s','%s')",file_id, type, name, parent,metaPath, depth, root, size);
 
 	if (mysql_query(con, query)) 
 	{

@@ -11,6 +11,7 @@ if [ -z "${mysql_password}" ]; then
 	echo
 fi
 
+
 # Check MySQL password
 echo exit | mysql -u"${mysql_user}" -p"${mysql_password}"
 if [ "$?" -gt 0 ]; then
@@ -19,6 +20,12 @@ if [ "$?" -gt 0 ]; then
 else
 	echo "MySQL ${mysql_user} password correct."
 fi
+
+
+#삭제 모듈 추가
+#mysql -u"${mysql_user}" -p"${mysql_password}" -e"
+#drop schema `SecretGarden`;"
+#echo "Drop Database ScretGarden"
 
 mysql -u"${mysql_user}" -p"${mysql_password}" -e"
 CREATE DATABASE SecretGarden;"
@@ -47,6 +54,7 @@ CREATE TABLE SecretGarden.Directory (
 	public VARCHAR(20) NOT NULL,
 	accessKey VARCHAR(255) NOT NULL,
 	master VARCHAR(20) NOT NULL,
+	claudRate VARCHAR(45) NOT NULL,
 
 	PRIMARY KEY (dir_id),
 	FOREIGN KEY (master) REFERENCES User (user_id)
@@ -62,7 +70,7 @@ CREATE TABLE SecretGarden.File (
 	metaPath VARCHAR(255) NOT NULL,
 	depth INTEGER NOT NULL,    
 	root INTEGER NOT NULL,
-
+	size LONG,
 	PRIMARY KEY (file_id),
 	FOREIGN KEY (root) REFERENCES Directory (dir_id)
 )DEFAULT CHARSET=utf8;"

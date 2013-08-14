@@ -6,15 +6,15 @@ openvpn --config /home/ilhwanjeong/workspace/SecretGa restart
 
 
 #RUN Server
-#cd authServ && make
-#cd ..
-#cd dirServ && make
-#cd ..
+cd authServ && make
+cd ..
+cd dirServ && make
+cd ..
 
 #chsh
 
-#sh runAuth.sh &
-#sh runDir.sh &
+sh runAuth.sh &
+sh runDir.sh &
 #sh runHDFS.sh 
 
 
