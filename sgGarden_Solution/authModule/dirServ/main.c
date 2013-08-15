@@ -82,6 +82,7 @@ int main(int argc, char **argv)
 		
 		switch(type)
 		{
+			/* 디렉토리 조회 */
 			case 7 :
 			{
 			
@@ -273,31 +274,30 @@ int main(int argc, char **argv)
 				memset(recv_client, 0x00, 20);
 				//memset(name_Buf, 0x00, 15);
 
-				/* 파일 업로드를 위한 인자(name, parent, depth, root, fileSize(추가)) 획득 */
+				/* 파일 업로드를 위한 인자(name, parent, depth, root, [fileSize(추가)), metaData(token5)]획득 */
 				state = getElements(dataBuf, "\t", tokenBuf);			
 				get_Name(tokenBuf[0], &name_Buf);
-				printf("name_Buf is : %s \n", name_Buf);
 
 				/* 파일 생성(Insert Query) */		
+				// tokenBuf[3] == root (directory)
 				createFile(con, name_Buf, tokenBuf[1], tokenBuf[2], tokenBuf[3], tokenBuf[4]);
 
 				/* meta data, file_id, path, recv_client */
 				state =  get_file_id(con, name_Buf, tokenBuf[1], tokenBuf[2], tokenBuf[3], file_id);
 				
-				/*
-				printf("sprint \n");
+				/* meta data generate */ 
 				sprintf(recv_client, "%d", desc);
 
-				strcat(tokenBuf[4], ",");
-				strcat(tokenBuf[4], file_id);
-				strcat(tokenBuf[4], ",");
-				strcat(tokenBuf[4], tokenBuf[0]);
-				strcat(tokenBuf[4], ",");
-				strcat(tokenBuf[4], recv_client);
+				strcat(tokenBuf[5], ",");
+				strcat(tokenBuf[5], file_id);
+				strcat(tokenBuf[5], ",");
+				strcat(tokenBuf[5], tokenBuf[0]);
+				strcat(tokenBuf[5], ",");
+				strcat(tokenBuf[5], recv_client);
 					
-				printf("tokenBuf[4] : %s \n", tokenBuf[4]);
-				*/
-
+				printf("tokenBuf[5][mata data] is : %s \n", tokenBuf[5]);
+				
+				/* tokenBuf[3] is directory id */
 				state = getFileList(con, tokenBuf[3], fileList);
 
 				/* 메타 데이터 서버로 전송 */
@@ -378,23 +378,33 @@ int main(int argc, char **argv)
 				/* 데이터 전송 */
 				break;
 			}
+
 			/* Share Request */
 			case 19:
 			{
 				state = getElements(dataBuf, "\t", tokenBuf);
-				
+	
+
+				/* Share In - user_id, target_id, dir_id */			
 				/* Share Re - user_id, target_id, dir_id , share id, requester, targer, dirName  */
-				// state = share_request(con, tokenBuf[0], tokenBuf[1], tokenBuf[2] );
+				state = share_request(con, tokenBuf[0], tokenBuf[1], tokenBuf[2]);
 
 				if(state == 1)
 				{
-					/* Ok */	
-					// state = get_share_list(con, tokenBuf[1]);
-		
+
+					/* Ok */
+					char share_List[1024];
+					
+					memset(share_List, 0x00, 1024);	
+					state = get_share_list(con, tokenBuf[1], share_List);
+
+					sendTo(&messagingServ, 20, desc, strlen(share_List), share_List);
+
 				}
 				else if(state == 2)
 				{
 					/* ID Not Vaild */
+
 				}
 				else
 				{
@@ -407,16 +417,22 @@ int main(int argc, char **argv)
 
 			/* Share Approve */
 			case 21:
-			{
+			{		
 				state = getElements(dataBuf, "\t", tokenBuf);
 
 				/* Share App - share id , target_id */
-				// state = share_approve(con, tokenBuf[0]);
-				// state = get_share_list(con, tokenBuf[1]);
+				state = share_approve(con, tokenBuf[0]);
 
 				if(state == 1)
 				{
 					/* OK */
+					char share_List[1024];
+					
+					memset(share_List, 0x00, 1024);	
+					state = get_share_list(con, tokenBuf[1], share_List);
+			
+					sendTo(&messagingServ, 20, desc, strlen(share_List), share_List);
+
 				}
 				else
 				{
@@ -432,12 +448,18 @@ int main(int argc, char **argv)
 			
 				/* Deny - share id */
 				/* Share App - share id , target_id */
-				// state = share_deny(con, tokenBuf[0]);
-				// state = get_share_list(con, tokenBuf[1]);
+				state = share_deny(con, tokenBuf[0]);
 
 				if(state == 1)
 				{
 					/* OK */
+					char share_List[1024];
+					
+					memset(share_List, 0x00, 1024);	
+					state = get_share_list(con, tokenBuf[1], share_List);
+			
+					sendTo(&messagingServ, 20, desc, strlen(share_List), share_List);
+
 				}
 				else
 				{
@@ -447,9 +469,52 @@ int main(int argc, char **argv)
 				break;
 			}
 
+			/* 디렉토리 삭제 */
+			case 23:
+			{
+				char *sign = "delete directory Ok\n";
+				char file_id_list[1024];
+
+				memset(file_id_list[1024], 0x00, 1024);
+				/* 디렉토리 id를 받아서 특정 디렉토리를 삭제한다, 하부 폴더 id리스트를 바든다 */
+				/* in - dir_id */
+				state = getElements(dataBuf, "\t", tokenBuf);
+				state = del_dir(con, tokenBuf[0]);
+
+
+				/* 하부 폴더도 루트가 해당인것을 찾아 삭제한다 */
+				if(state == 1)
+				{
+					sendTo(&messagingServ, 24, desc, strlen(sign), sign);
+				}
+
+				break;
+			}
+
+			/* 폴더 삭제 */
+			case 25:
+			{
+				char *sign = "delete file OK\n";
+
+				/* 폴더 id를 받아서 특정 디렉토리를 삭제한다 */
+				/* in - file_id */
+				state = getElements(dataBuf, "\t", tokenBuf);
+				state = del_file(con, tokenBuf[0]);
+				
+				if(state == 1)
+				{
+					sendTo(&messagingServ, 26, desc, strlen(sign), sign);
+				}
+
+
+				break;
+			}
+
 			// 공유 기능
 			default  :
 			{
+
+
 			     break;
 			}
 

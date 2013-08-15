@@ -49,6 +49,11 @@ share_request(MYSQL *con, char *user_id, char *target_id, char *dir_id);
 int
 get_shared_list(MYSQL *con, char *target_id);
 
+int 
+del_dir(MYSQL *con, char *dir_id);
+
+int
+del_file(MYSQL *con, char *file_id);
 
 
 int
