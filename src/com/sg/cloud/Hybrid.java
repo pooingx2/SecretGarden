@@ -31,8 +31,8 @@ public class Hybrid {
 		switch (type){
 
 		case Constants.amazon : 		// aws s3 connect
-			String keyId = "AKIAIUXPHCYBAHGUZGEQ";//id;			// 입력 받아야 함
-			String key = "z3L3XdNwpWPx0R37bToPR+O85cmSoZTJrucfb4xE";//pw;			// 입력 받아야 함
+			String keyId = id;			// 입력 받아야 함
+			String key = pw;			// 입력 받아야 함
 			aWSModule.setKey(key);
 			aWSModule.setKeyId(keyId);
 			
@@ -40,8 +40,8 @@ public class Hybrid {
 			break;
 
 		case Constants.hadoop : 		// hdfs connect
-			String hdfsIp = "211.189.127.91";//id;			// 입력 받아야 함
-			int hdfsPort = 15000;//Integer.parseInt(port);		// 입력 받아야 함
+			String hdfsIp = id;			// 입력 받아야 함
+			int hdfsPort = Integer.parseInt(port);		// 입력 받아야 함
 			hdfsModule.setDestIp(hdfsIp);
 			hdfsModule.setDestPort(hdfsPort);
 			
