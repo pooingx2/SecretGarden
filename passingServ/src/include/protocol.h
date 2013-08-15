@@ -46,6 +46,8 @@
 #define META_DOWNLOAD_RESPONSE	 18
 #define SHARE_REQUEST		 	 19
 #define SHARE_RESPONSE		 	 20
+#define SHARE_APPROVE			 21
+#define SHARE_DENY			 22
 
 //클라이언트간 전송 프로토콜
 #define DIR_TO_HDFS_FOR_UPLOAD_METADATA		30

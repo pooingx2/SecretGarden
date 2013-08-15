@@ -197,6 +197,7 @@ void client_recv(int event_fd, Peer *peer)
 
   unsigned char headerBuf[HEADERSIZE*5]; 
   unsigned char dataBuf[DATASIZE*5];
+  unsigned char sendBuf[DATASIZE*5];
   char *tokenBuf[DATASIZE];
   
   int len;
@@ -213,15 +214,22 @@ void client_recv(int event_fd, Peer *peer)
   if(len > 0 )
   {
 	  /* 조회 */
-
-	  int index = getElements(dataBuf, "\t", tokenBuf);
+	  
+	//  int index = getElements(dataBuf, "\t", tokenBuf);
 
 	  /* Nonce, Timestapm 저장 */
 	  /*
 		addNonce(con, tokenBuf[index-1]);
 		addNonce(con, tokenBuf[index]);
 	  */
-
+	  /*
+	  int i;0
+	  for(i=0; i<index-1; i++)
+	  {
+		  strcat(sendBuf, tokenBuf[i]);
+		  strcat(sendBuf, tokenBuf
+	  }
+	  */
   }
   printf("recv end .... \n");
 
@@ -257,8 +265,8 @@ void client_recv(int event_fd, Peer *peer)
 		}
 		Peer auth;
 		auth.socket = g_epoll_auth;	
-		
-        len = sendTo(&auth, 1, event_fd, strlen((char *) dataBuf), dataBuf);
+		printf("data is : %s \n", dataBuf);
+        	len = sendTo(&auth, 1, event_fd, strlen((char *) dataBuf), dataBuf);
 
 		break;
 	}
@@ -455,6 +463,71 @@ void client_recv(int event_fd, Peer *peer)
 		sendTo(&peer, 18, event_fd, strlen((char *) dataBuf), dataBuf);
 		break;
 	}
+
+	case SHARE_REQUEST:
+	{
+		/* Client to Dir */
+		Peer dirServ;
+		dirServ.socket = g_epoll_dir;
+
+		if(g_epoll_dir == 0)
+		{
+			printf("dir server not running \n");
+			break;
+		}
+
+		/* event fd 클라이언트 소켓 디스크립터 번호 */
+		sendTo(&dirServ, 19, event_fd, strlen((char *) dataBuf), dataBuf);
+		
+		break;
+	}
+
+	case SHARE_RESPONSE:
+	{
+		/* Dir to Client */
+		Peer peer;
+		peer.socket = byteToInt(headerBuf, 4);
+		sendTo(&peer, 20, event_fd, strlen((char *) dataBuf), dataBuf);
+		break;
+	}
+
+	case SHARE_APPROVE:
+	{
+		/* Client to Dir */
+		Peer dirServ;
+		dirServ.socket = g_epoll_dir;
+
+		if(g_epoll_dir == 0)
+		{
+			printf("dir server not running \n");
+			break;
+		}
+
+		/* event fd 클라이언트 소켓 디스크립터 번호 */
+		sendTo(&dirServ, 21, event_fd, strlen((char *) dataBuf), dataBuf);
+		
+		break;
+	}
+
+	case SHARE_DENY:
+	{
+		
+		/* Client to Dir */
+		Peer dirServ;
+		dirServ.socket = g_epoll_dir;
+
+		if(g_epoll_dir == 0)
+		{
+			printf("dir server not running \n");
+			break;
+		}
+
+		/* event fd 클라이언트 소켓 디스크립터 번호 */
+		sendTo(&dirServ, 22, event_fd, strlen((char *) dataBuf), dataBuf);
+		
+		break;
+	}
+
 
 	/* Transmit 프로토콜 30~49 */
 	case DIR_TO_HDFS_FOR_UPLOAD_METADATA:

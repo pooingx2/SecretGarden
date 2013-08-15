@@ -9,7 +9,7 @@ make
 
 #네트워크 재시작
 echo "@@VPN서버를 구동합니다"
-#/etc/init.d/openvpn restart
+/etc/init.d/openvpn restart
 
 #메시징 서버 시작
 echo "@@메세징 서버를 구동합니다"

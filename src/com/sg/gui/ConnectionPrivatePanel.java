@@ -192,8 +192,8 @@ public class ConnectionPrivatePanel extends JPanel {
 
 
 				ClientLauncher.getFrame().getConnectionPanel().setPrivate(ip);
-				connection = ClientLauncher.getHybrid().auth(Constants.hadoop, ip, port, pwd);
-//				connection = true;
+				//connection = ClientLauncher.getHybrid().auth(Constants.hadoop, ip, port, pwd);
+				connection = true;
 
 
 				if(connection){

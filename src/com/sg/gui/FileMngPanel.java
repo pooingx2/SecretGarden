@@ -252,18 +252,14 @@ public class FileMngPanel extends JPanel {
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
 
-						try {
-							// return 0 = success	failure = -1
-							if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
-								/* 메타데이터 전송 */
-								MetaData m_data = new MetaData();
-								ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
-							}
-							else
-								JOptionPane.showMessageDialog(null, "upload failure");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+						// return 0 = success	failure = -1
+						//if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
+							/* 메타데이터 전송 */
+							MetaData m_data = new MetaData();
+							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
+						//}
+						//else
+						//	JOptionPane.showMessageDialog(null, "upload failure");
 						
 						//MetaData m_data = new MetaData();
 						//ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
