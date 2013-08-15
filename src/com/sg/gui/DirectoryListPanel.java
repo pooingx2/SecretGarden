@@ -106,9 +106,9 @@ public class DirectoryListPanel extends JPanel {
 								dirMngPanel.getLabel()[2].setText(table.getValueAt(table.getSelectedRow(), 2).toString());
 								dirMngPanel.getLabel()[3].setText(table.getValueAt(table.getSelectedRow(), 3).toString());
 								dirMngPanel.getLabel()[4].setText(ClientLauncher.getFileMgr().getSummarySize(
-										Long.parseLong(table.getValueAt(table.getSelectedRow(), 4).toString()))+" / 50GB");
+										Long.parseLong(table.getValueAt(table.getSelectedRow(), 4).toString()))+" / 20GB");
 								long size = Long.parseLong(table.getValueAt(table.getSelectedRow(), 4).toString());
-								long total = 50l * 1024l * 1024l * 1024l;
+								long total = 20l * 1024l * 1024l * 1024l;
 								double percentage = (double)size / (double)total * 100;
 								dirMngPanel.getSizeBar().setValue((int)percentage);
 							}

@@ -274,6 +274,8 @@ public class FileMngPanel extends JPanel {
 //							} catch (IOException e) {
 //								e.printStackTrace();
 //							}
+							
+							// Cloud 업로드를 안거치고 테스트하기위함
 							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 						}
 						

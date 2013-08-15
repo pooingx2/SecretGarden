@@ -243,7 +243,7 @@ public class FileMgr {
 
 	// long 형의 size를 KB, MB, TB로 변환
 	public String getSummarySize(long size) {
-		long temp = size;
+		double temp = (double)size;
 		String suffix = "";
 		int count = 0;
 		while(temp >= 1024){
@@ -269,7 +269,7 @@ public class FileMgr {
 			default : 
 				break;
 		}
-		return temp+suffix;
+		return String.format("%.2f",temp) + suffix;
 	}
 
 }
