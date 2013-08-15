@@ -74,7 +74,7 @@ public class DirectoryListPanel extends JPanel {
 
 		// table 헤더 설정
 		tableModel.setColumnIdentifiers(new String[] { "   ID",
-				"     Directory Name" });
+				"     Directory Name","","",""});
 
 		table = new JTable(); // directory list를 위한 table을 만듬
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // row를 하나만
@@ -88,6 +88,13 @@ public class DirectoryListPanel extends JPanel {
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.getColumnModel().getColumn(0).setPreferredWidth(60);
 		table.getColumnModel().getColumn(1).setPreferredWidth(220);
+		
+		// hide column
+		for (int i=2 ;i<5;i++){
+			table.getColumnModel().getColumn(i).setPreferredWidth(0);
+			table.getColumnModel().getColumn(i).setMinWidth(0);
+			table.getColumnModel().getColumn(i).setMaxWidth(0);
+		}
 
 		// row를 선택 리스너
 		table.getSelectionModel().addListSelectionListener(
@@ -99,6 +106,9 @@ public class DirectoryListPanel extends JPanel {
 							if (dirMngPanel.getStatus() == 1) {
 								dirMngPanel.getLabel()[0].setText(table.getValueAt(table.getSelectedRow(), 0).toString());
 								dirMngPanel.getLabel()[1].setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+								dirMngPanel.getLabel()[2].setText(table.getValueAt(table.getSelectedRow(), 2).toString());
+								dirMngPanel.getLabel()[3].setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+								dirMngPanel.getLabel()[4].setText(table.getValueAt(table.getSelectedRow(), 4).toString());
 							}
 							changePanel();
 						}
@@ -116,7 +126,7 @@ public class DirectoryListPanel extends JPanel {
 		renderer.setFont(getFont().deriveFont(80f));
 		table.getColumnModel().getColumn(0).setCellRenderer(renderer);
 		table.getColumnModel().getColumn(1).setCellRenderer(renderer);
-
+		
 		// scroll 등록
 		scroll = new JScrollPane(table,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,

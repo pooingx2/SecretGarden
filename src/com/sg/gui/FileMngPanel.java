@@ -39,6 +39,7 @@ public class FileMngPanel extends JPanel {
 	
 	private int status;
 	private Vector<File> files;
+	private String rootSize;
 
 	// Components
 	private Font inputFont;
@@ -83,7 +84,7 @@ public class FileMngPanel extends JPanel {
 
 		for(int i=0;i<5;i++){
 			label[i] = new JLabel();
-			label[i].setBounds(90,80+(i*30),300,30);
+			label[i].setBounds(90,80+(i*30),220,30);
 			label[i].setFont(Constants.Font1);
 		}
 		
@@ -149,8 +150,6 @@ public class FileMngPanel extends JPanel {
 	public JLabel[] getLabel() {
 		return label;
 	}
-
-
 
 	public void setLabel(JLabel[] label) {
 		this.label = label;
@@ -263,18 +262,19 @@ public class FileMngPanel extends JPanel {
 						for(File file : files){
 							localUploadPath = file.getAbsolutePath();
 							uploadFileSize = file.length();
-							try {
-								// return 0 = success	failure = -1
-								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
-									/* 메타데이터 전송 */
-									MetaData m_data = new MetaData();
-									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
-								}
-								else
-									JOptionPane.showMessageDialog(null, "upload failure");
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
+//							try {
+//								// return 0 = success	failure = -1
+//								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
+//									/* 메타데이터 전송 */
+//									MetaData m_data = new MetaData();
+//									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+//								}
+//								else
+//									JOptionPane.showMessageDialog(null, "upload failure");
+//							} catch (IOException e) {
+//								e.printStackTrace();
+//							}
+							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 						}
 						
 						//MetaData m_data = new MetaData();

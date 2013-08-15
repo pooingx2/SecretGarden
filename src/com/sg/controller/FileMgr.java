@@ -186,21 +186,6 @@ public class FileMgr {
 		return result;
 	}
 	
-//	// upload할 file path를 return
-//	public String loadUploadFile(){
-//		String path=null;
-//		JFileChooser fileDialog = new JFileChooser(new File(homePath));
-//		int isSelected = fileDialog.showOpenDialog(null);
-//		if(isSelected == JFileChooser.APPROVE_OPTION) {
-//			File file = fileDialog.getSelectedFile();
-//			BufferedReader in = null;
-//			if(file != null) {
-//				path = file.getAbsolutePath();
-//			}
-//		}
-//		return path;
-//	}
-	
 	// upload할 file path를 return
 	public File[] loadUploadFile(){
 		File[] files = null;
@@ -245,6 +230,9 @@ public class FileMgr {
 			case 4 : 
 				fileInfo.setIndex(token[i]); 
 				break;
+			case 5 : 
+				fileInfo.setSize(token[i]); 
+				break;
 			default : 
 				break;
 			}
@@ -252,19 +240,5 @@ public class FileMgr {
 		}
 		fileInfoList.add(fileInfo);
 	}
-	
-//	// download할 path를 return
-//	public String getDownloadPath(){
-//		String path=null;
-//		JFileChooser fileDialog = new JFileChooser(new File(homePath));
-//		int isSelected = fileDialog.showSaveDialog(null);
-//		if(isSelected == JFileChooser.APPROVE_OPTION) {
-//			File file = fileDialog.getSelectedFile();
-//			BufferedReader in = null;
-//			if(file != null) {
-//				path = file.getAbsolutePath();
-//			}
-//		}
-//		return path;
-//	}
+
 }

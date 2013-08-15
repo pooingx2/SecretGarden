@@ -82,6 +82,9 @@ public class DirectoryMngPanel extends JPanel {
 
 		label[0].setBounds(90,65,150,30);
 		label[1].setBounds(90,95,150,30);
+		label[2].setBounds(90,125,150,30);
+		label[3].setBounds(110,155,150,30);
+		label[4].setBounds(90,185,150,30);
 		
 		sizeBar = new JProgressBar(0, 100);
 		sizeBar.setValue(80);

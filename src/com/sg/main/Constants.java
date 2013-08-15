@@ -14,7 +14,7 @@ public class Constants {
 	public static final int frameH = 600;
 	
 	// msg passing server ip, port
-	public static final String serverIP= "112.108.39.163";
+	public static final String serverIP= "112.108.39.217";
 	public static final int serverPort = 12600;
 
 	// 기본 바탕색
