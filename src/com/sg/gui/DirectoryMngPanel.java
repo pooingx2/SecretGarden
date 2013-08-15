@@ -60,12 +60,12 @@ public class DirectoryMngPanel extends JPanel {
 
 		// 디렉토리를 관리하기 위한 배경 이미지 (Create, Access, Delete,  ...
 		bgImg = new JLabel[6];
-		bgImg[0] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG0.getPath())));
-		bgImg[1] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG1.getPath())));
-		bgImg[2] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG2.getPath())));
-		bgImg[3] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG3.getPath())));
-		bgImg[4] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG4.getPath())));
-		bgImg[5] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG5.getPath())));
+		bgImg[0] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG0.getPath()));
+		bgImg[1] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG1.getPath()));
+		bgImg[2] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG2.getPath()));
+		bgImg[3] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG3.getPath()));
+		bgImg[4] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG4.getPath()));
+		bgImg[5] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG5.getPath()));
 		
 		for(int i=0;i<6;i++) {
 			bgImg[i].setBounds(1,1,width-2,height-2);
@@ -84,10 +84,10 @@ public class DirectoryMngPanel extends JPanel {
 		label[1].setBounds(90,95,150,30);
 		label[2].setBounds(90,125,150,30);
 		label[3].setBounds(110,155,150,30);
-		label[4].setBounds(90,185,150,30);
+		label[4].setBounds(120,185,150,30);
 		
 		sizeBar = new JProgressBar(0, 100);
-		sizeBar.setValue(80);
+		sizeBar.setValue(40);
 		sizeBar.setBounds(80,190,180,20);
 		
 		textField = new JTextField[2];
@@ -139,24 +139,32 @@ public class DirectoryMngPanel extends JPanel {
 		handler = new ActionHandler();
 		
 		// Accessfile load 버튼
-		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.loadKeyfileBtn1.getPath())));
-		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.loadKeyfileBtn2.getPath())));
+		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.loadKeyfileBtn1.getPath()));
+		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.loadKeyfileBtn2.getPath()));
 		btn[0].setBounds(250,100,30,30);
 		btn[0].addActionListener(handler);
 
 		// 확인버튼
-		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn1.getPath())));
-		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn2.getPath())));
+		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
+		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
 		btn[1].setBounds(100,200,80,30);
 		btn[1].addActionListener(handler);
 
 		// 취서버튼
-		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn1.getPath())));
-		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn2.getPath())));
+		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
+		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
 		btn[2].setBounds(200,200,80,30);
 		btn[2].addActionListener(handler);
 
 		this.add(bgImg[1]);
+	}
+
+	public JProgressBar getSizeBar() {
+		return sizeBar;
+	}
+
+	public void setSizeBar(JProgressBar sizeBar) {
+		this.sizeBar = sizeBar;
 	}
 
 	public JLabel[] getLabel() {

@@ -241,4 +241,35 @@ public class FileMgr {
 		fileInfoList.add(fileInfo);
 	}
 
+	// long 형의 size를 KB, MB, TB로 변환
+	public String getSummarySize(long size) {
+		long temp = size;
+		String suffix = "";
+		int count = 0;
+		while(temp >= 1024){
+			temp = temp/1024;
+			count++;
+		}
+		switch(count){
+			case 0 : 
+				suffix = "Byte";
+				break;
+			case 1 : 
+				suffix = "KB";
+				break;
+			case 2 : 
+				suffix = "MB";
+				break;
+			case 3 : 
+				suffix = "GB";
+				break;
+			case 4 : 
+				suffix = "TB";
+				break;
+			default : 
+				break;
+		}
+		return temp+suffix;
+	}
+
 }

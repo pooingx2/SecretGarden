@@ -37,7 +37,7 @@ public class ConnectionPanel extends JPanel {
 		this.setLayout(null);
 		
 		// 배경이미지 등록
-		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.connectionBG.getPath())));
+		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.connectionBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 		
 		// private 클라우드 연결 패널 생성

@@ -62,12 +62,12 @@ public class FileMngPanel extends JPanel {
 
 		// 디렉토리를 관리하기 위한 배경 이미지 (Create, Access, Delete,  ...
 		bgImg = new JLabel[6];
-		bgImg[0] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG0.getPath())));
-		bgImg[1] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG1.getPath())));
-		bgImg[2] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG2.getPath())));
-		bgImg[3] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG3.getPath())));
-		bgImg[4] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG4.getPath())));
-		bgImg[5] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG5.getPath())));
+		bgImg[0] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG0.getPath()));
+		bgImg[1] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG1.getPath()));
+		bgImg[2] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG2.getPath()));
+		bgImg[3] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG3.getPath()));
+		bgImg[4] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG4.getPath()));
+		bgImg[5] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG5.getPath()));
 		
 		for(int i=0;i<6;i++) {
 			bgImg[i].setBounds(1,1,width-2,height-2);
@@ -105,20 +105,20 @@ public class FileMngPanel extends JPanel {
 		handler = new ActionHandler();
 		
 		// open file 버튼
-		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.fileOpenBtn1.getPath())));
-		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.fileOpenBtn2.getPath())));
+		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.fileOpenBtn1.getPath()));
+		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.fileOpenBtn2.getPath()));
 		btn[0].setBounds(280,80,40,40);
 		btn[0].addActionListener(handler);
 
 		// 확인버튼
-		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn1.getPath())));
-		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn2.getPath())));
+		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
+		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
 		btn[1].setBounds(150,200,80,30);
 		btn[1].addActionListener(handler);
 
 		// 취소버튼
-		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn1.getPath())));
-		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn2.getPath())));
+		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
+		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
 		btn[2].setBounds(250,200,80,30);
 		btn[2].addActionListener(handler);
 		
