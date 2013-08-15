@@ -1,5 +1,7 @@
 package com.sg.controller;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,9 +12,13 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.sg.main.ClientLauncher;
+import com.sg.main.Constants;
 import com.sg.model.FileInfo;
 
 public class FileMgr {
@@ -104,14 +110,16 @@ public class FileMgr {
 	}
 	
 	// file을 저장하기 위한 함수
-	public String saveFile(String data){
+	public String saveKeyFile(String data){
 		String path=null;
+		
 		JFileChooser fileDialog = new JFileChooser(new File(homePath));
 		int isSelected = fileDialog.showSaveDialog(null);
 		if(isSelected == JFileChooser.APPROVE_OPTION) {
 			File file = fileDialog.getSelectedFile();
 			path = file.getAbsolutePath()+".key";
 			BufferedOutputStream out = null;
+
 			if(file != null) {
 				try{
 					out = new BufferedOutputStream(new FileOutputStream(path));
@@ -144,6 +152,8 @@ public class FileMgr {
 		String key="";
 		String temp;
 		JFileChooser fileDialog = new JFileChooser(new File(homePath));
+		fileDialog.setFileFilter(new FileNameExtensionFilter("Key Files","key"));
+		
 		int isSelected = fileDialog.showOpenDialog(null);
 		if(isSelected == JFileChooser.APPROVE_OPTION) {
 			File file = fileDialog.getSelectedFile();
@@ -177,18 +187,15 @@ public class FileMgr {
 	}
 	
 	// upload할 file path를 return
-	public String loadUploadFile(){
-		String path=null;
+	public File[] loadUploadFile(){
+		File[] files = null;
 		JFileChooser fileDialog = new JFileChooser(new File(homePath));
+		fileDialog.setMultiSelectionEnabled(true);
 		int isSelected = fileDialog.showOpenDialog(null);
 		if(isSelected == JFileChooser.APPROVE_OPTION) {
-			File file = fileDialog.getSelectedFile();
-			BufferedReader in = null;
-			if(file != null) {
-				path = file.getAbsolutePath();
-			}
+			files = fileDialog.getSelectedFiles();
 		}
-		return path;
+		return files;
 	}
 
 	public void addFileInfo(String fileData) {
@@ -223,6 +230,9 @@ public class FileMgr {
 			case 4 : 
 				fileInfo.setIndex(token[i]); 
 				break;
+			case 5 : 
+				fileInfo.setSize(token[i]); 
+				break;
 			default : 
 				break;
 			}
@@ -230,19 +240,5 @@ public class FileMgr {
 		}
 		fileInfoList.add(fileInfo);
 	}
-	
-//	// download할 path를 return
-//	public String getDownloadPath(){
-//		String path=null;
-//		JFileChooser fileDialog = new JFileChooser(new File(homePath));
-//		int isSelected = fileDialog.showSaveDialog(null);
-//		if(isSelected == JFileChooser.APPROVE_OPTION) {
-//			File file = fileDialog.getSelectedFile();
-//			BufferedReader in = null;
-//			if(file != null) {
-//				path = file.getAbsolutePath();
-//			}
-//		}
-//		return path;
-//	}
+
 }

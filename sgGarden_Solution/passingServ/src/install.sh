@@ -2,6 +2,13 @@
 
 
 #관련 라이브러리 실행
+echo "@@Library install"
+apt-get install mysql-server
+apt-get install mysql-client
+apt-get install openvpn
+apt-get install openssl
+apt-get install libssl-dev
+
 
 #기본 키설정
 echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"

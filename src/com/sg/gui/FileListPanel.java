@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -19,7 +20,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
@@ -58,7 +58,7 @@ public class FileListPanel extends JPanel {
 		this.setLayout(null);
 
 		// 배경이미지 등록
-		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.fileListBG.getPath()));
+		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileListBG.getPath())));
 		bgImg.setBounds(0,0,width,height);
 
 		handler = new ActionHandler();
@@ -74,12 +74,17 @@ public class FileListPanel extends JPanel {
 			@Override
 			public void valueChanged(TreeSelectionEvent event) {
 				selectedNode = getSelectedNode();
-				fileMngPanel.setStatus(0);
-				if (fileMngPanel.getStatus() == 0 && !editMode) {
-					fileMngPanel.getLabel()[0].setText("Name : " + selectedNode.toString());
-					fileMngPanel.getLabel()[1].setText("Parent : " + selectedNode.getParent());
-					fileMngPanel.getLabel()[2].setText("Depth : " + selectedNode.getLevel());
-					fileMngPanel.getLabel()[3].setText("Path : " + getSelectedPath());
+				fileMngPanel.setStatus(1);
+				if (fileMngPanel.getStatus() == 1 && !editMode) {
+					FileInfo fileInfo = getFileInfo(selectedNode);
+					fileMngPanel.getLabel()[0].setText(fileInfo.getName());
+					fileMngPanel.getLabel()[1].setText(fileInfo.getParent());
+					fileMngPanel.getLabel()[2].setText(fileInfo.getDepth());
+					fileMngPanel.getLabel()[3].setText(getSelectedPath());
+					if((selectedNode.toString().indexOf('.'))==-1)
+						fileMngPanel.getLabel()[4].setText(getFolderSize(selectedNode));
+					else
+						fileMngPanel.getLabel()[4].setText(fileInfo.getSummarySize());
 					fileMngPanel.changePanel();
 				}
 			}
@@ -107,17 +112,17 @@ public class FileListPanel extends JPanel {
 		// 버튼 생성  (Create, Access, Delte)
 		btn = new JButton[4];
 
-		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.createBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2.getPath()));
+		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn1.getPath())));
+		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn2.getPath())));
 
-		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.uploadBtn1.getPath()));
-		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.uploadBtn2.getPath()));
+		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.uploadBtn1.getPath())));
+		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.uploadBtn2.getPath())));
 
-		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.downloadBtn1.getPath()));
-		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.downloadBtn2.getPath()));
+		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.downloadBtn1.getPath())));
+		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.downloadBtn2.getPath())));
 		
-		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.deleteBtn1.getPath()));
-		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2.getPath()));
+		btn[3] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn1.getPath())));
+		btn[3].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn2.getPath())));
 
 		for(int i=0;i<4;i++) {
 			btn[i].setBounds(20+80*i,5,70,70);
@@ -131,15 +136,11 @@ public class FileListPanel extends JPanel {
 		this.add(bgImg);
 	}
 
-	
-
 	@Override
 	public void paint(Graphics g) {
 		// TODO Auto-generated method stub
 		super.paint(g);
 	}
-
-
 
 	public void initialize() { 
 		EventQueue.invokeLater(new Runnable() {
@@ -184,18 +185,23 @@ public class FileListPanel extends JPanel {
 		}
 	}
 	
+	// 선택된 트리의 노드를 반환
 	public DefaultMutableTreeNode getSelectedNode() {
 		return (DefaultMutableTreeNode) fileTree.getLastSelectedPathComponent();
 	}
 	
-	public FileInfo getSelectedFileInfo(){
+	// 파일트리에서 해당 노드의 정보를 반환
+	public FileInfo getFileInfo(DefaultMutableTreeNode temp){
 		FileInfo fileInfo = null;
-		
 		fileInfoList = ClientLauncher.getFileMgr().getFileInfoList();
 		
-		String name = selectedNode.toString();
-		String parent = selectedNode.getParent().toString();
-		String level = selectedNode.getLevel()+"";
+		if(temp.getLevel() == 0) {
+			return fileInfoList.get(0);
+		}
+		
+		String name = temp.toString();
+		String parent = temp.getParent().toString();
+		String level = temp.getLevel()+"";
 		
 		for(FileInfo item : fileInfoList){
 			if(name.equals(item.getName()) 
@@ -204,6 +210,52 @@ public class FileListPanel extends JPanel {
 			}
 		}
 		return fileInfo;
+	}
+	
+	// 폴더의 경우 폴더 내부의 파일들 전체의 크기를 구해야 함
+	public String getFolderSize(DefaultMutableTreeNode temp){
+		long totalSize = sumChildFile(temp);
+		String suffix = "";
+		int count = 0;
+		while(totalSize >= 1024){
+			totalSize = totalSize/1024;
+			count++;
+		}
+		switch(count){
+			case 0 : 
+				suffix = "Byte";
+				break;
+			case 1 : 
+				suffix = "KB";
+				break;
+			case 2 : 
+				suffix = "MB";
+				break;
+			case 3 : 
+				suffix = "GB";
+				break;
+			case 4 : 
+				suffix = "TB";
+				break;
+			default : 
+				break;
+		}
+		return totalSize+suffix;
+	}
+	
+	// 해당 폴더 내부의 모든 자식들의 크기를 더함
+	public long sumChildFile(DefaultMutableTreeNode temp){
+		long totalSize = 0;
+		Enumeration child = temp.children();
+		while(child.hasMoreElements()){
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) child.nextElement();
+			if(node.toString().indexOf(".") != -1) {
+				totalSize += Long.parseLong(getFileInfo(node).getSize());
+			}
+			else
+				totalSize += sumChildFile(node);
+		}
+		return totalSize;
 	}
 	
 	public String getSelectedPath(){
@@ -228,7 +280,6 @@ public class FileListPanel extends JPanel {
 	// 추가할 TreeNode가 존재하는지를 파악
 	public boolean isExistNode(String node){
 		for(int i=0;i<selectedNode.getChildCount();i++){
-			System.out.println("\t\t\t getchild : "+selectedNode.getChildAt(i));
 			if(selectedNode.getChildAt(i).toString().equals(node))
 				return true;
 		}
@@ -251,14 +302,14 @@ public class FileListPanel extends JPanel {
 		}
 	}
 	
-	public void upload(String fileName, MetaData Object){
+	public void upload(String filePath, Long fileSize, MetaData Object){
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a parent directory");
 		else {
 			int type = Constants.PacketType.FileUploadRequest.getType();
-			String data = fileName + "\t" + selectedNode.toString() + "\t" + 
+			String data = filePath + "\t" + selectedNode.toString() + "\t" + 
 					((selectedNode.getLevel()+1)+"") + "\t" + 
-					ClientLauncher.getFileMgr().getRootDirID() +"\t"+"defaultMetadata";
+					ClientLauncher.getFileMgr().getRootDirID() +"\t"+fileSize+"\t"+"defaultMetadata";
 			int length = data.length();
 			
 			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
@@ -275,7 +326,7 @@ public class FileListPanel extends JPanel {
 			int type;		 // 패킷 타입
 			int length;	 // 패킷 길이
 			String data; 	 // 전송 데이터
-			FileInfo fileInfo = getSelectedFileInfo();
+			FileInfo fileInfo = getFileInfo(selectedNode);
 			
 			type = Constants.PacketType.FileDownloadRequest.getType();
 			data = fileInfo.getName() + "\t" + fileInfo.getParent() + "\t" + 
@@ -293,7 +344,7 @@ public class FileListPanel extends JPanel {
 			JOptionPane.showMessageDialog(null, "Can't delete root directory");
 		else {
 			//((DefaultTreeModel) model).removeNodeFromParent(selectedNode);
-			FileInfo fileInfo = getSelectedFileInfo();
+			FileInfo fileInfo = getFileInfo(selectedNode);
 			System.out.println("name " + fileInfo.getName());
 			System.out.println("parent " + fileInfo.getParent());
 			System.out.println("level " + fileInfo.getDepth());
@@ -306,8 +357,8 @@ public class FileListPanel extends JPanel {
 
 
 		/* 	status
-		0 : Default		1 : Information		2 : Create	
-		3 : Upload		4 : Download		5 : Delete 
+		0 : Information		1 : Selected		2 : Create	
+		3 : Upload			4 : Download		5 : Delete 
 		*/
 		
 		@Override

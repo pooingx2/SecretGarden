@@ -25,6 +25,7 @@ public class Connector implements Runnable {
 		nonce = ClientLauncher.getNonce();
 
 		try {
+			
 			socket = new Socket(Constants.serverIP, Constants.serverPort);
 			dis = new DataInputStream(socket.getInputStream());
 			dos = new DataOutputStream(socket.getOutputStream());
@@ -114,10 +115,11 @@ public class Connector implements Runnable {
 
 		try {
 			dos.write(sendbuf, 0, length + 12);
-			System.out.println("전송 데이터 길이 : " + i);
-			System.out.println("전송 데이터 타입 : " + type);
-			System.out.println("전송 데이터 디스크립터 : " + redesc);
-			System.out.println("전송 데이터 : " + data);
+			System.out.println("\n"+"< Send packet >");
+			System.out.println("type : " + type);
+			System.out.println("desc : " + redesc);
+			System.out.println("length : " + i);
+			System.out.println("data : " + data + "\n");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -136,7 +138,7 @@ public class Connector implements Runnable {
 		try {
 			h_length = dis.read(headerBuf, 0, 12);
 			if(h_length == 0){
-				System.out.println("수신데이터 제로 ");
+				System.out.println("data : 0");
 				return;
 			}
 			
@@ -169,9 +171,10 @@ public class Connector implements Runnable {
 		}
 		// return null;
 
-		System.out.println("수신 데이터 타입 : " + type);
-		System.out.println("수신 데이터 디스크립터 : " + desc);
-		System.out.println("수신 데이터 길이: " + length);
+		System.out.println("\n" + "< Receive packet >");
+		System.out.println("type : " + type);
+		System.out.println("desc : " + desc);
+		System.out.println("length : " + length);
 
 		byte[] dataBuf = new byte[length];
 		try {
@@ -179,11 +182,11 @@ public class Connector implements Runnable {
 			if (length != 0) {
 				dis.read(dataBuf);
 				String data = new String(dataBuf);
-				System.out.println("수신 데이터 : " + data);
+				System.out.println("Receive data : " + data+ "\n");
 				pkMgr.managePacket(type, desc, length, data);
 			} else {
 				String data = new String();
-				System.out.println("수신 데이터 : NULL ");
+				System.out.println("Receive data : NULL " + "\n");
 				pkMgr.managePacket(type, desc, length, "");
 			}
 
@@ -305,8 +308,7 @@ public class Connector implements Runnable {
 	// 패킷 정보를 받기 위한 스레드
 	@Override
 	public void run() {
-
-		System.out.println("Test");
+		
 		while (runable) {
 			byte[] header = null;
 

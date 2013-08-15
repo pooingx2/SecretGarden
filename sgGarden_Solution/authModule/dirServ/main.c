@@ -89,10 +89,13 @@ int main(int argc, char **argv)
 			     getElements(&dataBuf, '\t', tokenBuf);	
 			 
 			     /* User가 접속한 클라우드의 디렉토리 리스트 조회 */ 
-	     		     // 인자  리스트 :  User id, Public, Private
+	     		 // 인자  리스트 :  User id, Public, Private
+				 // 반환  리스티 :  dir_id, name, master(이미 존재), cloud_rate, sum(size)
 			     state = getdirectoryList(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], directoryList);			   
-			     // state = get_shared_dir_list(con, tokenBuf[0]);
 			     
+				 // state = get_shared_dir_list(con, tokenBuf[0]);
+			     
+
 			     if(state == 1)
 			     {
         		    	 sendTo(&messagingServ, 8,
@@ -100,7 +103,7 @@ int main(int argc, char **argv)
 			     }
 			     else
 			     {
-				 sendTo(&messagingServ, 0,
+				 		sendTo(&messagingServ, 0,
                              		    desc, strlen(NoneMs), NoneMs);
 			     }
                              break;
@@ -136,7 +139,7 @@ int main(int argc, char **argv)
 
 			     /* 디렉토리 생성 */
 			     // 인자 리스트 : 디렉토리 이름, 프라이빗 정보, 퍼블릭 정보, 유저ID
-			     state = createRootDir(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], key, tokenBuf[3]);	
+			     state = createRootDir(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], key, tokenBuf[3], "5:5");	
 
 			     if(state == 1)
 			     {
@@ -270,16 +273,17 @@ int main(int argc, char **argv)
 				memset(recv_client, 0x00, 20);
 				//memset(name_Buf, 0x00, 15);
 
-				/* 파일 업로드를 위한 인자(name, parent, depth, root) 획득 */
+				/* 파일 업로드를 위한 인자(name, parent, depth, root, fileSize(추가)) 획득 */
 				state = getElements(dataBuf, "\t", tokenBuf);			
 				get_Name(tokenBuf[0], &name_Buf);
 				printf("name_Buf is : %s \n", name_Buf);
 
 				/* 파일 생성(Insert Query) */		
-				createFile(con, name_Buf, tokenBuf[1], tokenBuf[2], tokenBuf[3]);
+				createFile(con, name_Buf, tokenBuf[1], tokenBuf[2], tokenBuf[3], tokenBuf[4]);
 
 				/* meta data, file_id, path, recv_client */
 				state =  get_file_id(con, name_Buf, tokenBuf[1], tokenBuf[2], tokenBuf[3], file_id);
+				
 				/*
 				printf("sprint \n");
 				sprintf(recv_client, "%d", desc);
@@ -293,6 +297,7 @@ int main(int argc, char **argv)
 					
 				printf("tokenBuf[4] : %s \n", tokenBuf[4]);
 				*/
+
 				state = getFileList(con, tokenBuf[3], fileList);
 
 				/* 메타 데이터 서버로 전송 */

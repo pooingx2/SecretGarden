@@ -33,13 +33,13 @@ public class FileMngPanel extends JPanel {
 	private int height;
 	
 	/* 	status
-	0 : Default		1 : Information		2 : Create	
-	3 : Upload		4 : Download		5 : Delete 
+	0 : Information		1 : Selected		2 : Create	
+	3 : Upload			4 : Download		5 : Delete 
 	*/
 	
 	private int status;
-	private File file;
-	private String filePath;
+	private Vector<File> files;
+	private String rootSize;
 
 	// Components
 	private Font inputFont;
@@ -55,20 +55,19 @@ public class FileMngPanel extends JPanel {
 		this.width = w;
 		this.height = h;
 		this.status = 1;
-		this.file = null;
-		this.filePath = null;
+		this.files = new Vector<File>();
 		this.setLayout(null);
 		this.setBackground(Constants.backColor);
 		this.setBorder(new LineBorder(Color.LIGHT_GRAY));
 
 		// 디렉토리를 관리하기 위한 배경 이미지 (Create, Access, Delete,  ...
 		bgImg = new JLabel[6];
-		bgImg[0] = new JLabel();
-		bgImg[1] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG1.getPath()));
-		bgImg[2] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG2.getPath()));
-		bgImg[3] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG3.getPath()));
-		bgImg[4] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG4.getPath()));
-		bgImg[5] = new JLabel(new ImageIcon(Constants.BackgroudPath.fileMngBG5.getPath()));
+		bgImg[0] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG0.getPath())));
+		bgImg[1] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG1.getPath())));
+		bgImg[2] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG2.getPath())));
+		bgImg[3] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG3.getPath())));
+		bgImg[4] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG4.getPath())));
+		bgImg[5] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileMngBG5.getPath())));
 		
 		for(int i=0;i<6;i++) {
 			bgImg[i].setBounds(1,1,width-2,height-2);
@@ -85,7 +84,7 @@ public class FileMngPanel extends JPanel {
 
 		for(int i=0;i<5;i++){
 			label[i] = new JLabel();
-			label[i].setBounds(30,50+(i*30),300,30);
+			label[i].setBounds(90,80+(i*30),220,30);
 			label[i].setFont(Constants.Font1);
 		}
 		
@@ -93,7 +92,7 @@ public class FileMngPanel extends JPanel {
 		textField[0].setBounds(30,140,250,30);
 		textField[0].setFont(inputFont);
 
-		textField[1] = new JTextField();		// file path
+		textField[1] = new JTextField();		// upload files
 		textField[1].setBounds(30,140,300,30);
 		textField[1].setEditable(false);
 		textField[1].setFont(inputFont);
@@ -106,20 +105,20 @@ public class FileMngPanel extends JPanel {
 		handler = new ActionHandler();
 		
 		// open file 버튼
-		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.fileOpenBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.fileOpenBtn2.getPath()));
+		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.fileOpenBtn1.getPath())));
+		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.fileOpenBtn2.getPath())));
 		btn[0].setBounds(280,80,40,40);
 		btn[0].addActionListener(handler);
 
 		// 확인버튼
-		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
-		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
+		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn1.getPath())));
+		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn2.getPath())));
 		btn[1].setBounds(150,200,80,30);
 		btn[1].addActionListener(handler);
 
 		// 취소버튼
-		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
-		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
+		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn1.getPath())));
+		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn2.getPath())));
 		btn[2].setBounds(250,200,80,30);
 		btn[2].addActionListener(handler);
 		
@@ -127,7 +126,8 @@ public class FileMngPanel extends JPanel {
 	}
 
 	public void initialize() { 
-		this.status=1;
+		this.status=0;
+		this.files.removeAllElements();
 		textField[0].setText("");
 		textField[1].setText("");
 		textField[2].setText("");
@@ -151,16 +151,24 @@ public class FileMngPanel extends JPanel {
 		return label;
 	}
 
-
-
 	public void setLabel(JLabel[] label) {
 		this.label = label;
 	}
 	
 	public void setUploadFilePath(){
-		String path = ClientLauncher.getFileMgr().loadUploadFile();
-		if(path != null){
-			textField[1].setText(path);
+		String fileNames = "";
+		File[] uploadFiles = ClientLauncher.getFileMgr().loadUploadFile();
+		if(uploadFiles != null){
+			for(int i=0;i<uploadFiles.length;i++){
+				// upload file list에 존재하지 않은 경우에만 add (중복 제거)
+				if(!files.contains(uploadFiles[i])){
+					this.files.add(uploadFiles[i]);
+				}
+			}
+			for(File file : files){
+				fileNames = fileNames + file.getName()+", ";
+			}
+			textField[1].setText(fileNames.substring(0, fileNames.length()-2));
 		}
 	}
 	
@@ -176,14 +184,14 @@ public class FileMngPanel extends JPanel {
 
 		this.removeAll();
 		switch(this.status){
-		case 0 : 	// Default
+		case 0 : 	// Information
+			break;
+		case 1 : 	// Selected
 			this.add(label[0]);
 			this.add(label[1]);
 			this.add(label[2]);
 			this.add(label[3]);
 			this.add(label[4]);
-			break;
-		case 1 : 	// Information
 			break;
 		case 2 : 	// Create 
 			this.add(textField[0]);
@@ -215,9 +223,10 @@ public class FileMngPanel extends JPanel {
 
 	// 버튼에 따른 이벤트 핸들러
 	private class ActionHandler implements ActionListener {
-		private String dirName;
-		private String localUploadPath;	// upload fileName
-		private MetaData m_data;	// upload metaData
+		private String dirName;			// create dirName
+		private String localUploadPath;	// upload filePath
+		private Long uploadFileSize;	// upload fileSize
+		private MetaData m_data;		// upload metaData
 		private String localDownloadPath;
 		
 		@Override
@@ -232,7 +241,6 @@ public class FileMngPanel extends JPanel {
 			if(event.getSource()==btn[1]){
 				
 				dirName	= textField[0].getText();
-				localUploadPath = textField[1].getText();
 				localDownloadPath = textField[2].getText();
 				
 				// create
@@ -246,23 +254,27 @@ public class FileMngPanel extends JPanel {
 				}
 				// upload
 				else if(status == 3) {
-					if(localUploadPath.equals("")){
+					if(files.size() == 0){
 						JOptionPane.showMessageDialog(null, "Load file");
 					}
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-
-						try {
-							// return 0 = success	failure = -1
-							if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
-								/* 메타데이터 전송 */
-								MetaData m_data = new MetaData();
-								ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
-							}
-							else
-								JOptionPane.showMessageDialog(null, "upload failure");
-						} catch (IOException e) {
-							e.printStackTrace();
+						for(File file : files){
+							localUploadPath = file.getAbsolutePath();
+							uploadFileSize = file.length();
+//							try {
+//								// return 0 = success	failure = -1
+//								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
+//									/* 메타데이터 전송 */
+//									MetaData m_data = new MetaData();
+//									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+//								}
+//								else
+//									JOptionPane.showMessageDialog(null, "upload failure");
+//							} catch (IOException e) {
+//								e.printStackTrace();
+//							}
+							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 						}
 						
 						//MetaData m_data = new MetaData();
@@ -297,21 +309,11 @@ public class FileMngPanel extends JPanel {
 				else if(status == 5) {
 					ClientLauncher.getFrame().getFileListPanel().delete();
 				}
-				btn[2].doClick();
 			}
 
 			// 취소버튼을 누르면 초기화
 			if(event.getSource()==btn[2]){
-				textField[0].setText("");
-				textField[1].setText("");
-				if(ClientLauncher.getFrame().getDirectoryListPanel().getIsSelected()){
-					setStatus(0);
-				}
-				else {
-					label[1].setText("");
-					setStatus(1);
-				}
-				changePanel();
+				initialize();
 			}
 		}
 	}

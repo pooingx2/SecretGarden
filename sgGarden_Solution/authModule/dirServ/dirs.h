@@ -5,7 +5,10 @@
 
 
 int 
-createRootDir(MYSQL *con, char *name, char *private, char *public,char *accessKey, char *user_id);
+get_dir_size(MYSQL *con, char *dir_id, char dataBuf[]);
+
+int 
+createRootDir(MYSQL *con, char *name, char *private, char *public,char *accessKey, char *user_id, char *claudRate);
 
 int 
 getdirectoryList(MYSQL *con, char *userId, char *private_cloud, char *public_cloud ,char dataBuf[]);
@@ -32,7 +35,7 @@ int
 createFolder(MYSQL *con, char *name, char *parent, char *depth, char *root);
 
 int
-createFile(MYSQL *con, char *name, char *parent, char *depth, char *root);
+createFile(MYSQL *con, char *name, char *parent, char *depth, char *root, char *size);
 
 int 
 search_parentNode(MYSQL *con, char *name, char *parent, char *depth, char *root, char fileList[]);
