@@ -58,7 +58,7 @@ public class FileListPanel extends JPanel {
 		this.setLayout(null);
 
 		// 배경이미지 등록
-		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.fileListBG.getPath())));
+		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.fileListBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 
 		handler = new ActionHandler();
@@ -84,7 +84,8 @@ public class FileListPanel extends JPanel {
 					if((selectedNode.toString().indexOf('.'))==-1)
 						fileMngPanel.getLabel()[4].setText(getFolderSize(selectedNode));
 					else
-						fileMngPanel.getLabel()[4].setText(fileInfo.getSummarySize());
+						fileMngPanel.getLabel()[4].setText(
+								ClientLauncher.getFileMgr().getSummarySize(Long.parseLong(fileInfo.getSize())));
 					fileMngPanel.changePanel();
 				}
 			}
@@ -112,17 +113,17 @@ public class FileListPanel extends JPanel {
 		// 버튼 생성  (Create, Access, Delte)
 		btn = new JButton[4];
 
-		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn1.getPath())));
-		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn2.getPath())));
+		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.createBtn1.getPath()));
+		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2.getPath()));
 
-		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.uploadBtn1.getPath())));
-		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.uploadBtn2.getPath())));
+		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.uploadBtn1.getPath()));
+		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.uploadBtn2.getPath()));
 
-		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.downloadBtn1.getPath())));
-		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.downloadBtn2.getPath())));
+		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.downloadBtn1.getPath()));
+		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.downloadBtn2.getPath()));
 		
-		btn[3] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn1.getPath())));
-		btn[3].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn2.getPath())));
+		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.deleteBtn1.getPath()));
+		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2.getPath()));
 
 		for(int i=0;i<4;i++) {
 			btn[i].setBounds(20+80*i,5,70,70);
@@ -215,32 +216,7 @@ public class FileListPanel extends JPanel {
 	// 폴더의 경우 폴더 내부의 파일들 전체의 크기를 구해야 함
 	public String getFolderSize(DefaultMutableTreeNode temp){
 		long totalSize = sumChildFile(temp);
-		String suffix = "";
-		int count = 0;
-		while(totalSize >= 1024){
-			totalSize = totalSize/1024;
-			count++;
-		}
-		switch(count){
-			case 0 : 
-				suffix = "Byte";
-				break;
-			case 1 : 
-				suffix = "KB";
-				break;
-			case 2 : 
-				suffix = "MB";
-				break;
-			case 3 : 
-				suffix = "GB";
-				break;
-			case 4 : 
-				suffix = "TB";
-				break;
-			default : 
-				break;
-		}
-		return totalSize+suffix;
+		return ClientLauncher.getFileMgr().getSummarySize(totalSize);
 	}
 	
 	// 해당 폴더 내부의 모든 자식들의 크기를 더함
