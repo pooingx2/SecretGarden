@@ -31,8 +31,8 @@ public class Hybrid {
 		switch (type){
 
 		case Constants.amazon : 		// aws s3 connect
-			String keyId = id;			// 입력 받아야 함
-			String key = pw;			// 입력 받아야 함
+			String keyId = "AKIAIUXPHCYBAHGUZGEQ";//id;			// 입력 받아야 함
+			String key = "z3L3XdNwpWPx0R37bToPR+O85cmSoZTJrucfb4xE";//pw;			// 입력 받아야 함
 			aWSModule.setKey(key);
 			aWSModule.setKeyId(keyId);
 			
@@ -40,8 +40,8 @@ public class Hybrid {
 			break;
 
 		case Constants.hadoop : 		// hdfs connect
-			String hdfsIp = id;			// 입력 받아야 함
-			int hdfsPort = Integer.parseInt(port);		// 입력 받아야 함
+			String hdfsIp = "211.189.127.91";//id;			// 입력 받아야 함
+			int hdfsPort = 15000;//Integer.parseInt(port);		// 입력 받아야 함
 			hdfsModule.setDestIp(hdfsIp);
 			hdfsModule.setDestPort(hdfsPort);
 			
@@ -154,12 +154,17 @@ public class Hybrid {
 		request.setUserId(ClientLauncher.getUser().getId());
 		
 
-		byte[] awsBuf = null;
-		byte[] hdfsBuf = null;
+		File awsTmp = null;
+		File hdfsTmp = null;
 		File downFile = null;
 		BufferedOutputStream bos = null;
 		Files awsReceiveFile = null;
 		Files hdfsReceiveFile = null;
+		String localDir = destPath+ClientLauncher.getFileMgr().getSlash();
+		
+		System.out.println("here ::::: " +destPath);
+		//hdfs download
+		hdfsTmp = hdfsModule.download(request, localDir);
 		
 		//aws s3 download
 //		awsReceiveFile = aWSModule.download(request);
@@ -171,44 +176,32 @@ public class Hybrid {
 //			
 //			awsBuf = awsReceiveFile.getFileBuf();
 //		}
-		//hdfs download
+
 		
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
-		downFile = new File( destPath+ClientLauncher.getFileMgr().getSlash() );
+		downFile = new File( localDir );
 		
 		if(!downFile.exists()) 
 			downFile.mkdirs();
-		downFile = new File(destPath+ClientLauncher.getFileMgr().getSlash()+fileName);
+		downFile = new File(localDir+fileName);
 		int fileCount = 1;
 		while (downFile.exists()) {
-			downFile = new File(destPath+ClientLauncher.getFileMgr().getSlash()+fileAlreadyExists(fileName, fileCount));
+			downFile = new File(localDir+fileAlreadyExists(fileName, fileCount));
 			fileCount++;
 		}
 		
 		// 파일로 쓰기
-		int bytesRead = 0;
-		boolean isFirst = true;
+		
+		
 		bos = new BufferedOutputStream(new FileOutputStream(downFile));
 		
 		
-		
-//		while (0 != (bytesRead = (hdfsBuf = hdfsModule.download(request, isFirst)).length)) {
-//			bos.write(hdfsBuf,0,bytesRead);
-//			bos.flush();
-//			System.out.println(hdfsBuf.length);
-//			isFirst=false;
-//		}
 		
 		if (hdfsReceiveFile.getOptionNum() == -1) {
 			System.out.println("hdfs download error...\ndelete " + fixedSourcePath+fixedFileName+" in s3 bucket");
 			return -1;
 		} 
-//		try{
-//			bos.write(awsBuf);
-//		} catch (NullPointerException es){
-//			System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
-//		}
 		bos.close();
 
 		return 0;
