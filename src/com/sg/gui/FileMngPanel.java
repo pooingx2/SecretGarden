@@ -262,20 +262,23 @@ public class FileMngPanel extends JPanel {
 						for(File file : files){
 							localUploadPath = file.getAbsolutePath();
 							uploadFileSize = file.length();
-							System.out.println("파일이 몇개일까요~~~~???????\n");
-							try {
-								// return 0 = success	failure = -1
-								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
-									/* 메타데이터 전송 */
-									MetaData m_data = new MetaData();
-									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
-								}
-								else
-									JOptionPane.showMessageDialog(null, "upload failure");
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-//							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+
+//							try {
+//								// return 0 = success	failure = -1
+//								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
+//									/* 메타데이터 전송 */
+//									MetaData m_data = new MetaData();
+//									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+//								}
+//								else
+//									JOptionPane.showMessageDialog(null, "upload failure");
+//							} catch (IOException e) {
+//								e.printStackTrace();
+//							}
+							
+							// Cloud 업로드를 안거치고 테스트하기위함
+							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+
 						}
 						
 						//MetaData m_data = new MetaData();
