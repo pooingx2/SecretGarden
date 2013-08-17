@@ -7,8 +7,6 @@ import java.nio.ByteOrder;
 
 public class Constants {
 
-	
-	
 	// main framesize
 	public static final int frameW = 800;
 	public static final int frameH = 600;
@@ -38,6 +36,7 @@ public class Constants {
 		connectionBG("img/background/connectionBG.jpg"),
 		settingsBG("img/background/settingsBG.jpg"),
 		sharingBG("img/background/sharingBG.jpg"),
+		shareListBG("img/background/shareListBG.jpg"),
 		privateBG1("img/background/privatePanelBG1.jpg"),
 		privateBG2("img/background/privatePanelBG2.jpg"),
 		publicBG1("img/background/publicPanelBG1.jpg"),
@@ -79,6 +78,8 @@ public class Constants {
 		forwardBtn2("img/button/forwardBtn2.jpg"),
 		shareBtn1("img/button/shareBtn1.jpg"),
 		shareBtn2("img/button/shareBtn2.jpg"),
+		sharingBtn1("img/button/sharingBtn1.jpg"),
+		sharingBtn2("img/button/sharingBtn2.jpg"),
 		connectBtn1("img/button/connectBtn1.jpg"), 
 		connectBtn2("img/button/connectBtn2.jpg"),
 		privateBtn1("img/button/privateBtn1.jpg"),
@@ -91,6 +92,8 @@ public class Constants {
 		cancelBtn2("img/button/cancelBtn2.jpg"), 
 		createBtn1("img/button/createBtn1.jpg"), 
 		createBtn2("img/button/createBtn2.jpg"), 
+		addBtn1("img/button/addBtn1.jpg"), 
+		addBtn2("img/button/addBtn2.jpg"), 
 		deleteBtn1("img/button/deleteBtn1.jpg"), 
 		deleteBtn2("img/button/deleteBtn2.jpg"),
 		accessBtn1("img/button/accessBtn1.jpg"),
@@ -177,8 +180,18 @@ public class Constants {
 		FileUploadResponse(16),
 		FileDownloadRequest(17),
 		FileDownloadResponse(18),
-		SettingRequset(21), 
-		SettingResponse(22),
+		IdCheckRequest(19),
+		IdCheckResponse(20),
+		ShareRequest(21),
+		ShareResponse(22),
+		ShareListRequest(23),
+		ShareListResponse(24),
+		SharingConfirmRequest(25),
+		SharingRefuseRequest(26),
+		SharingCancelRequest(27),
+		DirectoryDeleteRequest(28),
+		FileDeleteRequest(29),
+//		ShareID
 		
 		// 파일 업로드, 파일 다운로드, 디렉토리 서버 전송, 바인딩 프로토콜
 		FROM_DIR_TO_HDFS_FOR_UPLOAD_METADATA(30),

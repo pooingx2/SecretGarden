@@ -42,7 +42,6 @@ public class DirectoryListPanel extends JPanel {
 	private JTable table;
 	private JTableHeader header;
 	private DefaultTableCellRenderer renderer;
-	private Vector<String> row;
 
 	public DirectoryListPanel(int w, int h) {
 
@@ -181,6 +180,14 @@ public class DirectoryListPanel extends JPanel {
 		this.editMode = false;
 	}
 
+	public DirectoryMngPanel getDirMngPanel() {
+		return dirMngPanel;
+	}
+
+	public void setDirMngPanel(DirectoryMngPanel dirMngPanel) {
+		this.dirMngPanel = dirMngPanel;
+	}
+
 	// 리스트 초기화 함수
 	// 디렉토리 삽입,삭제,파일 업로드,다운로드시에 리스트를 갱신해야한다
 	public void initTable() {
@@ -256,12 +263,9 @@ public class DirectoryListPanel extends JPanel {
 
 	// 디렉토리 접근 최종 확인 버튼 클릭시 실행
 	public void access(String key) {
-		// 액세스시 폴더 리스트를 가져와야 한다
-		isAccessed = true;
-		
 		// 하부 폴더에 접근하기 위하여 Keyfile을 서버로 전송한다 
-		String id   = ClientLauncher.getFrame().getDirectoryListPanel().getDirectoryID();
-		String data = id + "\t" + "BCFA3232E97F";
+		String id   = getDirectoryID();
+		String data = id + "\t" + key;
 		
 		int type = Constants.PacketType.DirectoryAccessRequest.getType();
 		int length = data.length();
@@ -272,7 +276,19 @@ public class DirectoryListPanel extends JPanel {
 	}
 
 	// 디렉토리 삭제 최종 확인 클릭시 실행
-	public void delete() {
+	public void delete(String key) {
+		// 하부 폴더에 접근하기 위하여 Keyfile을 서버로 전송한다 
+		String id = getDirectoryID();
+		String data = id + "\t" + key + "\t" +ClientLauncher.getUser().getId() 
+				+ "\t" + ClientLauncher.getFrame().getConnectionPanel().getPrivate() 
+				+ "\t" + ClientLauncher.getFrame().getConnectionPanel().getPublic();
+		
+		int type = Constants.PacketType.DirectoryDeleteRequest.getType();
+		int length = data.length();
+		
+		// 인증 및 폴더 리스트 요청
+		ClientLauncher.getFileMgr().setRootDirID(id);
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 	}
 
 	public void settings() {
