@@ -262,6 +262,7 @@ public class FileMngPanel extends JPanel {
 						for(File file : files){
 							localUploadPath = file.getAbsolutePath();
 							uploadFileSize = file.length();
+
 //							try {
 //								// return 0 = success	failure = -1
 //								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
@@ -277,6 +278,7 @@ public class FileMngPanel extends JPanel {
 							
 							// Cloud 업로드를 안거치고 테스트하기위함
 							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+
 						}
 						
 						//MetaData m_data = new MetaData();
@@ -304,7 +306,7 @@ public class FileMngPanel extends JPanel {
 							e.printStackTrace();
 						}
 						
-						ClientLauncher.getFrame().getFileListPanel().download();
+//						ClientLauncher.getFrame().getFileListPanel().download();
 					}
 				}
 				// delete

@@ -75,16 +75,19 @@ public class HDFSClient implements PrivateUpDown1 {
 
 		objOutput.writeObject(fileDescript);
 		objOutput.flush();
-
+		
+		
+		//test
+		int totalBytesRead = 0;
 		while (-1 != (bytesRead = readFile.read(buf, 0, buf.length))) {
+			
+			totalBytesRead += bytesRead;
+			System.out.println("sending bytes : " + totalBytesRead);
 			writer.write(buf, 0, bytesRead);
-			writer.flush();
 		}
-
-		System.out.println("일단은 보냇음...");
-
-		 objOutput.close();
-		 readFile.close();
+		writer.flush();
+		System.out.println("complete...");
+		writer.close();
 		// sock.close();
 		return 0;
 	}
@@ -100,9 +103,10 @@ public class HDFSClient implements PrivateUpDown1 {
 		File tmpFile = new File(localPath+"fileH.tmp");
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile)) ;
 		// request
-		
+		System.out.println("sending Request");
 		objOutput.writeObject(request);
 		objOutput.flush();
+		
 		
 		try {
 			recievFile = (Files) objInput.readObject();
@@ -113,13 +117,23 @@ public class HDFSClient implements PrivateUpDown1 {
 			System.out.println("클래스를 찾지 못했습니다. 왜???");
 
 		}
-
-		// download
-		while(-1 != (bytesRead = reader.read(buf, 0, buf.length))) {
-			//System.out.println(filepath);
-			System.out.println("buf length :"+buf.length);
-			bos.write(buf);
+		if (recievFile.getOptionNum() == -1) {
+			System.out.println("HDFS에 파일이 존재하지 않음");
+			return null;
 		}
+		
+		
+		// download
+		
+		System.out.println("download Start " );
+		int totalByteRead = 0;
+		while(-1 != (bytesRead = reader.read(buf, 0,buf.length))) {
+			totalByteRead += bytesRead;
+			System.out.println("recv HDFS length :"+totalByteRead);
+			bos.write(buf, 0, bytesRead);
+		}
+		
+		System.out.println("HDFS complete");
 		bos.flush();
 		
 		return tmpFile;

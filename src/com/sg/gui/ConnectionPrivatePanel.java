@@ -192,15 +192,15 @@ public class ConnectionPrivatePanel extends JPanel {
 
 
 				ClientLauncher.getFrame().getConnectionPanel().setPrivate(ip);
-//				connection = ClientLauncher.getHybrid().auth(Constants.hadoop, ip, port, pwd);
-				connection = true;
+				connection = ClientLauncher.getHybrid().auth(Constants.hadoop, ip, port, pwd);
+//				connection = true;
 
 
 				if(connection){
 					changeStatusPanel();
-					//ClientLauncher.getFrame().getConnectionPanel().setP_ip(ip);
+					ClientLauncher.getFrame().getConnectionPanel().setP_ip(ip);
 					/*port넘버를 받는거로 바꿔줘야 함.*/
-					//ClientLauncher.getFrame().getConnectionPanel().setP_portNum(15000);
+					ClientLauncher.getFrame().getConnectionPanel().setP_portNum(15000);
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Connect Error");
