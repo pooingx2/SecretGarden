@@ -57,7 +57,7 @@ public class PacketMgr {
 		// 로그아웃 응답에 대한 패킷을 처리 (현재 패널 -> LoginPanel)
 		if(type==Constants.PacketType.LogoutResponse.getType()){
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
-			ClientLauncher.exit();
+//			ClientLauncher.exit();
 			ClientLauncher.getConnector().newConnector();
 			
 		}
@@ -144,11 +144,48 @@ public class PacketMgr {
 			System.out.println("meta data is : " + token[0]);
 		}
 
-		// 폴더 및 디렉토리 셋팅(공유와 관련된)패킷 수신
-		if (type == Constants.PacketType.SettingResponse.getType()) {
-
+		// 존재하는 아이디인지 확인
+		if (type == Constants.PacketType.IdCheckResponse.getType()) {
+			String userId = token[0];
+			ClientLauncher.getFrame().getDirectoryListPanel().getDirMngPanel().getShareFrame().getTextArea().append(userId+"\n");
 		}
+		
+		// 공유가 완료 되었는지 확인
+		if (type == Constants.PacketType.ShareResponse.getType()) {
+			ClientLauncher.getFrame().getDirectoryListPanel().getDirMngPanel().getShareFrame().dispose();
+			ClientLauncher.getFrame().getDirectoryListPanel().getDirMngPanel().getShareFrame().initialize();
+			JOptionPane.showMessageDialog(null, token[0]);
+		}
+		
+		// 공유 목록 리스트 확인
+		if (type == Constants.PacketType.ShareListResponse.getType()) {
+			
+			StringTokenizer tokenizer2;
+			String token2[];
+			token2= new String[100];
 
+			// share List를 갱신하기 위해 table을 초기화 한다.
+			ClientLauncher.getFrame().getSharingPanel().initTable();
+
+			// 수신한 데이터를 Table에 추가한다. (userId, status , ....)
+			// 한 row를 vector형태로 취함
+			for(int j=0 ; j<i ; j++){
+				Vector<String> row = new Vector<String>();
+				tokenizer2 = new StringTokenizer(token[j],",");
+				int k = 0;
+
+				while(tokenizer2.hasMoreTokens()) {
+					token2[k] = tokenizer2.nextToken();
+					row.add(token2[k]);
+					k++;
+				}
+
+				ClientLauncher.getFrame().getSharingPanel().addRow(row);
+			}
+			ClientLauncher.getFrame().getSharingPanel().initialize();
+			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getSharingPanel());
+		}
+		
 		// 프로그램 종료
 		if (type == Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()) {
 

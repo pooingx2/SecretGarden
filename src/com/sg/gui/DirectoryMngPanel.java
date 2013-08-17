@@ -46,6 +46,7 @@ public class DirectoryMngPanel extends JPanel {
 	private JSlider slider;
 	private Hashtable labelTable;
 	private JProgressBar sizeBar;
+	private ShareFrame shareFrame;
 
 	public DirectoryMngPanel(int w, int h) {
 
@@ -66,6 +67,8 @@ public class DirectoryMngPanel extends JPanel {
 		bgImg[3] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG3.getPath()));
 		bgImg[4] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG4.getPath()));
 		bgImg[5] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG5.getPath()));
+		
+		shareFrame = new ShareFrame(400, 300);
 		
 		for(int i=0;i<6;i++) {
 			bgImg[i].setBounds(1,1,width-2,height-2);
@@ -91,16 +94,16 @@ public class DirectoryMngPanel extends JPanel {
 		sizeBar.setBounds(80,190,180,20);
 		
 		textField = new JTextField[2];
-		btn = new JButton[3];
+		btn = new JButton[4];
 
 		handler = new ActionHandler();
 
 		textField[0] = new JTextField();		// directory name
-		textField[0].setBounds(20,140,200,30);
+		textField[0].setBounds(20,130,200,30);
 		textField[0].setFont(inputFont);
 
 		textField[1] = new JTextField();		// file path
-		textField[1].setBounds(20,140,250,30);
+		textField[1].setBounds(20,130,220,30);
 		textField[1].setEditable(false);
 		textField[1].setFont(inputFont);
 
@@ -138,10 +141,10 @@ public class DirectoryMngPanel extends JPanel {
 	    
 		handler = new ActionHandler();
 		
-		// Accessfile load 버튼
+		// keyfile load 버튼
 		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.loadKeyfileBtn1.getPath()));
 		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.loadKeyfileBtn2.getPath()));
-		btn[0].setBounds(250,100,30,30);
+		btn[0].setBounds(250,130,30,30);
 		btn[0].addActionListener(handler);
 
 		// 확인버튼
@@ -155,8 +158,22 @@ public class DirectoryMngPanel extends JPanel {
 		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
 		btn[2].setBounds(200,200,80,30);
 		btn[2].addActionListener(handler);
+		
+		// 공유버튼
+		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.shareBtn1.getPath()));
+		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.shareBtn2.getPath()));
+		btn[3].setBounds(180,70,100,30);
+		btn[3].addActionListener(handler);
 
 		this.add(bgImg[1]);
+	}
+	
+	public ShareFrame getShareFrame() {
+		return shareFrame;
+	}
+	
+	public void setShareFrame(ShareFrame shareFrame) {
+		this.shareFrame = shareFrame;
 	}
 
 	public JProgressBar getSizeBar() {
@@ -222,6 +239,7 @@ public class DirectoryMngPanel extends JPanel {
 			this.add(label[2]);
 			this.add(label[3]);
 			this.add(label[4]);
+			this.add(btn[3]);
 			this.add(sizeBar);
 			break;
 		case 2 : 	// Create 
@@ -236,6 +254,8 @@ public class DirectoryMngPanel extends JPanel {
 			this.add(btn[2]);
 			break;
 		case 4 : 	//	Delete
+			this.add(textField[1]);
+			this.add(btn[0]);
 			this.add(btn[1]);
 			this.add(btn[2]);
 			break;
@@ -281,11 +301,18 @@ public class DirectoryMngPanel extends JPanel {
 						JOptionPane.showMessageDialog(null, "Load Key file");
 						return;
 					}
-//					ClientLauncher.getFrame().getDirectoryListPanel().access("none");
-
 				}
 				else if(status == 4) {
-					ClientLauncher.getFrame().getDirectoryListPanel().delete();
+					keyPath = textField[1].getText();
+					key = getKey();
+					if(key!=null  && !keyPath.equals("")){
+						ClientLauncher.getFrame().getDirectoryListPanel().delete(key);
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "Load Key file");
+						return;
+					}
+//					ClientLauncher.getFrame().getDirectoryListPanel().delete(key);
 				}
 				else if(status == 5) {
 					ClientLauncher.getFrame().getDirectoryListPanel().settings();
@@ -296,6 +323,12 @@ public class DirectoryMngPanel extends JPanel {
 			// 취소버튼을 누르면 초기화
 			if(event.getSource()==btn[2]){
 				initialize();
+			}
+			
+			// 공유버튼을 누를때
+			if(event.getSource()==btn[3]){
+				shareFrame.initialize();
+				shareFrame.setVisible(true);
 			}
 		}
 	}

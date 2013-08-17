@@ -309,6 +309,8 @@ public class FileMngPanel extends JPanel {
 				}
 				// delete
 				else if(status == 5) {
+					// Cloud Delete 코드 추가
+					
 					ClientLauncher.getFrame().getFileListPanel().delete();
 				}
 			}

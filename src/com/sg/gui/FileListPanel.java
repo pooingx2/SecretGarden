@@ -234,6 +234,26 @@ public class FileListPanel extends JPanel {
 		return totalSize;
 	}
 	
+	// 폴더의 삭제 경우 내부 자식의 노드들의 정보를 알아야 한다. 
+	public Vector<DefaultMutableTreeNode> getAllChildList(DefaultMutableTreeNode temp){
+		Vector<DefaultMutableTreeNode> childList = new Vector<DefaultMutableTreeNode>();
+		Enumeration child = temp.children();
+		while(child.hasMoreElements()){
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) child.nextElement();
+			if(node.toString().indexOf(".") != -1) {
+				childList.add(node);
+			}
+			else{
+				Vector<DefaultMutableTreeNode> childList2 = getAllChildList(node);
+				for(DefaultMutableTreeNode item : childList2) {
+					childList.add(item);
+				}
+				childList.add(node);
+			}
+		}
+		return childList;
+	}
+	
 	public String getSelectedPath(){
 		String path="";
 		for(int i=0;i<(selectedNode.getPath().length);i++){
@@ -306,7 +326,7 @@ public class FileListPanel extends JPanel {
 			
 			type = Constants.PacketType.FileDownloadRequest.getType();
 			data = fileInfo.getName() + "\t" + fileInfo.getParent() + "\t" + 
-					fileInfo.getDepth() + "\t" + fileInfo.getIndex(); 	// 차후에 메타데이터도 같이 전송되도록 할 예정
+					fileInfo.getDepth() + "\t" + fileInfo.getRootID(); 	// 차후에 메타데이터도 같이 전송되도록 할 예정
 			length = data.length();
 			
 			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
@@ -319,12 +339,24 @@ public class FileListPanel extends JPanel {
 		else if( selectedNode == root )
 			JOptionPane.showMessageDialog(null, "Can't delete root directory");
 		else {
-			//((DefaultTreeModel) model).removeNodeFromParent(selectedNode);
+			int type;		 // 패킷 타입
+			int length;	 // 패킷 길이
+			String data; 	 // 전송 데이터
 			FileInfo fileInfo = getFileInfo(selectedNode);
-			System.out.println("name " + fileInfo.getName());
-			System.out.println("parent " + fileInfo.getParent());
-			System.out.println("level " + fileInfo.getDepth());
-			System.out.println("index " + fileInfo.getIndex());
+			
+			// childData : 모든 자식의 수와 각 자식의 fileID정보 (자식의 자식도 포함)
+			Vector<DefaultMutableTreeNode> allChild= getAllChildList(selectedNode);
+			String childData = allChild.size()+"";
+			for(DefaultMutableTreeNode item : allChild){
+				FileInfo childFileInfo = getFileInfo(item);
+				childData += "\t" + childFileInfo.getFileID();
+			}
+			
+			type = Constants.PacketType.FileDeleteRequest.getType();
+			data = fileInfo.getRootID() + "\t" + fileInfo.getFileID() + "\t" + childData;
+			length = data.length();
+			
+			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 		}
 	}
 

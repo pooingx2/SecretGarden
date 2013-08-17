@@ -5,27 +5,28 @@ public class FileInfo {
 	private String name;
 	private String parent;
 	private String depth;
-	private String index;
+	private String rootID;
 	private String size;
+	private String fileID;
 	
 	public FileInfo() {
 		
 	}
 	
-	public FileInfo(String type, String name, String parent, String depth, String index){
+	public FileInfo(String type, String name, String parent, String depth, String rootID){
 		this.type = type;
 		this.name = name;
 		this.parent = parent;
 		this.depth = depth;
-		this.index = index;
+		this.rootID = rootID;
 	}
 
-	public String getIndex() {
-		return index;
+	public String getRootID() {
+		return rootID;
 	}
 	
-	public void setIndex(String index) {
-		this.index = index;
+	public void setRootID(String rootID) {
+		this.rootID = rootID;
 	}
 
 	public String getType() {
@@ -66,5 +67,13 @@ public class FileInfo {
 	
 	public String getSize() {
 		return size;
+	}
+	
+	public void setFileID(String fileID) {
+		this.fileID = fileID;
+	}
+	
+	public String getFileID() {
+		return fileID;
 	}
 }
