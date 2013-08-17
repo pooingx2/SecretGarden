@@ -92,8 +92,8 @@ int main(int argc, char **argv)
 			     /* User가 접속한 클라우드의 디렉토리 리스트 조회 */ 
 	     		 // 인자  리스트 :  User id, Public, Private
 				 // 반환  리스티 :  dir_id, name, master(이미 존재), cloud_rate, sum(size)
-			     state = getdirectoryList(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], directoryList);			   
-			     
+			     state = getdirectoryList   (con, tokenBuf[0], tokenBuf[1], tokenBuf[2], directoryList);			
+				 //state = get_shared_dir_list(con, tokenBuf[0], tokenBuf[2], tokenBuf[3], directoryList);      
 				 // state = get_shared_dir_list(con, tokenBuf[0]);
 			     
 
@@ -295,7 +295,7 @@ int main(int argc, char **argv)
 				strcat(tokenBuf[5], ",");
 				strcat(tokenBuf[5], recv_client);
 					
-				printf("tokenBuf[5][mata data] is : %s \n", tokenBuf[5]);
+				//printf("tokenBuf[5][mata data] is : %s \n", tokenBuf[5]);
 				
 				/* tokenBuf[3] is directory id */
 				state = getFileList(con, tokenBuf[3], fileList);
@@ -344,7 +344,7 @@ int main(int argc, char **argv)
 
 
 			// 메타 데이터의 metaPath 설정
-			case 31:
+			case 45:
 			{
 
 				state = getElements(dataBuf, "\t", tokenBuf);
@@ -362,7 +362,7 @@ int main(int argc, char **argv)
 			}
 			
 			// 메타 데이터를  클라이언트 에게  전송
-			case 33:
+			case 47:
 			{
 				state = getElements(dataBuf, "\t", tokenBuf);
 				
@@ -379,26 +379,69 @@ int main(int argc, char **argv)
 				break;
 			}
 
-			/* Share Request */
+			/* id check */
 			case 19:
 			{
+				char id_buf[30];
+				char none_String[30] = "Error : Can't Certificate ID";
+				memset(id_buf, 0x00, 30);
 				state = getElements(dataBuf, "\t", tokenBuf);
 	
 
 				/* Share In - user_id, target_id, dir_id */			
 				/* Share Re - user_id, target_id, dir_id , share id, requester, targer, dirName  */
-				state = share_request(con, tokenBuf[0], tokenBuf[1], tokenBuf[2]);
+				state = id_check(con, tokenBuf[0], id_buf );
 
 				if(state == 1)
 				{
 
 					/* Ok */
-					char share_List[1024];
+					sendTo(&messagingServ, 20, desc, strlen(id_buf), id_buf);
+
+				}
+				else if(state == 2)
+				{
+					/* ID Not Vaild */
+
+				}
+				else
+				{
+					/* Server Not Running */
+					sendTo(&messagingServ, 0, desc, strlen(none_String), none_String);
+
+				}
+			
+				
+				break;
+
+			}
+
+
+			/* Share request */
+			case 21:
+			{
+				state = getElements(dataBuf, "\t", tokenBuf);
+	
+
+				/* Share In - target_id, dir_id, user_num, ~user id */			
+				/* Share Re - user_id, target_id, dir_id , share id, requester, targer, dirName  */
+				state = share_request(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], tokenBuf);
+
+				if(state == 1)
+				{
+
+					/* Ok */
+
 					
+					char share_List[1024];
+					memset(share_List, 0x00, 1024);
+					
+					strcat(share_List, "Sharing Reqeust is Succesed");
+					/*
 					memset(share_List, 0x00, 1024);	
 					state = get_share_list(con, tokenBuf[1], share_List);
-
-					sendTo(&messagingServ, 20, desc, strlen(share_List), share_List);
+					*/
+					sendTo(&messagingServ, 22, desc, strlen(share_List), share_List);
 
 				}
 				else if(state == 2)
@@ -415,8 +458,36 @@ int main(int argc, char **argv)
 				break;
 			}
 
+			/* Share List */
+			case 23:
+			{		
+				state = getElements(dataBuf, "\t", tokenBuf);
+
+				/* Share App - share id , target_id */
+				//state = share_approve(con, tokenBuf[0]);
+				state = 1;
+
+				if(state == 1)
+				{
+					/* OK */
+					char share_List[1024];
+					
+					memset(share_List, 0x00, 1024);	
+					state = get_share_list(con, tokenBuf[0], share_List);
+			
+					sendTo(&messagingServ, 24, desc, strlen(share_List), share_List);
+
+				}
+				else
+				{
+					/* False */
+				}
+				
+				break;
+			}
+		
 			/* Share Approve */
-			case 21:
+			case 25:
 			{		
 				state = getElements(dataBuf, "\t", tokenBuf);
 
@@ -431,7 +502,7 @@ int main(int argc, char **argv)
 					memset(share_List, 0x00, 1024);	
 					state = get_share_list(con, tokenBuf[1], share_List);
 			
-					sendTo(&messagingServ, 20, desc, strlen(share_List), share_List);
+					sendTo(&messagingServ, 24, desc, strlen(share_List), share_List);
 
 				}
 				else
@@ -442,7 +513,10 @@ int main(int argc, char **argv)
 				break;
 			}
 
-			case 22:
+
+
+			/* Share Deny */
+			case 26:
 			{	
 				state = getElements(dataBuf, "\t", tokenBuf);
 			
@@ -458,7 +532,36 @@ int main(int argc, char **argv)
 					memset(share_List, 0x00, 1024);	
 					state = get_share_list(con, tokenBuf[1], share_List);
 			
-					sendTo(&messagingServ, 20, desc, strlen(share_List), share_List);
+					sendTo(&messagingServ, 24, desc, strlen(share_List), share_List);
+					printf("Refuse Ok \n");
+				}
+				else
+				{
+					/* False */
+				}
+
+				break;
+			}
+
+
+			/* Share Cancle */
+			case 27:
+			{	
+				state = getElements(dataBuf, "\t", tokenBuf);
+			
+				/* Deny - share id */
+				/* Share App - share id , target_id */
+				state = share_cancle(con, tokenBuf[0]);
+
+				if(state == 1)
+				{
+					/* OK */
+					char share_List[1024];
+					
+					memset(share_List, 0x00, 1024);	
+					state = get_share_list(con, tokenBuf[1], share_List);
+			
+					sendTo(&messagingServ, 24, desc, strlen(share_List), share_List);
 
 				}
 				else
@@ -469,41 +572,70 @@ int main(int argc, char **argv)
 				break;
 			}
 
+
+
 			/* 디렉토리 삭제 */
-			case 23:
+			/* dir_id, access_key, user_id, private, public */
+			case 28:
 			{
-				char *sign = "delete directory Ok\n";
+				
 				char file_id_list[1024];
 
-				memset(file_id_list[1024], 0x00, 1024);
+				memset(file_id_list, 0x00, 1024);
 				/* 디렉토리 id를 받아서 특정 디렉토리를 삭제한다, 하부 폴더 id리스트를 바든다 */
 				/* in - dir_id */
 				state = getElements(dataBuf, "\t", tokenBuf);
-				state = del_dir(con, tokenBuf[0]);
+
+
+				printf("del dir\n");
+				state = del_dir(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], tokenBuf[3], tokenBuf[4]);
 
 
 				/* 하부 폴더도 루트가 해당인것을 찾아 삭제한다 */
 				if(state == 1)
 				{
-					sendTo(&messagingServ, 24, desc, strlen(sign), sign);
+
+
+					/* User가 접속한 클라우드의 디렉토리 리스트 조회 */ 
+					// 인자  리스트 :  User id, Public, Private
+					// 반환  리스티 :  dir_id, name, master(이미 존재), cloud_rate, sum(size)
+					state = getdirectoryList(con, tokenBuf[2], tokenBuf[3], tokenBuf[4], file_id_list);			   
+
+					// state = get_shared_dir_list(con, tokenBuf[0]);
+
+
+					if(state == 1)
+					{
+						sendTo(&messagingServ, 8,
+								desc, strlen(file_id_list), file_id_list);
+					}
+					else
+					{
+						sendTo(&messagingServ, 0,
+								desc, strlen(NoneMs), NoneMs);
+					}
+
 				}
 
 				break;
 			}
 
 			/* 폴더 삭제 */
-			case 25:
+			/* dir_id, folder_id, num, 자식 */
+			case 29:
 			{
 				char *sign = "delete file OK\n";
 
 				/* 폴더 id를 받아서 특정 디렉토리를 삭제한다 */
 				/* in - file_id */
 				state = getElements(dataBuf, "\t", tokenBuf);
-				state = del_file(con, tokenBuf[0]);
+				state = del_file(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], tokenBuf);
 				
 				if(state == 1)
 				{
-					sendTo(&messagingServ, 26, desc, strlen(sign), sign);
+
+					sendTo(&messagingServ, 12, desc, strlen(sign), sign);
+				
 				}
 
 

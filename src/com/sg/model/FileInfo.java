@@ -6,6 +6,7 @@ public class FileInfo {
 	private String parent;
 	private String depth;
 	private String index;
+	private String size;
 	
 	public FileInfo() {
 		
@@ -59,4 +60,42 @@ public class FileInfo {
 		this.depth = depth;
 	}
 	
+	public void setSize(String size) {
+		this.size = size;
+	}
+	
+	public String getSize() {
+		return size;
+	}
+
+	public String getSummarySize() {
+		long temp = Long.parseLong(size);
+		String suffix = "";
+		int count = 0;
+		while(temp >= 1024){
+			temp = temp/1024;
+			count++;
+		}
+		switch(count){
+			case 0 : 
+				suffix = "Byte";
+				break;
+			case 1 : 
+				suffix = "KB";
+				break;
+			case 2 : 
+				suffix = "MB";
+				break;
+			case 3 : 
+				suffix = "GB";
+				break;
+			case 4 : 
+				suffix = "TB";
+				break;
+			default : 
+				break;
+		}
+		return temp+suffix;
+	}
+
 }

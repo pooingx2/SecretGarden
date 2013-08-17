@@ -70,7 +70,7 @@ public class SignupFrame extends JFrame  {
 		this.setLayout(null);
 		
 		// 배경이미지
-		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.signupBG.getPath()));
+		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.signupBG.getPath())));
 		bgImg.setBounds(0,0,width,height);
 
 		// font 설정
@@ -111,13 +111,13 @@ public class SignupFrame extends JFrame  {
 		
 		btn = new JButton[2];
 		
-		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
+		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn1.getPath())));
+		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn2.getPath())));
 		btn[0].setBounds(200,420,80,30);
 		btn[0].addActionListener(handler);
 		
-		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
-		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
+		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn1.getPath())));
+		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn2.getPath())));
 		btn[1].setBounds(280,420,80,30);
 		btn[1].addActionListener(handler);
 

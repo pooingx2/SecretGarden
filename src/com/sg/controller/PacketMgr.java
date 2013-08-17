@@ -29,11 +29,6 @@ public class PacketMgr {
 		token = new String[length];
 		int i =0;
 
-		System.out.println("type : " + type);
-		System.out.println("desc : " + desc);
-		System.out.println("length : " + length);
-		System.out.println("data : " + data);
-
 		// token에 저장
 		while(tokenizer.hasMoreTokens()) {
 			token[i] = tokenizer.nextToken();
@@ -84,7 +79,7 @@ public class PacketMgr {
 			// Directory List를 갱신하기 위해 초기화 한다.
 			ClientLauncher.getFrame().getDirectoryListPanel().initTable();
 
-			// 수신한 데이터를 Table에 추가한다. (index,dirName \t index,dirName ...)
+			// 수신한 데이터를 Table에 추가한다. (index,dirName,master,cloudRate,size)
 			// 한 row를 vector형태로 취함
 			for(int j=0 ; j<i ; j++){
 				Vector<String> row = new Vector<String>();
@@ -96,15 +91,16 @@ public class PacketMgr {
 					row.add(token2[k]);
 					k++;
 				}
+
 				ClientLauncher.getFrame().getDirectoryListPanel().addRow(row);
 			}
 		}
 
 		// 디렉토리 생성에 따른 키 데이터를 수신하여 파일로 변환하는 과정
 		if (type == Constants.PacketType.DirectoryCreateResponse.getType()) {
-			String test = fileMgr.saveFile(token[0]);
+			String test = fileMgr.saveKeyFile(token[0]);
 			while(test==null){
-				test = fileMgr.saveFile(token[0]);
+				test = fileMgr.saveKeyFile(token[0]);
 			}
 		}
 
@@ -118,8 +114,7 @@ public class PacketMgr {
 			for (int j = 0; j < i; j++) {
 				ClientLauncher.getFileMgr().addFileInfo(token[j]);
 			}
-			ClientLauncher.getFrame().changePanel(
-					ClientLauncher.getFrame().getFileListPanel());
+			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getFileListPanel());
 		}
 
 		// 폴더 생성

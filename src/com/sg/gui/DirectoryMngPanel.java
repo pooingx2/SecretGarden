@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -12,8 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
@@ -24,8 +28,8 @@ public class DirectoryMngPanel extends JPanel {
 	private int height;
 
 	/* 	status
-	0 : Default		1 : Information		2 : Create	
-	3 : Access		4 : Delete			5 : Settings 
+	0 : Information		1 : Selected		2 : Create	
+	3 : Access			4 : Delete			5 : Settings 
 	*/
 	private int status;
 	private String key;
@@ -35,16 +39,20 @@ public class DirectoryMngPanel extends JPanel {
 	private Font inputFont;
 	private JLabel bgImg[];
 	private JLabel label[];
+	private JLabel settingsLabel[];
 	private JTextField textField[];
 	private JButton btn[];
 	private ActionHandler handler;
+	private JSlider slider;
+	private Hashtable labelTable;
+	private JProgressBar sizeBar;
 
 	public DirectoryMngPanel(int w, int h) {
 
 		super();
 		this.width = w;
 		this.height = h;
-		this.status = 1;
+		this.status = 0;
 		this.setLayout(null);
 		this.setBackground(Constants.backColor);
 		this.setBorder(new LineBorder(Color.LIGHT_GRAY));
@@ -52,12 +60,12 @@ public class DirectoryMngPanel extends JPanel {
 
 		// 디렉토리를 관리하기 위한 배경 이미지 (Create, Access, Delete,  ...
 		bgImg = new JLabel[6];
-		bgImg[0] = new JLabel();
-		bgImg[1] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG1.getPath()));
-		bgImg[2] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG2.getPath()));
-		bgImg[3] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG3.getPath()));
-		bgImg[4] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG4.getPath()));
-		bgImg[5] = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryMngBG5.getPath()));
+		bgImg[0] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG0.getPath())));
+		bgImg[1] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG1.getPath())));
+		bgImg[2] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG2.getPath())));
+		bgImg[3] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG3.getPath())));
+		bgImg[4] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG4.getPath())));
+		bgImg[5] = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.directoryMngBG5.getPath())));
 		
 		for(int i=0;i<6;i++) {
 			bgImg[i].setBounds(1,1,width-2,height-2);
@@ -69,9 +77,18 @@ public class DirectoryMngPanel extends JPanel {
 		label = new JLabel[5];
 		for(int i=0;i<5;i++){
 			label[i] = new JLabel();
-			label[i].setBounds(30,50+(i*30),250,30);
 			label[i].setFont(Constants.Font1);
 		}
+
+		label[0].setBounds(90,65,150,30);
+		label[1].setBounds(90,95,150,30);
+		label[2].setBounds(90,125,150,30);
+		label[3].setBounds(110,155,150,30);
+		label[4].setBounds(90,185,150,30);
+		
+		sizeBar = new JProgressBar(0, 100);
+		sizeBar.setValue(80);
+		sizeBar.setBounds(80,190,180,20);
 		
 		textField = new JTextField[2];
 		btn = new JButton[3];
@@ -87,23 +104,55 @@ public class DirectoryMngPanel extends JPanel {
 		textField[1].setEditable(false);
 		textField[1].setFont(inputFont);
 
+		// cloud settings 정보를 보여주기 위한 label
+		settingsLabel = new JLabel[2];
+		for(int i=0;i<2;i++){
+			settingsLabel[i] = new JLabel();
+			settingsLabel[i].setBounds(30,70+(i*40),250,30);
+			settingsLabel[i].setFont(Constants.Font1);
+		}
+		
+		settingsLabel[0].setText("Block Count : ");
+		settingsLabel[1].setText("Cloud Rate :  ( 5 : 5 )");
+		
+		// private와 public storage 비율 설정을 위한 slider
+	    slider = new JSlider(0,10,5);
+	    slider.setMajorTickSpacing(2);
+	    slider.setMinorTickSpacing(1);
+	    slider.setPaintTicks(true);
+	    slider.setFocusable(false);
+	    slider.setPaintLabels(true);
+	    slider.setBounds(25,140,250,50);
+	    slider.setBackground(Color.WHITE);
+	    slider.addChangeListener(new ChangeListener() {
+	    	public void stateChanged(ChangeEvent e) {
+	    		settingsLabel[1].setText("Cloud Rate :  ( "+
+	    				slider.getValue() + " : " + (10-slider.getValue())+ " )");
+	    	}
+	    });
+	    
+	    labelTable = new Hashtable();
+	    labelTable.put( new Integer( 0 ), new JLabel("Private") );
+	    labelTable.put( new Integer( 10 ), new JLabel("Public") );
+	    slider.setLabelTable( labelTable );
+	    
 		handler = new ActionHandler();
 		
 		// Accessfile load 버튼
-		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.loadKeyfileBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.loadKeyfileBtn2.getPath()));
+		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.loadKeyfileBtn1.getPath())));
+		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.loadKeyfileBtn2.getPath())));
 		btn[0].setBounds(250,100,30,30);
 		btn[0].addActionListener(handler);
 
 		// 확인버튼
-		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
-		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
+		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn1.getPath())));
+		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn2.getPath())));
 		btn[1].setBounds(100,200,80,30);
 		btn[1].addActionListener(handler);
 
 		// 취서버튼
-		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
-		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
+		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn1.getPath())));
+		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn2.getPath())));
 		btn[2].setBounds(200,200,80,30);
 		btn[2].addActionListener(handler);
 
@@ -120,7 +169,7 @@ public class DirectoryMngPanel extends JPanel {
 
 	public void initialize() { 
 		this.key=null;
-		this.status=1;
+		this.status=0;
 		textField[0].setText("");
 		textField[1].setText("");
 		label[0].setText("");
@@ -128,6 +177,7 @@ public class DirectoryMngPanel extends JPanel {
 		label[2].setText("");
 		label[3].setText("");
 		label[4].setText("");
+		changePanel();
 	}
 
 	public int getStatus() {
@@ -156,14 +206,15 @@ public class DirectoryMngPanel extends JPanel {
 	public void changePanel() {
 		this.removeAll();
 		switch(this.status){
-		case 0 : 	// Default
+		case 0 : 	// Information
+			break;
+		case 1 : 	// Selected
 			this.add(label[0]);
 			this.add(label[1]);
 			this.add(label[2]);
 			this.add(label[3]);
 			this.add(label[4]);
-			break;
-		case 1 : 	// Information
+			this.add(sizeBar);
 			break;
 		case 2 : 	// Create 
 			this.add(textField[0]);
@@ -181,6 +232,9 @@ public class DirectoryMngPanel extends JPanel {
 			this.add(btn[2]);
 			break;
 		case 5 : 	//	Settings
+		    this.add(settingsLabel[0]);
+		    this.add(settingsLabel[1]);
+		    this.add(slider);
 			this.add(btn[1]);
 			this.add(btn[2]);
 		default : 
@@ -234,16 +288,6 @@ public class DirectoryMngPanel extends JPanel {
 			// 취소버튼을 누르면 초기화
 			if(event.getSource()==btn[2]){
 				initialize();
-				if(ClientLauncher.getFrame().getDirectoryListPanel().getIsSelected()){
-					setStatus(0);
-				}
-				else {
-					label[1].setText("");
-					setStatus(1);
-				}
-				
-				changePanel();
-				
 			}
 		}
 	}

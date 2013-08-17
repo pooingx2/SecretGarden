@@ -57,8 +57,8 @@ public class DirectoryListPanel extends JPanel {
 		this.setLayout(null);
 
 		// 배경이미지 등록
-		bgImg = new JLabel(new ImageIcon(
-				Constants.BackgroudPath.directoryListBG.getPath()));
+		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(
+				Constants.BackgroudPath.directoryListBG.getPath())));
 		bgImg.setBounds(0, 0, width, height);
 
 		// 이벤트 핸들러 등록
@@ -74,7 +74,7 @@ public class DirectoryListPanel extends JPanel {
 
 		// table 헤더 설정
 		tableModel.setColumnIdentifiers(new String[] { "   ID",
-				"     Directory Name" });
+				"     Directory Name","","",""});
 
 		table = new JTable(); // directory list를 위한 table을 만듬
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // row를 하나만
@@ -88,6 +88,13 @@ public class DirectoryListPanel extends JPanel {
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.getColumnModel().getColumn(0).setPreferredWidth(60);
 		table.getColumnModel().getColumn(1).setPreferredWidth(220);
+		
+		// hide column
+		for (int i=2 ;i<5;i++){
+			table.getColumnModel().getColumn(i).setPreferredWidth(0);
+			table.getColumnModel().getColumn(i).setMinWidth(0);
+			table.getColumnModel().getColumn(i).setMaxWidth(0);
+		}
 
 		// row를 선택 리스너
 		table.getSelectionModel().addListSelectionListener(
@@ -95,12 +102,13 @@ public class DirectoryListPanel extends JPanel {
 					public void valueChanged(ListSelectionEvent event) {
 						if (!event.getValueIsAdjusting() && !editMode) {
 							isSelected = true;
-							dirMngPanel.setStatus(0);
-							if (dirMngPanel.getStatus() == 0) {
-								dirMngPanel.getLabel()[0].setText(
-										"Directory index : " + table.getValueAt(table.getSelectedRow(), 0).toString());
-								dirMngPanel.getLabel()[1].setText(
-										"Directory Name : " + table.getValueAt(table.getSelectedRow(), 1).toString());
+							dirMngPanel.setStatus(1);
+							if (dirMngPanel.getStatus() == 1) {
+								dirMngPanel.getLabel()[0].setText(table.getValueAt(table.getSelectedRow(), 0).toString());
+								dirMngPanel.getLabel()[1].setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+								dirMngPanel.getLabel()[2].setText(table.getValueAt(table.getSelectedRow(), 2).toString());
+								dirMngPanel.getLabel()[3].setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+								dirMngPanel.getLabel()[4].setText(table.getValueAt(table.getSelectedRow(), 4).toString());
 							}
 							changePanel();
 						}
@@ -118,7 +126,7 @@ public class DirectoryListPanel extends JPanel {
 		renderer.setFont(getFont().deriveFont(80f));
 		table.getColumnModel().getColumn(0).setCellRenderer(renderer);
 		table.getColumnModel().getColumn(1).setCellRenderer(renderer);
-
+		
 		// scroll 등록
 		scroll = new JScrollPane(table,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
@@ -134,17 +142,17 @@ public class DirectoryListPanel extends JPanel {
 		// 버튼 생성 (Create, Access, Delte)
 		btn = new JButton[4];
 
-		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.createBtn1.getPath()));
-		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2.getPath()));
+		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn1.getPath())));
+		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn2.getPath())));
 
-		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.accessBtn1.getPath()));
-		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.accessBtn2.getPath()));
+		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.accessBtn1.getPath())));
+		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.accessBtn2.getPath())));
 
-		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.deleteBtn1.getPath()));
-		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2.getPath()));
+		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn1.getPath())));
+		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn2.getPath())));
 
-		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.settingsBtn1.getPath()));
-		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.settingsBtn2.getPath()));
+		btn[3] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.settingsBtn1.getPath())));
+		btn[3].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.settingsBtn2.getPath())));
 
 		for (int i = 0; i < 4; i++) {
 			btn[i].setBounds(11 + 70 * i, 5, 70, 70);
@@ -163,10 +171,12 @@ public class DirectoryListPanel extends JPanel {
 	}
 
 	public void initialize() {
-//		this.isSelected = false;
+		this.editMode = true;
+		this.isSelected = false;
 		this.isAccessed = false;
 		dirMngPanel.initialize();
-		changePanel();
+		table.clearSelection();
+		this.editMode = false;
 	}
 
 	// 리스트 초기화 함수
@@ -289,10 +299,9 @@ public class DirectoryListPanel extends JPanel {
 					dirMngPanel.setStatus(3);
 					changePanel();
 				} else {
-					dirMngPanel.setStatus(0);
-					changePanel();
 					JOptionPane.showMessageDialog(null,
 							"For Access : Choose a directory");
+					initialize();
 				}
 			}
 
@@ -304,15 +313,23 @@ public class DirectoryListPanel extends JPanel {
 				}
 
 				else {
-					dirMngPanel.setStatus(0);
-					changePanel();
 					JOptionPane.showMessageDialog(null,
 							"For Delete : Choose a directory");
+					initialize();
 				}
 			}
 
 			if (event.getSource() == btn[3]) {
+				if (isSelected) {
+					dirMngPanel.setStatus(5);
+					changePanel();
+				}
 
+				else {
+					JOptionPane.showMessageDialog(null,
+							"For Setting : Choose a directory");
+					initialize();
+				}
 			}
 		}
 	}

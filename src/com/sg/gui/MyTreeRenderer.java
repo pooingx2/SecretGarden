@@ -16,8 +16,8 @@ class MyTreeRenderer extends DefaultTreeCellRenderer {
 	//각 확장자에 사용할 아이콘들 받아오기
 	public MyTreeRenderer() {
 		iconPack = new Icon[20];
-		iconPack[0] = new ImageIcon(Constants.IconPath.forderIcon.getPath());
-		iconPack[1] = new ImageIcon(Constants.IconPath.fileIcon.getPath());
+		iconPack[0] = new ImageIcon(this.getClass().getResource(Constants.IconPath.forderIcon.getPath()));
+		iconPack[1] = new ImageIcon(this.getClass().getResource(Constants.IconPath.fileIcon.getPath()));
 	}
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
 			boolean expanded,boolean leaf,int row,boolean hasFocus) {
