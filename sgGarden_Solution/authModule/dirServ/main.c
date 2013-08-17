@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 	     		 // 인자  리스트 :  User id, Public, Private
 				 // 반환  리스티 :  dir_id, name, master(이미 존재), cloud_rate, sum(size)
 			     state = getdirectoryList   (con, tokenBuf[0], tokenBuf[1], tokenBuf[2], directoryList);			
-				 //state = get_shared_dir_list(con, tokenBuf[0], tokenBuf[2], tokenBuf[3], directoryList);      
+				 state = get_shared_dir_list(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], directoryList);      
 				 // state = get_shared_dir_list(con, tokenBuf[0]);
 			     
 
@@ -625,16 +625,20 @@ int main(int argc, char **argv)
 			case 29:
 			{
 				char *sign = "delete file OK\n";
+				char fileList[1024];
 
+				memset(fileList, 0x00, 1024);
 				/* 폴더 id를 받아서 특정 디렉토리를 삭제한다 */
 				/* in - file_id */
 				state = getElements(dataBuf, "\t", tokenBuf);
 				state = del_file(con, tokenBuf[0], tokenBuf[1], tokenBuf[2], tokenBuf);
-				
+				state = getFileList(con, tokenBuf[0], fileList);
+			
+
 				if(state == 1)
 				{
 
-					sendTo(&messagingServ, 12, desc, strlen(sign), sign);
+					sendTo(&messagingServ, 12, desc, strlen(fileList), fileList);
 				
 				}
 

@@ -93,7 +93,8 @@ get_shared_dir_list(MYSQL *con, char *user_id,char *private, char *public, char 
 
 	memset(query, 0x00, 255);
 	
-	sprintf(query, "select Directory.dir_id, Directory.name, Directory.master, Directory.claudRate From Directory, User, Share.status, Share.target Where  private = '%s' && public = '%s' Order By dir_id", private, public, sharing, user_id);
+	printf("dirs share query\n");
+	sprintf(query, "select Directory.dir_id, Directory.name, Directory.master, Directory.claudRate From Directory, Share Where private = '%s' && public = '%s' && status = '%s' && target = '%s' && dir_id = dir Order By dir_id", private, public, sharing, user_id);
 
 	/* Query 문 출력 디버깅시 사용 */
 	if((result = mysql_query(con,query)) != NULL)
@@ -106,6 +107,7 @@ get_shared_dir_list(MYSQL *con, char *user_id,char *private, char *public, char 
 	
 	while((row = mysql_fetch_row(result)) != NULL)
 	{
+		printf("share dir id : %s \n", row[0]); 
 		strcat(dataBuf, row[0]);
 		strcat(dataBuf, "," );	
 		strcat(dataBuf, row[1]);
@@ -758,17 +760,37 @@ del_file(MYSQL *con, char *dir_id, char *file_id, char *child_num, char **child_
 	char query[255];
 	printf("file_id : %s \n", file_id);	
 
-	sprintf(query,"delete From File where file_id = '%s'", file_id);
+	int i=0;
+	int num = atoi(child_num);
 
-	if (mysql_query(con, query)) 
+	for(i=2;  i<3+num; i++)
 	{
+		memset(query, 0x00, 255);
+		printf("del i : %d \n", i);
+		if(i==2)
+		{
+			printf("dellll\n");
+			sprintf(query,"delete From File where file_id = '%s'", file_id);
+		
+		}
+		else
+		{
+			sprintf(query,"delete From File where file_id = '%s'", child_token[i]);
+
+		}
+
+		if (mysql_query(con, query)) 
+		{
 			fprintf(stderr,"%s\n",mysql_error(con));
 			return 0;
+		}
+		else
+		{
+
+		}
+
 	}
-	else
-	{
-			return 1;
-	}
+
 	return 1;
 }
 
