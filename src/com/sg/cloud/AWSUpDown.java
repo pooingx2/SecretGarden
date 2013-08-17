@@ -1,6 +1,9 @@
 package com.sg.cloud;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.amazonaws.AmazonClientException;
@@ -103,31 +106,44 @@ public class AWSUpDown implements PublicUpDown{
 	}
 
 	@Override
-	public Files download(Files request) {
+	public File download(Files request, String localPath) throws IOException {
 		// TODO Auto-generated method stub
 		//키파일 인증 포함
+		
+		File tmpFile = new File(localPath+"fileAWS.tmp");
 		String bucketName = "secretgarden" + request.getUserId();
-		byte[] downBuf = new byte[100];
+		byte[] buf = new byte[10240];
 		Files receivFile = null;
 		int optionNum = request.getOptionNum();
 		System.out.println(request.getDirPath()+request.getFileName());
 		System.out.println("Downloading an object");
+		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile));
+		
+		int totalBytesRead = 0;
+		int bytesRead = 0;
 		
 		try {
 			S3Object object = s3.getObject(new GetObjectRequest(bucketName, request.getDirPath()+request.getFileName()));
 			System.out.println("Content-Type: "  + object.getObjectMetadata().getContentType());
-			object.getObjectContent().read(downBuf);
+			
+			while (-1 != (bytesRead = object.getObjectContent().read(buf, 0, buf.length))) {
+				totalBytesRead += bytesRead;
+				System.out.println("rect AWS length : "+totalBytesRead);
+				bos.write(buf, 0, bytesRead);				
+			}
+			System.out.println("AWS complete");
+			bos.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		} catch(AmazonS3Exception a1){
 			optionNum = -1;
-			receivFile = new Files(request.getFileName(), request.getDirPath(), optionNum, request.getUserId());
-			return receivFile;
+//			receivFile = new Files(request.getFileName(), request.getDirPath(), optionNum, request.getUserId());
+			return null;
 		}
-		receivFile = new Files(request.getFileName(), request.getDirPath(), optionNum, downBuf, request.getUserId());
+//		receivFile = new Files(request.getFileName(), request.getDirPath(), optionNum, downBuf, request.getUserId());
 		
-		return receivFile;
+		return tmpFile;
 	}
 
 	@Override

@@ -43,8 +43,8 @@ public class LoginPanel extends JPanel {
 		
 		// 배경이미지 등록
 
-		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(Constants.BackgroudPath.loginBG.getPath())));
-//		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.loginBG.getPath()));
+//		bgImg = new JLabel(new ImageIcon(this.getClass().getClassLoader().getResource(Constants.BackgroudPath.loginBG.getPath())));
+		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.loginBG.getPath()));
 		bgImg.setBounds(0,0,width,height);
 
 		// 폰트 설정
@@ -70,13 +70,13 @@ public class LoginPanel extends JPanel {
 
 		// 버튼 이벤트 리스너 등록
 		handler = new ActionHandler();
-		loginBtn = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.loginBtn1.getPath())));
-		loginBtn.setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.loginBtn2.getPath())));
+		loginBtn = new JButton(new ImageIcon(Constants.ButtonPath.loginBtn1.getPath()));
+		loginBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.loginBtn2.getPath()));
 		loginBtn.setBounds(550,400,100,40);
 		loginBtn.addActionListener(handler);
 		
-		signupBtn = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.signupBtn1.getPath())));
-		signupBtn.setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.signupBtn2.getPath())));
+		signupBtn = new JButton(new ImageIcon(Constants.ButtonPath.signupBtn1.getPath()));
+		signupBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.signupBtn2.getPath()));
 		signupBtn.setBounds(650,400,100,40);
 		signupBtn.addActionListener(handler);
 		

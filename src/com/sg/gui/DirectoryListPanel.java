@@ -2,8 +2,6 @@ package com.sg.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -57,8 +55,7 @@ public class DirectoryListPanel extends JPanel {
 		this.setLayout(null);
 
 		// 배경이미지 등록
-		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(
-				Constants.BackgroudPath.directoryListBG.getPath())));
+		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.directoryListBG.getPath()));
 		bgImg.setBounds(0, 0, width, height);
 
 		// 이벤트 핸들러 등록
@@ -108,7 +105,12 @@ public class DirectoryListPanel extends JPanel {
 								dirMngPanel.getLabel()[1].setText(table.getValueAt(table.getSelectedRow(), 1).toString());
 								dirMngPanel.getLabel()[2].setText(table.getValueAt(table.getSelectedRow(), 2).toString());
 								dirMngPanel.getLabel()[3].setText(table.getValueAt(table.getSelectedRow(), 3).toString());
-								dirMngPanel.getLabel()[4].setText(table.getValueAt(table.getSelectedRow(), 4).toString());
+								dirMngPanel.getLabel()[4].setText(ClientLauncher.getFileMgr().getSummarySize(
+										Long.parseLong(table.getValueAt(table.getSelectedRow(), 4).toString()))+" / 20GB");
+								long size = Long.parseLong(table.getValueAt(table.getSelectedRow(), 4).toString());
+								long total = 20l * 1024l * 1024l * 1024l;
+								double percentage = (double)size / (double)total * 100;
+								dirMngPanel.getSizeBar().setValue((int)percentage);
 							}
 							changePanel();
 						}
@@ -142,17 +144,17 @@ public class DirectoryListPanel extends JPanel {
 		// 버튼 생성 (Create, Access, Delte)
 		btn = new JButton[4];
 
-		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn1.getPath())));
-		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.createBtn2.getPath())));
+		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.createBtn1.getPath()));
+		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.createBtn2.getPath()));
 
-		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.accessBtn1.getPath())));
-		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.accessBtn2.getPath())));
+		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.accessBtn1.getPath()));
+		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.accessBtn2.getPath()));
 
-		btn[2] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn1.getPath())));
-		btn[2].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.deleteBtn2.getPath())));
+		btn[2] = new JButton(new ImageIcon(Constants.ButtonPath.deleteBtn1.getPath()));
+		btn[2].setRolloverIcon(new ImageIcon(Constants.ButtonPath.deleteBtn2.getPath()));
 
-		btn[3] = new JButton(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.settingsBtn1.getPath())));
-		btn[3].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.settingsBtn2.getPath())));
+		btn[3] = new JButton(new ImageIcon(Constants.ButtonPath.settingsBtn1.getPath()));
+		btn[3].setRolloverIcon(new ImageIcon(Constants.ButtonPath.settingsBtn2.getPath()));
 
 		for (int i = 0; i < 4; i++) {
 			btn[i].setBounds(11 + 70 * i, 5, 70, 70);

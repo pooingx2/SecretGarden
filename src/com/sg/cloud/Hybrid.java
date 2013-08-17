@@ -1,6 +1,5 @@
 package com.sg.cloud;
 
-import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -31,8 +30,8 @@ public class Hybrid {
 		switch (type){
 
 		case Constants.amazon : 		// aws s3 connect
-			String keyId = id;			// 입력 받아야 함
-			String key = pw;			// 입력 받아야 함
+			String keyId = "AKIAIUXPHCYBAHGUZGEQ";//id;			// 입력 받아야 함
+			String key = "z3L3XdNwpWPx0R37bToPR+O85cmSoZTJrucfb4xE";//pw;			// 입력 받아야 함
 			aWSModule.setKey(key);
 			aWSModule.setKeyId(keyId);
 			
@@ -40,8 +39,8 @@ public class Hybrid {
 			break;
 
 		case Constants.hadoop : 		// hdfs connect
-			String hdfsIp = id;			// 입력 받아야 함
-			int hdfsPort = Integer.parseInt(port);		// 입력 받아야 함
+			String hdfsIp = "211.189.127.91";//id;			// 입력 받아야 함
+			int hdfsPort = 15000;//Integer.parseInt(port);		// 입력 받아야 함
 			hdfsModule.setDestIp(hdfsIp);
 			hdfsModule.setDestPort(hdfsPort);
 			
@@ -100,10 +99,10 @@ public class Hybrid {
 	
 		
 		File targetFile = new File(sourceFile);
-		sendingFile = new Files(fixedFileName, fixedDestPath, 1, ClientLauncher.getUser().getId());
+		sendingFile = new Files(fixedFileName, fixedDestPath, optionNum, ClientLauncher.getUser().getId());
 		//aws s3 upload
 		if (aWSModule.upload( sendingFile, targetFile) == -1) {
-			System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
+		System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
 			return -1;
 			
 		}
@@ -154,14 +153,29 @@ public class Hybrid {
 		request.setUserId(ClientLauncher.getUser().getId());
 		
 
-		byte[] awsBuf = null;
-		byte[] hdfsBuf = null;
+		File awsTmp = null;
+		File hdfsTmp = null;
 		File downFile = null;
 		BufferedOutputStream bos = null;
 		Files awsReceiveFile = null;
 		Files hdfsReceiveFile = null;
+		String localDir = destPath+ClientLauncher.getFileMgr().getSlash();
+		System.out.println(sourcePath);
+		System.out.println("call download");
+		
+		//hdfs download
+//		hdfsTmp = hdfsModule.download(request, localDir);
+//		if (hdfsTmp ==  null) {
+//			System.out.println("다운로드 실패");
+//			return -1;
+//		}
 		
 		//aws s3 download
+		awsTmp = aWSModule.download(request, localDir);
+		if (awsTmp == null) {
+			System.out.println("다운로드 실패");
+			return -1;
+		}
 //		awsReceiveFile = aWSModule.download(request);
 //		System.out.println("optnum : " + awsReceiveFile.getOptionNum());
 //		if (awsReceiveFile.getOptionNum() == -1) {
@@ -171,45 +185,31 @@ public class Hybrid {
 //			
 //			awsBuf = awsReceiveFile.getFileBuf();
 //		}
-		//hdfs download
+
 		
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
-		downFile = new File( destPath+ClientLauncher.getFileMgr().getSlash() );
-		
-		if(!downFile.exists()) 
-			downFile.mkdirs();
-		downFile = new File(destPath+ClientLauncher.getFileMgr().getSlash()+fileName);
-		int fileCount = 1;
-		while (downFile.exists()) {
-			downFile = new File(destPath+ClientLauncher.getFileMgr().getSlash()+fileAlreadyExists(fileName, fileCount));
-			fileCount++;
-		}
-		
-		// 파일로 쓰기
-		int bytesRead = 0;
-		boolean isFirst = true;
-		bos = new BufferedOutputStream(new FileOutputStream(downFile));
-		
-		
-		
-//		while (0 != (bytesRead = (hdfsBuf = hdfsModule.download(request, isFirst)).length)) {
-//			bos.write(hdfsBuf,0,bytesRead);
-//			bos.flush();
-//			System.out.println(hdfsBuf.length);
-//			isFirst=false;
+		/*합친 파일 쓰*/
+//		downFile = new File( localDir );
+//		
+//		if(!downFile.exists()) 
+//			downFile.mkdirs();
+//		downFile = new File(localDir+fileName);
+//		int fileCount = 1;
+//		while (downFile.exists()) {
+//			downFile = new File(localDir+fileAlreadyExists(fileName, fileCount));
+//			fileCount++;
 //		}
 		
-		if (hdfsReceiveFile.getOptionNum() == -1) {
-			System.out.println("hdfs download error...\ndelete " + fixedSourcePath+fixedFileName+" in s3 bucket");
-			return -1;
-		} 
-//		try{
-//			bos.write(awsBuf);
-//		} catch (NullPointerException es){
-//			System.out.println("파일을 열기 위한 경로 : " + destPath+fileName);
-//		}
-		bos.close();
+//		bos = new BufferedOutputStream(new FileOutputStream(downFile));
+//		
+//		
+//		
+//		if (hdfsReceiveFile.getOptionNum() == -1) {
+//			System.out.println("hdfs download error...\ndelete " + fixedSourcePath+fixedFileName+" in s3 bucket");
+//			return -1;
+//		} 
+//		bos.close();
 
 		return 0;
 	}

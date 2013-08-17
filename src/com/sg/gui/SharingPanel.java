@@ -52,8 +52,7 @@ public class SharingPanel extends JPanel {
 		this.setLayout(null);
 
 		// 배경이미지 등록
-		bgImg = new JLabel(new ImageIcon(this.getClass().getResource(
-				Constants.BackgroudPath.sharingBG.getPath())));
+		bgImg = new JLabel(new ImageIcon(Constants.BackgroudPath.sharingBG.getPath()));
 		bgImg.setBounds(0, 0, width, height);
 
 		// 이벤트 핸들러 등록
@@ -117,14 +116,12 @@ public class SharingPanel extends JPanel {
 
 		btn = new JButton[4];
 
-		btn[0] = new JButton(new ImageIcon(this.getClass().getResource(
-				Constants.ButtonPath.confirmBtn1.getPath())));
-		btn[0].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.confirmBtn2.getPath())));
+		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
+		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
 		// 버튼 생성 (Create, Access, Delte)
 
-		btn[1] = new JButton(new ImageIcon(this.getClass().getResource(
-				Constants.ButtonPath.cancelBtn1.getPath())));
-		btn[1].setRolloverIcon(new ImageIcon(this.getClass().getResource(Constants.ButtonPath.cancelBtn2.getPath())));
+		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
+		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));
 
 		for (int i = 0; i < 2; i++) {
 			btn[i].setBounds(380 + 90 * i, 430, 80, 30);

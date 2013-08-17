@@ -1,8 +1,10 @@
 package com.sg.cloud;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -25,6 +27,7 @@ public class HDFSClient implements PrivateUpDown1 {
 	private ObjectOutputStream objOutput = null;
 	private Files recievFile = null;
 	BufferedInputStream readFile = null;
+	BufferedOutputStream writeFile = null;
 
 	public HDFSClient() {
 
@@ -72,44 +75,67 @@ public class HDFSClient implements PrivateUpDown1 {
 
 		objOutput.writeObject(fileDescript);
 		objOutput.flush();
-
+		
+		
+		//test
+		int totalBytesRead = 0;
 		while (-1 != (bytesRead = readFile.read(buf, 0, buf.length))) {
+			
+			totalBytesRead += bytesRead;
+			System.out.println("sending bytes : " + totalBytesRead);
 			writer.write(buf, 0, bytesRead);
-			writer.flush();
 		}
-
-		System.out.println("일단은 보냇음...");
-
-		 objOutput.close();
-		 readFile.close();
+		writer.flush();
+		System.out.println("complete...");
+		writer.close();
 		// sock.close();
 		return 0;
 	}
 
 	@Override
-	public File download(Files request, boolean isFirst) throws IOException {
+	public File download(Files request, String localPath) throws IOException {
 
 		int bytesRead = 0;
 		byte[] buf=new byte[10240];
-		File tmpFile = null;
+		File tmpDir = new File(localPath);
+		if(!tmpDir.exists()) 
+			tmpDir.mkdirs();
+		File tmpFile = new File(localPath+"fileH.tmp");
+		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile)) ;
 		// request
-		if (isFirst == true){
-			objOutput.writeObject(request);
-			objOutput.flush();
-			try {
-				recievFile = (Files) objInput.readObject();
-			} catch (IOException e) {
-				System.out.println("object 수신 실패");
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				System.out.println("클래스를 찾지 못했습니다. 왜???");
+		System.out.println("sending Request");
+		objOutput.writeObject(request);
+		objOutput.flush();
+		
+		
+		try {
+			recievFile = (Files) objInput.readObject();
+		} catch (IOException e) {
+			System.out.println("object 수신 실패");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println("클래스를 찾지 못했습니다. 왜???");
 
-			}
 		}
+		if (recievFile.getOptionNum() == -1) {
+			System.out.println("HDFS에 파일이 존재하지 않음");
+			return null;
+		}
+		
+		
 		// download
 		
-		bytesRead = reader.read(buf, 0, buf.length);
-		System.out.println("buf length :"+buf.length);
+		System.out.println("download Start " );
+		int totalByteRead = 0;
+		while(-1 != (bytesRead = reader.read(buf, 0,buf.length))) {
+			totalByteRead += bytesRead;
+			System.out.println("recv HDFS length :"+totalByteRead);
+			bos.write(buf, 0, bytesRead);
+		}
+		
+		System.out.println("HDFS complete");
+		bos.flush();
+		
 			
 		return tmpFile;
 	}
