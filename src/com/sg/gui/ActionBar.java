@@ -30,7 +30,7 @@ public class ActionBar extends JMenuBar{
 	private JButton homeBtn;
 	private JButton backBtn;
 	private JButton forwardBtn;
-	private JButton shareBtn;
+	private JButton sharingBtn;
 	private JButton logoutBtn;
 	
 	public ActionBar(int w, int h) {
@@ -69,10 +69,10 @@ public class ActionBar extends JMenuBar{
 		forwardBtn.addActionListener(handler);
 		
 		// 공유 버튼
-		shareBtn = new JButton(new ImageIcon(Constants.ButtonPath.shareBtn1.getPath()));
-		shareBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.shareBtn2.getPath()));
-		shareBtn.setBounds(670,5,40,40);
-		shareBtn.addActionListener(handler);
+		sharingBtn = new JButton(new ImageIcon(Constants.ButtonPath.sharingBtn1.getPath()));
+		sharingBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.sharingBtn2.getPath()));
+		sharingBtn.setBounds(670,10,30,30);
+		sharingBtn.addActionListener(handler);
 		
 		// 로그아웃 버튼
 		logoutBtn = new JButton(new ImageIcon(Constants.ButtonPath.logoutBtn1.getPath()));
@@ -83,7 +83,7 @@ public class ActionBar extends JMenuBar{
 		this.add(homeBtn);
 		this.add(backBtn);
 		this.add(forwardBtn);
-		this.add(shareBtn);
+		this.add(sharingBtn);
 		this.add(logoutBtn);
 		this.add(bgImg);
 	}
@@ -160,8 +160,14 @@ public class ActionBar extends JMenuBar{
 				isForwardBtnPress = false;
 			}	
 			
-			if(event.getSource()==shareBtn){
-				 ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getSharingPanel());
+			if(event.getSource()==sharingBtn){
+				String data = ClientLauncher.getUser().getId();
+				int type = Constants.PacketType.ShareListRequest.getType();
+				int length = data.length();	
+				
+				// 공유 리스트 패킷을 전송
+				ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+//				ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getSharingPanel());
 			}	
 			
 			if(event.getSource()==logoutBtn){

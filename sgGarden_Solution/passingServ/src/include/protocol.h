@@ -9,9 +9,6 @@
 #include <arpa/inet.h>
 #include <errno.h>
 
-#include <openssl/rand.h>
-#include <openssl/ssl.h>
-#include <openssl/err.h>
 
 //#include <mysql.h>
 
@@ -44,16 +41,27 @@
 #define META_UPLOAD_RESPONSE	 16
 #define META_DOWNLOAD_REQUEST	 17
 #define META_DOWNLOAD_RESPONSE	 18
-#define SHARE_REQUEST		 	 19
-#define SHARE_RESPONSE		 	 20
-#define SHARE_APPROVE			 21
-#define SHARE_DENY			 22
+#define IDCHECK_REQUEST 		 19
+#define IDCHECK_RESPONSE 		 20
+
+#define SHARE_REQUEST		 	 21
+#define SHARE_RESPONSE		 	 22
+
+#define SHARE_LIST_REQUEST	 	 23
+#define SHARE_LIST_RESPONSE	     24
+
+#define SHARE_APPROVE			 25
+#define SHARE_DENY			 	 26
+#define SHARE_CANCEL			 27
+
+#define DEL_DIR_REQUEST			 28
+#define DEL_FILE_REQUEST		 29
 
 //클라이언트간 전송 프로토콜
-#define DIR_TO_HDFS_FOR_UPLOAD_METADATA		30
-#define HDFS_TO_DIR_FOR_MODIFY_METAPATH		31
-#define DIR_TO_HDFS_FOR_DOWNLOAD_METADATA	32
-#define HDFS_TO_DIR_FOR_SEND_METADATA		33
+#define DIR_TO_HDFS_FOR_UPLOAD_METADATA		45
+#define HDFS_TO_DIR_FOR_MODIFY_METAPATH		46
+#define DIR_TO_HDFS_FOR_DOWNLOAD_METADATA	47
+#define HDFS_TO_DIR_FOR_SEND_METADATA		48
 
 //추가 Passing Serv 프로토콜(51~100)
 #define PROGRAM_EXIT_REQUEST     50
@@ -88,12 +96,10 @@ typedef char 	      data_bytes;
 typedef struct Peer 
 {
 		int socket;
-		SSL		*sslHandle;
-		SSL_CTX *sslContext;
-		char ip[20];
+		char userName[30];
+		char ip[16];
 		//char mac_address[50];
 		//char accessable_directory[200];
-		int isAuth;
 }Peer;
 
 

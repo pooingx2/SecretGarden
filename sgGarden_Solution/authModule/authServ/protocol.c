@@ -188,7 +188,7 @@ joinToPassingServ(char *servIP, char *servPort, int servType)
 		//Write
 		Peer passingServ;
 		passingServ.socket = client_sockfd;
-		printf("sock_fd : %d, %d", passingServ.socket, serv_sockfd);
+		//printf("sock_fd : %d, %d", passingServ.socket, serv_sockfd);
 
 		sendTo(&passingServ, servType, 0, data_len, dataBuf);
 	

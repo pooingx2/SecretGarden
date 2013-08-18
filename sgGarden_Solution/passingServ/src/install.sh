@@ -18,13 +18,13 @@ cd /home/sgGarden_Solution/passingServ/src/ && sudo cp -R -f openvpn /etc/
 
 
 #파일 컴파일
-#echo "@@수행될 서버 프로그램을 컴파일 합니다"
-#make
+echo "@@수행될 서버 프로그램을 컴파일 합니다"
+make
 
 #네트워크 재시작
-#echo "@@VPN서버를 구동합니다"
+echo "@@VPN서비스를 등록합니다"
 #/etc/init.d/openvpn restart
 
-#메시징 서버 시작
-#echo "@@메세징 서버를 구동합니다"
-#./passingServ 12600
+
+
+

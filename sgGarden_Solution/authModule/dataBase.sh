@@ -71,8 +71,9 @@ CREATE TABLE SecretGarden.File (
 	depth INTEGER NOT NULL,    
 	root INTEGER NOT NULL,
 	size LONG,
+
 	PRIMARY KEY (file_id),
-	FOREIGN KEY (root) REFERENCES Directory (dir_id)
+	FOREIGN KEY (root) REFERENCES Directory (dir_id) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8;"
 echo "Create Tabel File"
 
@@ -86,7 +87,7 @@ CREATE TABLE SecretGarden.Share (
 
 	PRIMARY KEY (share_id),
 	FOREIGN KEY (target) REFERENCES User (user_id),
-	FOREIGN KEY (dir) REFERENCES Directory (dir_id)
+	FOREIGN KEY (dir) REFERENCES Directory (dir_id) ON DELETE CASCADE
 )DEFAULT CHARSET=utf8;"
 echo "Create Tabel Share"
 

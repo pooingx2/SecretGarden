@@ -23,6 +23,7 @@
 #include <errno.h>
 
 #include <pcap.h>
+#include "logHandler.h"
 
 // 최대 사용자수, 기본 포트번호, 최대 수용가능한 이벤트 갯수
 #define MAX_CLIENT   1000
@@ -51,6 +52,7 @@ void userpool_add(int cli_fd,char *cli_ip, Peer *peer);
 void userpool_delete(int cli_fd, Peer *peer);
 void userpool_send(char *buffer, Peer *peer);
 void userpool_recv(int event_fd);
+void userpool_add_name(int sock, Peer *peer, char *nameBuf);
 
 // 데이터 수신
 void client_recv(int event_fd, Peer *peer);

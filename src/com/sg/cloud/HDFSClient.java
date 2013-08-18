@@ -136,7 +136,6 @@ public class HDFSClient implements PrivateUpDown1 {
 		System.out.println("HDFS complete");
 		bos.flush();
 		
-			
 		return tmpFile;
 	}
 
@@ -146,6 +145,8 @@ public class HDFSClient implements PrivateUpDown1 {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (NullPointerException e) {
+			
 		}
 	}
 

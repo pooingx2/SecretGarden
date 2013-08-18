@@ -228,10 +228,13 @@ public class FileMgr {
 				fileInfo.setDepth(token[i]); 
 				break;
 			case 4 : 
-				fileInfo.setIndex(token[i]); 
+				fileInfo.setRootID(token[i]); 
 				break;
 			case 5 : 
 				fileInfo.setSize(token[i]); 
+				break;
+			case 6 : 
+				fileInfo.setFileID(token[i]); 
 				break;
 			default : 
 				break;

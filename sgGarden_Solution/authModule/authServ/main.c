@@ -14,7 +14,6 @@
 
 int main(int argc, char **argv)
 {
-   printf("Auth Serv Run \n");
    byte headerBuf[HEADERSIZE];
    byte dataBuf[DATASIZE];
    char *tokenBuf[DATASIZE];
@@ -34,7 +33,6 @@ int main(int argc, char **argv)
  
    messagingServ.socket =  joinToPassingServ(argv[1], argv[2], 101);	
         
-   printf("Join\n"); 
 	// DB connection 초기화
 	con = mysql_init(NULL);
 	if(con == NULL) 
@@ -45,10 +43,10 @@ int main(int argc, char **argv)
         // DB 연결
 	if(mysql_real_connect
              (con,"localhost","root","32sm2u","SecretGarden", 0, NULL, 0) == NULL)
- 	 {
+ 	{
 		printf("DB Call \n");
 		fprintf(stderr,"%s\n",mysql_error(con));
-         }
+    }
 	
 	// DB 인코딩
 	mysql_query(con, "set session character_set_connection=utf8");
@@ -59,7 +57,7 @@ int main(int argc, char **argv)
    {
 	memset(headerBuf, 0x00, HEADERSIZE);
 	memset(dataBuf,   0x00, DATASIZE);
-        memset(tokenBuf,  0x00, DATASIZE);
+    memset(tokenBuf,  0x00, DATASIZE);
 
 	int recv_len =  recvFrom(&messagingServ, headerBuf, dataBuf);
 	
@@ -81,7 +79,7 @@ int main(int argc, char **argv)
 			     // 인증
 				 char user_info[20];
 				 memset(user_info, 0x00, 20);
-			     printf("%s , %s \n", tokenBuf[0], tokenBuf[1]);
+			     //printf("%s , %s \n", tokenBuf[0], tokenBuf[1]);
 			     state = auth(con, tokenBuf[0], tokenBuf[1], user_info);
 				
 			     if(state != 0)
@@ -91,7 +89,7 @@ int main(int argc, char **argv)
 			     }
 			     else
 			     {
-				 sendTo(&messagingServ, 0,
+				 	sendTo(&messagingServ, 0,
                              		    desc, strlen(NoneMs), NoneMs);
 			     }
                              break;
