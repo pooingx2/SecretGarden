@@ -263,21 +263,21 @@ public class FileMngPanel extends JPanel {
 							localUploadPath = file.getAbsolutePath();
 							uploadFileSize = file.length();
 
-//							try {
-//								// return 0 = success	failure = -1
-//								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
-//									/* 메타데이터 전송 */
-//									MetaData m_data = new MetaData();
-//									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
-//								}
-//								else
-//									JOptionPane.showMessageDialog(null, "upload failure");
-//							} catch (IOException e) {
-//								e.printStackTrace();
-//							}
+							try {
+								// return 0 = success	failure = -1
+								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
+									/* 메타데이터 전송 */
+									MetaData m_data = new MetaData();
+									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+								}
+								else
+									JOptionPane.showMessageDialog(null, "upload failure");
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
 							
 							// Cloud 업로드를 안거치고 테스트하기위함
-							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+//							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 
 						}
 						
@@ -302,7 +302,6 @@ public class FileMngPanel extends JPanel {
 							else
 								JOptionPane.showMessageDialog(null, "download failure");
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						

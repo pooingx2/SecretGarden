@@ -163,29 +163,20 @@ public class Hybrid {
 		System.out.println(sourcePath);
 		System.out.println("call download");
 		
-		//hdfs download
-//		hdfsTmp = hdfsModule.download(request, localDir);
-//		if (hdfsTmp ==  null) {
-//			System.out.println("다운로드 실패");
-//			return -1;
-//		}
-		
 		//aws s3 download
 		awsTmp = aWSModule.download(request, localDir);
 		if (awsTmp == null) {
 			System.out.println("다운로드 실패");
 			return -1;
 		}
-//		awsReceiveFile = aWSModule.download(request);
-//		System.out.println("optnum : " + awsReceiveFile.getOptionNum());
-//		if (awsReceiveFile.getOptionNum() == -1) {
-//			System.out.println("aws download error...");
-//			return -1;
-//		}else{
-//			
-//			awsBuf = awsReceiveFile.getFileBuf();
-//		}
-
+				
+		//hdfs download
+		hdfsTmp = hdfsModule.download(request, localDir);
+		if (hdfsTmp ==  null) {
+			System.out.println("다운로드 실패");
+			return -1;
+		}
+		
 		
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
