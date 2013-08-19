@@ -1,25 +1,18 @@
 package com.sg.gui;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
@@ -228,6 +221,7 @@ public class FileMngPanel extends JPanel {
 		private Long uploadFileSize;	// upload fileSize
 		private MetaData m_data;		// upload metaData
 		private String localDownloadPath;
+		private String localDeletePath;
 		
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -277,7 +271,7 @@ public class FileMngPanel extends JPanel {
 								// return 0 = success	failure = -1
 								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
 									/* 메타데이터 전송 */
-									MetaData m_data = new MetaData();
+//									MetaData m_data = new MetaData();
 									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 								}
 								else
@@ -303,7 +297,6 @@ public class FileMngPanel extends JPanel {
 					}
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-					//	String selectedPath = "/root/hey/test.txt";
 						try {
 							// return 0 = success	failure = -1
 							if(ClientLauncher.getHybrid().download(selectedPath, localDownloadPath) == 0){
@@ -321,8 +314,23 @@ public class FileMngPanel extends JPanel {
 				// delete
 				else if(status == 5) {
 					// Cloud Delete 코드 추가
-					
-					ClientLauncher.getFrame().getFileListPanel().delete();
+					if(localDeletePath.equals("")){
+						JOptionPane.showMessageDialog(null, "Load file");
+					}
+					else{
+						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+
+						// return 0 = success failure = -1
+						if (ClientLauncher.getHybrid().delete(selectedPath) == 0) {
+							ClientLauncher.getFrame().getFileListPanel()
+									.delete();
+						} else
+							JOptionPane.showMessageDialog(null,
+									"delete failure");
+
+//						ClientLauncher.getFrame().getFileListPanel().download();
+					}
+//					ClientLauncher.getFrame().getFileListPanel().delete();
 				}
 			}
 

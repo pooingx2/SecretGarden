@@ -209,4 +209,13 @@ public class Constants {
 		}
 		public int getType() { return type; }
 	}
+	
+	public static enum HybridError{
+	
+		NoFile(1);
+		
+		final private int error;
+		private HybridError(int error) {this.error = error;}
+		public int getError() { return error; }
+	}
 }

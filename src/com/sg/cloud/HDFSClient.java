@@ -97,11 +97,14 @@ public class HDFSClient implements PrivateUpDown1 {
 
 		int bytesRead = 0;
 		byte[] buf=new byte[10240];
+		
 		File tmpDir = new File(localPath);
 		if(!tmpDir.exists()) 
 			tmpDir.mkdirs();
 		File tmpFile = new File(localPath+"fileH.tmp");
+		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile)) ;
+		
 		// request
 		System.out.println("sending Request");
 		objOutput.writeObject(request);
@@ -151,9 +154,8 @@ public class HDFSClient implements PrivateUpDown1 {
 	}
 
 	@Override
-	public int deleteFile() {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean delete(Files request) {
+		return true;
 	}
 
 	public String getDestIp() {

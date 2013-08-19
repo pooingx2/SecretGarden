@@ -11,7 +11,7 @@ import com.sg.main.Constants;
 import com.sg.model.Files;
 
 public class Hybrid {
-
+	// 두 파일들이 전부 존재 하는지 확인후에 작업 수행...
 	private HDFSClient hdfsModule;
 	private AWSUpDown aWSModule;
 	
@@ -100,6 +100,9 @@ public class Hybrid {
 		
 		File targetFile = new File(sourceFile);
 		sendingFile = new Files(fixedFileName, fixedDestPath, optionNum, ClientLauncher.getUser().getId());
+		//confirm exist or not
+		//upload start
+		System.out.println("upload start");
 		//aws s3 upload
 		if (aWSModule.upload( sendingFile, targetFile) == -1) {
 		System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
@@ -140,13 +143,14 @@ public class Hybrid {
 	 */
 	public int download(String sourcePath, String destPath) throws IOException {
 		
-		/*sourcePath에서 파일 이름을 추출해 각 Files객체에 넣어 각 다운로드에 넘겨준다.*/
-		Files request = new Files();
-		String fileName = getFileName(sourcePath);		///root/asd/filename		
-		
-		String fixedSourcePath = getDownloadDirPath(sourcePath);
+		/*sourcePath(selected Path에서 파일 이름을 추출해 각 Files객체에 넣어 각 다운로드에 넘겨준다.*/
+		String fileName = getFileName(sourcePath);
 		String fixedFileName = makeFileName(fileName) + fileName;
+		String fixedSourcePath = getDownloadDirPath(sourcePath);
 		
+		String localDir = fixedSourcePath+ClientLauncher.getFileMgr().getSlash();
+		
+		Files request = new Files();
 		request.setDirPath(fixedSourcePath);
 		request.setFileName(fixedFileName);
 		request.setOptionNum(2);
@@ -156,20 +160,18 @@ public class Hybrid {
 		File awsTmp = null;
 		File hdfsTmp = null;
 		File downFile = null;
-		BufferedOutputStream bos = null;
-		Files awsReceiveFile = null;
-		Files hdfsReceiveFile = null;
-		String localDir = destPath+ClientLauncher.getFileMgr().getSlash();
-		System.out.println(sourcePath);
-		System.out.println("call download");
 		
+		BufferedOutputStream bos = null;
+		
+		//confirm exist or not
+		//download start
+		System.out.println("call download");
 		//aws s3 download
 		awsTmp = aWSModule.download(request, localDir);
 		if (awsTmp == null) {
 			System.out.println("다운로드 실패");
 			return -1;
 		}
-				
 		//hdfs download
 		hdfsTmp = hdfsModule.download(request, localDir);
 		if (hdfsTmp ==  null) {
@@ -177,6 +179,7 @@ public class Hybrid {
 			return -1;
 		}
 		
+		//combination
 		
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
@@ -205,7 +208,34 @@ public class Hybrid {
 		return 0;
 	}
 	
-	public int deleteFile() {
+	public int delete(String targetPath) {
+		
+		String fileName = getFileName(targetPath);
+		String fixedFileName = makeFileName(fileName) + fileName;
+		String fixedSourcePath = getDownloadDirPath(targetPath);
+		
+		Files request = new Files();
+		request.setDirPath(fixedSourcePath);
+		request.setFileName(fixedFileName);
+		request.setOptionNum(2);
+		request.setUserId(ClientLauncher.getUser().getId());
+		
+		//confirm exist or not
+		//Start delete
+		boolean isSuccess;
+		System.out.println("delete Start");
+		//AWS delete
+		isSuccess = aWSModule.delete(request);
+		if (isSuccess == false) {
+			System.out.println("삭제 실패");
+			return -1;
+		}
+		//hdfs delete
+		isSuccess = hdfsModule.delete(request);
+		if (isSuccess ==  false) {
+			System.out.println("삭제 실패");
+			return -1;
+		}
 		return 0;
 	}
 
