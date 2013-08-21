@@ -11,7 +11,7 @@ PCAP    := pcap
 include $(TOPDIR)/Config.mk
 
 all : compile $(OBJS)
-	$(CC) $(OBJS) $(addsuffix /built-in.o,$(SUBDIRS)) -o $(TARGET) -l$(PCAP) -I$(MYSQL)
+	$(CC) $(OBJS) $(addsuffix /built-in.o,$(SUBDIRS)) -o $(TARGET) -I$(MYSQL)
 
 include $(TOPDIR)/Rules.mk
 
