@@ -25,8 +25,6 @@ public class Hybrid {
 
 		boolean isConnected = false;	// 1: connected		0 : disConnected
 		
-			
-		
 		switch (type){
 
 		case Constants.amazon : 		// aws s3 connect
@@ -101,6 +99,9 @@ public class Hybrid {
 		File targetFile = new File(sourceFile);
 		sendingFile = new Files(fixedFileName, fixedDestPath, optionNum, ClientLauncher.getUser().getId());
 		//confirm exist or not
+		
+		//devide
+
 		//upload start
 		System.out.println("upload start");
 		//aws s3 upload
@@ -121,6 +122,7 @@ public class Hybrid {
 		return 0;
 	}
 	
+	/*다운로드시 localpath에 중복된 파일이 있을경우 처리*/
 	public String fileAlreadyExists(String fileName, int count) {
 		int i = 0;
 		
@@ -143,6 +145,8 @@ public class Hybrid {
 	 */
 	public int download(String sourcePath, String destPath) throws IOException {
 		
+		int optionNum = 2;
+
 		/*sourcePath(selected Path에서 파일 이름을 추출해 각 Files객체에 넣어 각 다운로드에 넘겨준다.*/
 		String fileName = getFileName(sourcePath);
 		String fixedFileName = makeFileName(fileName) + fileName;
@@ -153,7 +157,7 @@ public class Hybrid {
 		Files request = new Files();
 		request.setDirPath(fixedSourcePath);
 		request.setFileName(fixedFileName);
-		request.setOptionNum(2);
+		request.setOptionNum(optionNum);
 		request.setUserId(ClientLauncher.getUser().getId());
 		
 
@@ -208,8 +212,10 @@ public class Hybrid {
 		return 0;
 	}
 	
-	public int delete(String targetPath) {
+	public int delete(String targetPath) throws IOException {
 		
+		int optionNum = 3;
+
 		String fileName = getFileName(targetPath);
 		String fixedFileName = makeFileName(fileName) + fileName;
 		String fixedSourcePath = getDownloadDirPath(targetPath);
@@ -217,7 +223,7 @@ public class Hybrid {
 		Files request = new Files();
 		request.setDirPath(fixedSourcePath);
 		request.setFileName(fixedFileName);
-		request.setOptionNum(2);
+		request.setOptionNum(optionNum);
 		request.setUserId(ClientLauncher.getUser().getId());
 		
 		//confirm exist or not

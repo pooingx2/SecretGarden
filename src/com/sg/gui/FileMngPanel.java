@@ -319,14 +319,17 @@ public class FileMngPanel extends JPanel {
 					}
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-
-						// return 0 = success failure = -1
-						if (ClientLauncher.getHybrid().delete(selectedPath) == 0) {
-							ClientLauncher.getFrame().getFileListPanel()
-									.delete();
-						} else
-							JOptionPane.showMessageDialog(null,
-									"delete failure");
+						try {
+							// return 0 = success failure = -1
+							if (ClientLauncher.getHybrid().delete(selectedPath) == 0) {
+								ClientLauncher.getFrame().getFileListPanel()
+										.delete();
+							} else
+								JOptionPane.showMessageDialog(null,
+										"delete failure");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}						
 
 //						ClientLauncher.getFrame().getFileListPanel().download();
 					}
