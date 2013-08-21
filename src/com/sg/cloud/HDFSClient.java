@@ -97,11 +97,14 @@ public class HDFSClient implements PrivateUpDown1 {
 
 		int bytesRead = 0;
 		byte[] buf=new byte[10240];
+		
 		File tmpDir = new File(localPath);
 		if(!tmpDir.exists()) 
 			tmpDir.mkdirs();
 		File tmpFile = new File(localPath+"fileH.tmp");
+		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile)) ;
+		
 		// request
 		System.out.println("sending Request");
 		objOutput.writeObject(request);
@@ -151,9 +154,30 @@ public class HDFSClient implements PrivateUpDown1 {
 	}
 
 	@Override
-	public int deleteFile() {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean delete(Files request) throws IOException {
+
+		objOutput.writeObject(request);
+		objOutput.flush();
+		
+		
+		try {
+			recievFile = (Files) objInput.readObject();
+		} catch (IOException e) {
+			System.out.println("object 수신 실패");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println("클래스를 찾지 못했습니다. 왜???");
+
+		}
+		if (recievFile.getOptionNum() == 1) {
+			System.out.println("HDFS에 파일이 존재하지 않음");
+			return false;
+		}else if (recievFile.getOptionNum() == 2) {
+			System.out.println("Unknown Error");
+			return false;
+		}
+		
+		return true;
 	}
 
 	public String getDestIp() {
