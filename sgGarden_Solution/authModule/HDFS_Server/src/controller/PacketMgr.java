@@ -56,7 +56,7 @@ public class PacketMgr {
 			String responseString;
 			
 			/* 전송 받은 메타데이터를 fileManager를 이용하여 하둡 파일시스템에 저장 */
-			responseString = token[1] + "\t" + token[3] + "\t" + ClientLauncher.getfileManager().save_mdata_to_HDFS(token[0], token[2]);
+			responseString = token[1] + "\t" + token[3] + "\t" + ClientLauncher.getfileManager().save_mdata_to_HDFS(token[0]);
 		
 			/* 메타데이터 패쓰를 디렉토리 서버에 전송한다 */
 			ClientLauncher.getConnector().sendPacket(31, 
@@ -78,7 +78,7 @@ public class PacketMgr {
 		{
 			String responseString;
 			
-			/* 요청받은 패쓰의 자료를 가져온다, 최종 수신할 클라이언트 */
+			/* 요청받은 패쓰에 저장된 메타데이터를 가져온다, 최종 수신할 클라이언트 */
 			responseString = token[1] + "\t" + ClientLauncher.getfileManager().get_mdata_from_Mpath(token[0]);
 			
 			

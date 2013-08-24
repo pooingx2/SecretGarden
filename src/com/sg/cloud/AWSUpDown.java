@@ -110,13 +110,18 @@ public class AWSUpDown implements PublicUpDown{
 		// TODO Auto-generated method stub
 		//키파일 인증 포함
 		
-		File tmpFile = new File(localPath+"fileAWS.tmp");
+		
 		String bucketName = "secretgarden" + request.getUserId();
 		byte[] buf = new byte[10240];
-		Files receivFile = null;
-		int optionNum = request.getOptionNum();
+		
 		System.out.println(request.getDirPath()+request.getFileName());
 		System.out.println("Downloading an object");
+		
+		File tmpDir = new File(localPath);
+		if(!tmpDir.exists()) 
+			tmpDir.mkdirs();
+		File tmpFile = new File(localPath+"fileAWS.tmp");
+		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile));
 		
 		int totalBytesRead = 0;
@@ -137,34 +142,29 @@ public class AWSUpDown implements PublicUpDown{
 			e.printStackTrace();
 			
 		} catch(AmazonS3Exception a1){
-			optionNum = -1;
-//			receivFile = new Files(request.getFileName(), request.getDirPath(), optionNum, request.getUserId());
 			return null;
 		}
-//		receivFile = new Files(request.getFileName(), request.getDirPath(), optionNum, downBuf, request.getUserId());
 		
 		return tmpFile;
 	}
 
 	@Override
-	public int deleteFile() {
-		// TODO Auto-generated method stub움
+	public boolean delete(Files request) {
 		//키파일 인증 후 메타데이터 변경 포함
 		//디렉토리를 지
-		String bucketName = "jqpglnzgno";//입력 받아야 함. 키파일과 연결도 해야 함
+		String bucketName = "secretgarden" + request.getUserId();//입력 받아야 함. 키파일과 연결도 해야 함
 		String key = "jqpglnzgnofile"; //입력 받아야 함. 버킷네임+고유id들
 
 		System.out.println("Deleting an object\n");
-		s3.deleteObject(bucketName, key);
+		s3.deleteObject(bucketName, request.getDirPath()+request.getFileName());
 
 		System.out.println("Deleting bucket " + bucketName + "\n");
 		s3.deleteBucket(bucketName);
-		return 0;
+		return true;
 	}
 
 	@Override
 	public int upload() throws IOException {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 }

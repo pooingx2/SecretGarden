@@ -11,11 +11,9 @@ auth(MYSQL *con, char *id, char *pwd, char user_info[])
 	MYSQL_ROW row;
 		
 	sprintf(query,"SELECT user_id, name, email FROM User WHERE user_id='%s' && pwd='%s'",id,pwd);
-	printf("query is %s \n", query);
+	//printf("query is %s \n", query);
 
 	MYSQL_RES *result = mysql_store_result(con);
-
-	printf("query is %s \n", query);
 
 	if((result = mysql_query(con,query)) != NULL)
 	{
@@ -25,23 +23,29 @@ auth(MYSQL *con, char *id, char *pwd, char user_info[])
 
 	//질의를 한 결과를 출력한다.
 	result = mysql_store_result(con);
+	
+	if (result == NULL) {
+			
+			fprintf(stderr,"%s\n",mysql_error(con));
+			return 0;
+	}
 
-	printf("질의 \n");
+
+
+	//printf("질의 \n");
 	while((row = mysql_fetch_row(result)) != NULL)
 	{
-		if(row == NULL)
-		{
-			return 0;
-		}
+		//printf("질의 완료 \n");
 		strcat(user_info, row[0]);
 		strcat(user_info, "\t" );
 		strcat(user_info, row[1]);
 		strcat(user_info, "\t" );
 		strcat(user_info, row[2]);
-		printf("user id : %s, user name : %s, user email : %s \n", row[0], row[1], row[2]);
+		printf("login user id : %s, user name : %s, user email : %s \n", row[0], row[1], row[2]);
+		return 1;
 	}
 
-	return 1;
+	return 0;
 
 
 	/*
@@ -106,7 +110,7 @@ signUp(MYSQL *con, char *id, char *pwd, char *name, char *email)
 int 
 getElements(byte *dataBuf, char *token, char *tokenBuf[])
 {
-	printf("getElement 진입 \n");
+	//printf("getElement 진입 \n");
 	int   i=0;
 	char *str;
 	
@@ -116,7 +120,7 @@ getElements(byte *dataBuf, char *token, char *tokenBuf[])
 	while(str != NULL)
 	{	
 		tokenBuf[i++] = str;
-		printf("token %d : %s \n", i-1, tokenBuf[i-1]);
+		//printf("token %d : %s \n", i-1, tokenBuf[i-1]);
 		str = strtok(NULL, "\t");	
 	}
         

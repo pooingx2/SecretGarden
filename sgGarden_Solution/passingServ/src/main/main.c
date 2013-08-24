@@ -7,8 +7,8 @@
 
 #include "protocol.h"
 #include "epoll.h"
-#include "xmlHandler.h"
 #include "macAddressCapture.h"
+#include "logHandler.h"
 
 #define MAXLINE 1024
 
@@ -24,6 +24,7 @@ int main(int argc, char **argv)
   printf("Serv program start \n");
   Peer peer[4000];
   
+  /*
   strcat(dev, "eth0");
   strcat(filter_exp, "port 12600");
 
@@ -52,7 +53,7 @@ int main(int argc, char **argv)
   {
 	  printf("Err set filter \n");
   }
-  
+  */
 
   pid_t pid;
   pid = fork();
@@ -60,12 +61,14 @@ int main(int argc, char **argv)
   /* Packet Analysis */
   if(pid == 0)
   {
+	/*
 	printf("process init() \n");
 	if(pcap_loop(handle, -1, callback, NULL) < 0 )
 	{
 		printf("err\n");
 		exit(1);
 	}
+	*/
   }
   else
   {

@@ -8,10 +8,17 @@ int
 get_dir_size(MYSQL *con, char *dir_id, char dataBuf[]);
 
 int 
-createRootDir(MYSQL *con, char *name, char *private, char *public,char *accessKey, char *user_id, char *claudRate);
+createRootDir(MYSQL *con, char *name, char *private, char *public, char *accessKey, char *user_id, char *claudRate);
+
+
 
 int 
 getdirectoryList(MYSQL *con, char *userId, char *private_cloud, char *public_cloud ,char dataBuf[]);
+
+int
+get_shared_dir_list(MYSQL *con, char *userId, char *private_cloud, char *public_cloud ,char dataBuf[]);
+
+
 
 int 
 getNodeIndex(MYSQL *con, char *dirName, char *private, char *public, char *user_id, char directory_id[]);
@@ -43,12 +50,22 @@ search_parentNode(MYSQL *con, char *name, char *parent, char *depth, char *root,
 int
 modify_meta_Path(MYSQL *con , char *file_id, char *metaPath);
 
+
+
 int 
-share_request(MYSQL *con, char *user_id, char *target_id, char *dir_id);
+share_request(MYSQL *con, char *target_id, char *dir_id, char *userNum, char **tokenBuf);
 
 int
 get_shared_list(MYSQL *con, char *target_id);
 
+int 
+share_cancle(MYSQL *con, char *share_id);
+
+int 
+del_dir(MYSQL *con, char *dir_id, char *access_key, char *user_id, char *private, char *public);
+
+int
+del_file(MYSQL *con, char *root, char *file_id, char *child_num, char **child_token);
 
 
 int

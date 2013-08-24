@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -239,6 +240,7 @@ public class FileMngPanel extends JPanel {
 		private long uploadFileSize;	// upload fileSize
 		private MetaData m_data;		// upload metaData
 		private String localDownloadPath;
+		private String localDeletePath;
 		
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -273,24 +275,34 @@ public class FileMngPanel extends JPanel {
 					}
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+
+						// return 0 = success	failure = -1
+						//if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
+							/* 메타데이터 전송 */
+							MetaData m_data = new MetaData();
+							//ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
+						//}
+						//else
+						//	JOptionPane.showMessageDialog(null, "upload failure");
+
 						for(File file : files){
 							localUploadPath = file.getAbsolutePath();
 							uploadFileSize = file.length();
 
 							// 실제 Cloud 업로드
-//							try {
-//								// return 0 = success	failure = -1
-//								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
-//									/* 메타데이터 전송 */
+							try {
+								// return 0 = success	failure = -1
+								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
+									/* 메타데이터 전송 */
 //									MetaData m_data = new MetaData();
-//									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
-//								}
-//								else
-//									JOptionPane.showMessageDialog(null, "upload failure");
-//							} catch (IOException e) {
-//								e.printStackTrace();
-//							}
-							
+									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+								}
+								else
+									JOptionPane.showMessageDialog(null, "upload failure");
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+
 							// 업로드 Task를 추가 큐가 비어있으면 바로 수행 (다른 Task가 있는경우 그 Task를 기다림)
 							Task task = new UploadTask(localUploadPath,selectedPath,uploadFileSize);
 							task.setFileName(file.getName().toString());
@@ -299,7 +311,7 @@ public class FileMngPanel extends JPanel {
 							progressFrame.setVisible(true);
 							
 							// Cloud 업로드를 안거치고 테스트하기 위함
-							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+							//ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 
 						}
 					}
@@ -311,19 +323,17 @@ public class FileMngPanel extends JPanel {
 					}
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-						
-						// 실제 다운로드
-//						try {
-//							// return 0 = success	failure = -1
-//							if(ClientLauncher.getHybrid().download(selectedPath, localDownloadPath) == 0){
-//								ClientLauncher.getFrame().getFileListPanel().download();
-//							}
-//							else
-//								JOptionPane.showMessageDialog(null, "download failure");
-//						} catch (IOException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
+
+						try {
+							// return 0 = success	failure = -1
+							if(ClientLauncher.getHybrid().download(selectedPath, localDownloadPath) == 0){
+								ClientLauncher.getFrame().getFileListPanel().download();
+							}
+							else
+								JOptionPane.showMessageDialog(null, "download failure");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 						
 						// 업로드 Task를 추가 큐가 비어있으면 바로 수행 (다른 Task가 있는경우 그 Task를 기다림)
 						FileInfo fileInfo= ClientLauncher.getFrame().getFileListPanel().getFileInfo(
@@ -342,7 +352,27 @@ public class FileMngPanel extends JPanel {
 				// delete
 				else if(status == 5) {
 					// Cloud Delete 코드 추가
-					
+
+					if(localDeletePath.equals("")){
+						JOptionPane.showMessageDialog(null, "Load file");
+					}
+					else{
+						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+						try {
+							// return 0 = success failure = -1
+							if (ClientLauncher.getHybrid().delete(selectedPath) == 0) {
+								ClientLauncher.getFrame().getFileListPanel()
+										.delete();
+							} else
+								JOptionPane.showMessageDialog(null,
+										"delete failure");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}						
+
+					}
+//					ClientLauncher.getFrame().getFileListPanel().delete();
+
 				}
 			}
 

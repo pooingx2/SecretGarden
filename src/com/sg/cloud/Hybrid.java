@@ -11,7 +11,7 @@ import com.sg.main.Constants;
 import com.sg.model.Files;
 
 public class Hybrid {
-
+	// 두 파일들이 전부 존재 하는지 확인후에 작업 수행...
 	private HDFSClient hdfsModule;
 	private AWSUpDown aWSModule;
 	
@@ -24,8 +24,6 @@ public class Hybrid {
 	public boolean auth(String type, String id, String port, String pw) {
 
 		boolean isConnected = false;	// 1: connected		0 : disConnected
-		
-			
 		
 		switch (type){
 
@@ -100,6 +98,12 @@ public class Hybrid {
 		
 		File targetFile = new File(sourceFile);
 		sendingFile = new Files(fixedFileName, fixedDestPath, optionNum, ClientLauncher.getUser().getId());
+		//confirm exist or not
+		
+		//devide
+
+		//upload start
+		System.out.println("upload start");
 		//aws s3 upload
 		if (aWSModule.upload( sendingFile, targetFile) == -1) {
 		System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
@@ -118,6 +122,7 @@ public class Hybrid {
 		return 0;
 	}
 	
+	/*다운로드시 localpath에 중복된 파일이 있을경우 처리*/
 	public String fileAlreadyExists(String fileName, int count) {
 		int i = 0;
 		
@@ -140,52 +145,45 @@ public class Hybrid {
 	 */
 	public int download(String sourcePath, String destPath) throws IOException {
 		
-		/*sourcePath에서 파일 이름을 추출해 각 Files객체에 넣어 각 다운로드에 넘겨준다.*/
-		Files request = new Files();
-		String fileName = getFileName(sourcePath);		///root/asd/filename		
-		
-		String fixedSourcePath = getDownloadDirPath(sourcePath);
+		int optionNum = 2;
+
+		/*sourcePath(selected Path에서 파일 이름을 추출해 각 Files객체에 넣어 각 다운로드에 넘겨준다.*/
+		String fileName = getFileName(sourcePath);
 		String fixedFileName = makeFileName(fileName) + fileName;
+		String fixedSourcePath = getDownloadDirPath(sourcePath);
 		
+		String localDir = fixedSourcePath+ClientLauncher.getFileMgr().getSlash();
+		
+		Files request = new Files();
 		request.setDirPath(fixedSourcePath);
 		request.setFileName(fixedFileName);
-		request.setOptionNum(2);
+		request.setOptionNum(optionNum);
 		request.setUserId(ClientLauncher.getUser().getId());
 		
 
 		File awsTmp = null;
 		File hdfsTmp = null;
 		File downFile = null;
+		
 		BufferedOutputStream bos = null;
-		Files awsReceiveFile = null;
-		Files hdfsReceiveFile = null;
-		String localDir = destPath+ClientLauncher.getFileMgr().getSlash();
-		System.out.println(sourcePath);
+		
+		//confirm exist or not
+		//download start
 		System.out.println("call download");
-		
-		//hdfs download
-//		hdfsTmp = hdfsModule.download(request, localDir);
-//		if (hdfsTmp ==  null) {
-//			System.out.println("다운로드 실패");
-//			return -1;
-//		}
-		
 		//aws s3 download
 		awsTmp = aWSModule.download(request, localDir);
 		if (awsTmp == null) {
 			System.out.println("다운로드 실패");
 			return -1;
 		}
-//		awsReceiveFile = aWSModule.download(request);
-//		System.out.println("optnum : " + awsReceiveFile.getOptionNum());
-//		if (awsReceiveFile.getOptionNum() == -1) {
-//			System.out.println("aws download error...");
-//			return -1;
-//		}else{
-//			
-//			awsBuf = awsReceiveFile.getFileBuf();
-//		}
-
+		//hdfs download
+		hdfsTmp = hdfsModule.download(request, localDir);
+		if (hdfsTmp ==  null) {
+			System.out.println("다운로드 실패");
+			return -1;
+		}
+		
+		//combination
 		
 
 		//디렉토리에 동일 파일이 있는지 검사 필요
@@ -214,7 +212,36 @@ public class Hybrid {
 		return 0;
 	}
 	
-	public int deleteFile() {
+	public int delete(String targetPath) throws IOException {
+		
+		int optionNum = 3;
+
+		String fileName = getFileName(targetPath);
+		String fixedFileName = makeFileName(fileName) + fileName;
+		String fixedSourcePath = getDownloadDirPath(targetPath);
+		
+		Files request = new Files();
+		request.setDirPath(fixedSourcePath);
+		request.setFileName(fixedFileName);
+		request.setOptionNum(optionNum);
+		request.setUserId(ClientLauncher.getUser().getId());
+		
+		//confirm exist or not
+		//Start delete
+		boolean isSuccess;
+		System.out.println("delete Start");
+		//AWS delete
+		isSuccess = aWSModule.delete(request);
+		if (isSuccess == false) {
+			System.out.println("삭제 실패");
+			return -1;
+		}
+		//hdfs delete
+		isSuccess = hdfsModule.delete(request);
+		if (isSuccess ==  false) {
+			System.out.println("삭제 실패");
+			return -1;
+		}
 		return 0;
 	}
 

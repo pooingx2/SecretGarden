@@ -14,7 +14,7 @@ interface PublicUpDown {
 	public boolean auth(String userId);
 	public int upload() throws IOException;
 	public File download(Files request, String localPath) throws IOException;
-	public int deleteFile();
+	public boolean delete(Files request);
 	public int upload(Files fileDescript, File targetFile) throws IOException;
 
 }
