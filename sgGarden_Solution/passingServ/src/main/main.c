@@ -24,6 +24,7 @@ int main(int argc, char **argv)
   printf("Serv program start \n");
   Peer peer[4000];
   
+  /*
   strcat(dev, "eth0");
   strcat(filter_exp, "port 12600");
 
@@ -52,7 +53,7 @@ int main(int argc, char **argv)
   {
 	  printf("Err set filter \n");
   }
-  
+  */
 
   pid_t pid;
   pid = fork();
