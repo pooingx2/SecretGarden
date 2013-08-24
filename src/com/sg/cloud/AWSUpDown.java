@@ -79,6 +79,7 @@ public class AWSUpDown implements PublicUpDown{
 		try {
 		
 			System.out.println("Uploading a new object to S3 from a file\n");
+			System.out.println(targetFile);
 
 			s3.putObject(new PutObjectRequest(bucketName, keyName, targetFile));
 			
@@ -153,16 +154,21 @@ public class AWSUpDown implements PublicUpDown{
 		//키파일 인증 후 메타데이터 변경 포함
 		//디렉토리를 지
 		String bucketName = "secretgarden" + request.getUserId();//입력 받아야 함. 키파일과 연결도 해야 함
-		String key = "jqpglnzgnofile"; //입력 받아야 함. 버킷네임+고유id들
-
+		String fileDir = getFileDir(request.getFileName());
+		
 		System.out.println("Deleting an object\n");
-		s3.deleteObject(bucketName, request.getDirPath()+request.getFileName());
+		System.out.println(request.getDirPath()+fileDir);
+		s3.deleteObject(bucketName, request.getDirPath()+fileDir);
+				//+request.getFileName());
 
-		System.out.println("Deleting bucket " + bucketName + "\n");
-		s3.deleteBucket(bucketName);
+		
 		return true;
 	}
-
+	private String getFileDir(String fileName){
+		String fileDir;		
+		fileDir = fileName.substring(0, fileName.lastIndexOf("/")+1);
+		return fileDir;
+	}
 	@Override
 	public int upload() throws IOException {
 		return 0;

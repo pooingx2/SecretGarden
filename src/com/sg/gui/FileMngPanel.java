@@ -221,7 +221,6 @@ public class FileMngPanel extends JPanel {
 		private Long uploadFileSize;	// upload fileSize
 		private MetaData m_data;		// upload metaData
 		private String localDownloadPath;
-		private String localDeletePath;
 		
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -236,7 +235,7 @@ public class FileMngPanel extends JPanel {
 				
 				dirName	= textField[0].getText();
 				localDownloadPath = textField[2].getText();
-				
+								
 				// create
 				if(status == 2) {
 					if(dirName.indexOf('.')!=-1){
@@ -285,8 +284,7 @@ public class FileMngPanel extends JPanel {
 
 						}
 						
-						//MetaData m_data = new MetaData();
-						//ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
+						
 						
 					}
 				}
@@ -314,27 +312,23 @@ public class FileMngPanel extends JPanel {
 				// delete
 				else if(status == 5) {
 					// Cloud Delete 코드 추가
-					if(localDeletePath.equals("")){
-						JOptionPane.showMessageDialog(null, "Load file");
-					}
-					else{
-						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-						try {
-							// return 0 = success failure = -1
-							if (ClientLauncher.getHybrid().delete(selectedPath) == 0) {
-								ClientLauncher.getFrame().getFileListPanel()
-										.delete();
-							} else
-								JOptionPane.showMessageDialog(null,
-										"delete failure");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}						
 
-//						ClientLauncher.getFrame().getFileListPanel().download();
+					String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+					try {
+						// return 0 = success failure = -1
+						if (ClientLauncher.getHybrid().delete(selectedPath) == 0) {
+							ClientLauncher.getFrame().getFileListPanel()
+									.delete();
+						} else
+							JOptionPane.showMessageDialog(null,
+									"delete failure");
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-//					ClientLauncher.getFrame().getFileListPanel().delete();
+
+					// ClientLauncher.getFrame().getFileListPanel().download();
 				}
+				// ClientLauncher.getFrame().getFileListPanel().delete();
 			}
 
 			// 취소버튼을 누르면 초기화

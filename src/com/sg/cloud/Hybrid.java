@@ -20,10 +20,27 @@ public class Hybrid {
 		hdfsModule = new HDFSClient();
 		aWSModule = new AWSUpDown();
 	}
-
+//	public String joinClient(String id) {
+//		
+//		
+//		String accessKey;
+//		int optionNum = 4;
+//		Files request = new Files("none","none", optionNum, id);
+//		
+//		accessKey = hdfsModule.sendAccessKey2Serv(request);
+//		
+//		return accessKey;
+//	}
+//	
+	
 	public boolean auth(String type, String id, String port, String pw) {
 
 		boolean isConnected = false;	// 1: connected		0 : disConnected
+		
+		Files request = new Files();
+		int optionNum = 0;
+		request.setOptionNum(optionNum);
+		request.setUserId(ClientLauncher.getUser().getId());
 		
 		switch (type){
 
@@ -42,7 +59,16 @@ public class Hybrid {
 			hdfsModule.setDestIp(hdfsIp);
 			hdfsModule.setDestPort(hdfsPort);
 			
-			isConnected = hdfsModule.auth();
+			try {
+				isConnected = hdfsModule.auth(request);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if (isConnected == false) {
+				System.out.println("connected fail");
+				return isConnected;
+			}
 			break;
 		}
 
@@ -104,9 +130,10 @@ public class Hybrid {
 
 		//upload start
 		System.out.println("upload start");
+		System.out.println(targetFile);
 		//aws s3 upload
 		if (aWSModule.upload( sendingFile, targetFile) == -1) {
-		System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
+			System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
 			return -1;
 			
 		}
@@ -118,7 +145,6 @@ public class Hybrid {
 		}
 		
 		System.out.println("Upload Successfully");
-		
 		return 0;
 	}
 	
@@ -135,7 +161,6 @@ public class Hybrid {
 			i++;
 		}
 		fixedName = token[0] + "(" + count + ")." + token[1];
-		
 		return fixedName;
 	}
 
@@ -208,7 +233,7 @@ public class Hybrid {
 //			return -1;
 //		} 
 //		bos.close();
-
+		
 		return 0;
 	}
 	

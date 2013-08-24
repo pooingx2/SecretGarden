@@ -174,8 +174,8 @@ public class ConnectionPublicPanel extends JPanel {
 
 
 
-				//connection = ClientLauncher.getHybrid().auth(Constants.amazon,id, null,pwd);
-				connection = true;
+				connection = ClientLauncher.getHybrid().auth(Constants.amazon,id, null,pwd);
+				//connection = true;
 				
 				if(connection){
 					changeStatusPanel();
