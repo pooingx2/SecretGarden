@@ -94,7 +94,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		
 		int optionNum = 0; 
 		
-		request.setAccessKey(this.accessKey);
+		request.setAccessKey(request.getAccessKey());
 		
 		/*accesskey로 인증*/
 		objOutput.writeObject(request);
@@ -109,10 +109,12 @@ public class HDFSClient implements PrivateUpDown1 {
 			return false;
 		}
 		
+		System.out.println("recv option : " + recievFile.getOptionNum());
+		System.out.println("recv sessionKey : " + recievFile.getSessionKey());
 		//access key 인증(sessionkey 받아오기)
-		if (request.getOptionNum() == 0) {
-			this.sessionKey = request.getSessionKey();				
-			System.out.println(sessionKey);
+		if (recievFile.getOptionNum() == 0) {
+			this.sessionKey = recievFile.getSessionKey();
+			System.out.println("sessionkey : " + this.sessionKey);
 		}else if (recievFile.getOptionNum() == -1) {
 			return false;
 		}else if (recievFile.getOptionNum() == 2) {
@@ -187,6 +189,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		if(!tmpDir.exists()) 
 			tmpDir.mkdirs();
 		File tmpFile = new File(localPath+"fileH.tmp");
+		
 		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile)) ;
 		
@@ -312,6 +315,16 @@ public class HDFSClient implements PrivateUpDown1 {
 	public int download() throws IOException {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+
+	public String getAccessKey() {
+		return accessKey;
+	}
+
+
+	public void setAccessKey(String accessKey) {
+		this.accessKey = accessKey;
 	}
 
 }
