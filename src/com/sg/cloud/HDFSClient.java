@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Random;
 
 import com.sg.main.ClientLauncher;
 import com.sg.model.Files;
@@ -21,18 +22,46 @@ public class HDFSClient implements PrivateUpDown1 {
 	private String destIp;
 	private int destPort;
 	private Socket sock;
+	
+	private String accessKey;
+	private String sessionKey; 
+	
 	private InputStream reader = null;
 	private OutputStream writer = null;
 	private ObjectInputStream objInput = null;
 	private ObjectOutputStream objOutput = null;
 	private Files recievFile = null;
+	
 	BufferedInputStream readFile = null;
 	BufferedOutputStream writeFile = null;
+	
 
-	public HDFSClient() {
-
-	}
-
+	
+//	public String sendAccessKey2Serv(Files request) {
+//		
+//		
+//		/*sending Request*/
+//		System.out.println("sending Request");
+//		try {
+//			String accessKey = "aa";	//generateRandomKey();
+//			request.setAccessKey(accessKey);
+//			objOutput.writeObject(request);
+//			objOutput.flush();
+//			
+//		/*결과를 얻어온다*/
+//			Files recvFile = new Files();
+//			recvFile = (Files) objInput.readObject();
+//			this.accessKey = recvFile.getAccessKey();
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(accessKey);
+//		
+//		return accessKey;
+//		
+//	}
 	private boolean connectToHDFS() {
 		try {
 
@@ -41,8 +70,8 @@ public class HDFSClient implements PrivateUpDown1 {
 			writer = sock.getOutputStream();
 			objOutput = new ObjectOutputStream(writer);
 			objInput = new ObjectInputStream(reader);
-
-			System.out.println("here");
+			
+			
 		} catch (UnknownHostException e) {
 			System.out.println("connect Error");
 			return false;
@@ -54,10 +83,46 @@ public class HDFSClient implements PrivateUpDown1 {
 		return true;
 	}
 
+	
+	/*accessKey를 통해 인증 후 sessionKey 받아*/
+	/*login시*/
 	@Override
-	public boolean auth() {
+	public boolean auth(Files request) throws IOException {
 		boolean isConnected;
 		isConnected = connectToHDFS();
+		System.out.println("sending Request");
+		
+		int optionNum = 0; 
+		
+		request.setAccessKey(request.getAccessKey());
+		
+		/*accesskey로 인증*/
+		objOutput.writeObject(request);
+		objOutput.flush();
+
+		/*session키를 받아옴*/
+		try {
+			recievFile = (Files) objInput.readObject();
+		
+		} catch (ClassNotFoundException e) {
+			System.out.println("클래스를 찾지 못했습니다. 왜???");
+			return false;
+		}
+		
+		System.out.println("recv option : " + recievFile.getOptionNum());
+		System.out.println("recv sessionKey : " + recievFile.getSessionKey());
+		//access key 인증(sessionkey 받아오기)
+		if (recievFile.getOptionNum() == 0) {
+			this.sessionKey = recievFile.getSessionKey();
+			System.out.println("sessionkey : " + this.sessionKey);
+		}else if (recievFile.getOptionNum() == -1) {
+			return false;
+		}else if (recievFile.getOptionNum() == 2) {
+			System.out.println("인증 실패");
+			return false;
+		}
+		
+		System.out.println("here");
 		return isConnected;
 	}
 
@@ -65,18 +130,35 @@ public class HDFSClient implements PrivateUpDown1 {
 	public int upload(Files fileDescript, File targetFile) throws IOException {
 		/*
 		 * 디렉토리 중복 여부 확인 필요
-		 */
+		 */		
 		int optionNum = 1;
 		int bytesRead = 0;
 		byte[] buf = new byte[10240];
 		readFile = new BufferedInputStream(new FileInputStream(targetFile));
 
-		System.out.println("hdfs upload Start!");
+		/*인증 후 재 연결*/
+		connectToHDFS();
+		fileDescript.setSessionKey(this.sessionKey);
 
+		System.out.println("hdfs upload Start!");
 		objOutput.writeObject(fileDescript);
 		objOutput.flush();
 		
+		try {
+			recievFile = (Files) objInput.readObject();
 		
+		} catch (ClassNotFoundException e) {
+			System.out.println("클래스를 찾지 못했습니다. 왜???");
+
+		}
+		if (recievFile.getOptionNum() == -1) {
+			System.out.println("업로드 실패");
+			return -1;
+		}
+		if (recievFile.getOptionNum() == 2) {
+			System.out.println("session 인증 실패");
+			return 2;
+		}
 		//test
 		int totalBytesRead = 0;
 		while (-1 != (bytesRead = readFile.read(buf, 0, buf.length))) {
@@ -88,7 +170,9 @@ public class HDFSClient implements PrivateUpDown1 {
 		writer.flush();
 		System.out.println("complete...");
 		writer.close();
-		// sock.close();
+		
+		
+		sock.close();
 		return 0;
 	}
 
@@ -98,10 +182,14 @@ public class HDFSClient implements PrivateUpDown1 {
 		int bytesRead = 0;
 		byte[] buf=new byte[10240];
 		
+		connectToHDFS();
+		request.setSessionKey(this.sessionKey);
+		
 		File tmpDir = new File(localPath);
 		if(!tmpDir.exists()) 
 			tmpDir.mkdirs();
 		File tmpFile = new File(localPath+"fileH.tmp");
+		
 		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile)) ;
 		
@@ -113,15 +201,16 @@ public class HDFSClient implements PrivateUpDown1 {
 		
 		try {
 			recievFile = (Files) objInput.readObject();
-		} catch (IOException e) {
-			System.out.println("object 수신 실패");
-			e.printStackTrace();
+		
 		} catch (ClassNotFoundException e) {
 			System.out.println("클래스를 찾지 못했습니다. 왜???");
 
 		}
 		if (recievFile.getOptionNum() == -1) {
 			System.out.println("HDFS에 파일이 존재하지 않음");
+			return null;
+		}else if (recievFile.getOptionNum() == 2) {
+			System.out.println("session 인증 실패");
 			return null;
 		}
 		
@@ -156,6 +245,9 @@ public class HDFSClient implements PrivateUpDown1 {
 	@Override
 	public boolean delete(Files request) throws IOException {
 
+		connectToHDFS();
+		request.setSessionKey(this.sessionKey);
+		
 		objOutput.writeObject(request);
 		objOutput.flush();
 		
@@ -172,14 +264,31 @@ public class HDFSClient implements PrivateUpDown1 {
 		if (recievFile.getOptionNum() == 1) {
 			System.out.println("HDFS에 파일이 존재하지 않음");
 			return false;
-		}else if (recievFile.getOptionNum() == 2) {
-			System.out.println("Unknown Error");
+		} else if (recievFile.getOptionNum() == 2) {
+			System.out.println("session 인증 실패");
 			return false;
-		}
-		
+		} 
 		return true;
 	}
+	
 
+	private String generateRandomKey() {
+		
+		/*디비에 저장*/
+		
+		char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+		StringBuilder sb = new StringBuilder();
+		Random random = new Random();
+		for (int i = 0; i < 20; i++) {
+		    char c = chars[random.nextInt(chars.length)];
+		    sb.append(c);
+		}
+		String output = sb.toString();
+		System.out.println(output);
+		return output;
+	}
+	
+	
 	public String getDestIp() {
 		return destIp;
 	}
@@ -206,6 +315,16 @@ public class HDFSClient implements PrivateUpDown1 {
 	public int download() throws IOException {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+
+	public String getAccessKey() {
+		return accessKey;
+	}
+
+
+	public void setAccessKey(String accessKey) {
+		this.accessKey = accessKey;
 	}
 
 }

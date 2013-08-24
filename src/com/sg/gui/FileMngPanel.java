@@ -240,7 +240,6 @@ public class FileMngPanel extends JPanel {
 		private long uploadFileSize;	// upload fileSize
 		private MetaData m_data;		// upload metaData
 		private String localDownloadPath;
-		private String localDeletePath;
 		
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -255,7 +254,7 @@ public class FileMngPanel extends JPanel {
 				
 				dirName	= textField[0].getText();
 				localDownloadPath = textField[2].getText();
-				
+								
 				// create
 				if(status == 2) {
 					if(dirName.indexOf('.')!=-1){
@@ -275,15 +274,6 @@ public class FileMngPanel extends JPanel {
 					}
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-
-						// return 0 = success	failure = -1
-						//if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
-							/* 메타데이터 전송 */
-							MetaData m_data = new MetaData();
-							//ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
-						//}
-						//else
-						//	JOptionPane.showMessageDialog(null, "upload failure");
 
 						for(File file : files){
 							localUploadPath = file.getAbsolutePath();
@@ -314,6 +304,7 @@ public class FileMngPanel extends JPanel {
 							//ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 
 						}
+
 					}
 				}
 				// download
@@ -352,26 +343,18 @@ public class FileMngPanel extends JPanel {
 				// delete
 				else if(status == 5) {
 					// Cloud Delete 코드 추가
-
-					if(localDeletePath.equals("")){
-						JOptionPane.showMessageDialog(null, "Load file");
+					String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+					try {
+						// return 0 = success failure = -1
+						if (ClientLauncher.getHybrid().delete(selectedPath) == 0) {
+							ClientLauncher.getFrame().getFileListPanel().delete();
+							// ClientLauncher.getFrame().getFileListPanel().delete();
+						} else
+							JOptionPane.showMessageDialog(null, "delete failure");
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-					else{
-						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-						try {
-							// return 0 = success failure = -1
-							if (ClientLauncher.getHybrid().delete(selectedPath) == 0) {
-								ClientLauncher.getFrame().getFileListPanel()
-										.delete();
-							} else
-								JOptionPane.showMessageDialog(null,
-										"delete failure");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}						
-
-					}
-//					ClientLauncher.getFrame().getFileListPanel().delete();
+					
 
 				}
 			}

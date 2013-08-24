@@ -20,18 +20,36 @@ public class Hybrid {
 		hdfsModule = new HDFSClient();
 		aWSModule = new AWSUpDown();
 	}
-
+//	public String joinClient(String id) {
+//		
+//		
+//		String accessKey;
+//		int optionNum = 4;
+//		Files request = new Files("none","none", optionNum, id);
+//		
+//		accessKey = hdfsModule.sendAccessKey2Serv(request);
+//		
+//		return accessKey;
+//	}
+//	
+	
 	public boolean auth(String type, String id, String port, String pw) {
 
 		boolean isConnected = false;	// 1: connected		0 : disConnected
 		
+		Files request = new Files();
+		int optionNum = 0;
+		request.setAccessKey(pw);
+		request.setOptionNum(optionNum);
+		request.setUserId(ClientLauncher.getUser().getId());
+		
 		switch (type){
 
 		case Constants.amazon : 		// aws s3 connect
-			String keyId = "AKIAIUXPHCYBAHGUZGEQ";//id;			// 입력 받아야 함
-			String key = "z3L3XdNwpWPx0R37bToPR+O85cmSoZTJrucfb4xE";//pw;			// 입력 받아야 함
-			aWSModule.setKey(key);
-			aWSModule.setKeyId(keyId);
+			String AWSkeyId = "AKIAIUXPHCYBAHGUZGEQ";//id;			// 입력 받아야 함
+			String AWSkey = "z3L3XdNwpWPx0R37bToPR+O85cmSoZTJrucfb4xE";//pw;			// 입력 받아야 함
+			aWSModule.setKey(AWSkey);
+			aWSModule.setKeyId(AWSkeyId);
 			
 			isConnected= aWSModule.auth(ClientLauncher.getUser().getId());
 			break;
@@ -39,10 +57,21 @@ public class Hybrid {
 		case Constants.hadoop : 		// hdfs connect
 			String hdfsIp = "211.189.127.91";//id;			// 입력 받아야 함
 			int hdfsPort = 15000;//Integer.parseInt(port);		// 입력 받아야 함
+			String hdfsPw = "aa";//pw;
 			hdfsModule.setDestIp(hdfsIp);
 			hdfsModule.setDestPort(hdfsPort);
+			hdfsModule.setAccessKey(hdfsPw);
 			
-			isConnected = hdfsModule.auth();
+			try {
+				isConnected = hdfsModule.auth(request);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if (isConnected == false) {
+				System.out.println("connected fail");
+				return isConnected;
+			}
 			break;
 		}
 
@@ -104,9 +133,10 @@ public class Hybrid {
 
 		//upload start
 		System.out.println("upload start");
+		System.out.println(targetFile);
 		//aws s3 upload
 		if (aWSModule.upload( sendingFile, targetFile) == -1) {
-		System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
+			System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
 			return -1;
 			
 		}
@@ -115,10 +145,12 @@ public class Hybrid {
 		if (hdfsModule.upload(sendingFile, targetFile) == -1){
 			System.out.println("Sorry, HDFS file uploader encounters some problems. \nplease try again.");
 			return -1;
+		} else if(hdfsModule.upload(sendingFile, targetFile) == -1) {
+			System.out.println("Sorry, HDFS session auth failed. \nplease try again.");
+			return 2;
 		}
 		
 		System.out.println("Upload Successfully");
-		
 		return 0;
 	}
 	
@@ -135,7 +167,6 @@ public class Hybrid {
 			i++;
 		}
 		fixedName = token[0] + "(" + count + ")." + token[1];
-		
 		return fixedName;
 	}
 
@@ -152,7 +183,10 @@ public class Hybrid {
 		String fixedFileName = makeFileName(fileName) + fileName;
 		String fixedSourcePath = getDownloadDirPath(sourcePath);
 		
-		String localDir = fixedSourcePath+ClientLauncher.getFileMgr().getSlash();
+		String localDir = destPath + "/" + fixedSourcePath+ClientLauncher.getFileMgr().getSlash();
+		
+		System.out.println("\nlocalDir(in Hybrid download) : " + localDir);
+		System.out.println("file name : " + fileName);
 		
 		Files request = new Files();
 		request.setDirPath(fixedSourcePath);
@@ -208,7 +242,7 @@ public class Hybrid {
 //			return -1;
 //		} 
 //		bos.close();
-
+		
 		return 0;
 	}
 	

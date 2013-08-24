@@ -6,7 +6,7 @@ import com.sg.model.Files;
 
 
 interface PrivateUpDown1 {
-	public boolean auth();
+	public boolean auth(Files request) throws IOException;
 	public int upload() throws IOException;
 	public File download(Files request, String localPath) throws IOException;
 	public boolean delete(Files request)throws IOException;

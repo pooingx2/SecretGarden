@@ -16,6 +16,8 @@ public class Files implements Serializable{
 	private byte[] fileBuf;
 	private int optionNum;
 	private String userId;
+	private String sessionKey;
+	private String accessKey;
 	
 
 	public Files(){
@@ -89,6 +91,22 @@ public class Files implements Serializable{
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getSessionKey() {
+		return sessionKey;
+	}
+
+	public void setSessionKey(String sessionKey) {
+		this.sessionKey = sessionKey;
+	}
+
+	public String getAccessKey() {
+		return accessKey;
+	}
+
+	public void setAccessKey(String accessKey) {
+		this.accessKey = accessKey;
 	}
 
 
