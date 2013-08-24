@@ -1,31 +1,28 @@
 package com.sg.gui;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
+import com.sg.model.FileInfo;
 import com.sg.model.MetaData;
+import com.sg.task.DownloadTask;
+import com.sg.task.Task;
+import com.sg.task.UploadTask;
 
 public class FileMngPanel extends JPanel {
 	// Attribute
@@ -48,6 +45,8 @@ public class FileMngPanel extends JPanel {
 	private JTextField textField[];
 	private JButton btn[];
 	private ActionHandler handler;
+	private ProgressFrame progressFrame;
+	private JTable table;
 
 	public FileMngPanel(int w, int h) {
 
@@ -59,6 +58,8 @@ public class FileMngPanel extends JPanel {
 		this.setLayout(null);
 		this.setBackground(Constants.backColor);
 		this.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		
+		progressFrame = new ProgressFrame(500, 500);
 
 		// 디렉토리를 관리하기 위한 배경 이미지 (Create, Access, Delete,  ...
 		bgImg = new JLabel[6];
@@ -138,6 +139,14 @@ public class FileMngPanel extends JPanel {
 		label[4].setText("");
 		changePanel();
 	}
+	
+	public ProgressFrame getProgressFrame() {
+		return progressFrame;
+	}
+
+	public void setProgressFrame(ProgressFrame progressFrame) {
+		this.progressFrame = progressFrame;
+	}
 
 	public int getStatus() {
 		return status;
@@ -194,11 +203,13 @@ public class FileMngPanel extends JPanel {
 			this.add(label[4]);
 			break;
 		case 2 : 	// Create 
+			textField[0].setText("");
 			this.add(textField[0]);
 			this.add(btn[1]);
 			this.add(btn[2]);
 			break;
 		case 3 : 	// Upload
+			textField[1].setText("");
 			this.add(textField[1]);
 			this.add(btn[0]);
 			this.add(btn[1]);
@@ -210,7 +221,7 @@ public class FileMngPanel extends JPanel {
 			this.add(btn[1]);
 			this.add(btn[2]);
 			break;
-		case 5 : 	//	Settings
+		case 5 : 	//	Delete
 			this.add(btn[1]);
 			this.add(btn[2]);
 			break;
@@ -225,7 +236,7 @@ public class FileMngPanel extends JPanel {
 	private class ActionHandler implements ActionListener {
 		private String dirName;			// create dirName
 		private String localUploadPath;	// upload filePath
-		private Long uploadFileSize;	// upload fileSize
+		private long uploadFileSize;	// upload fileSize
 		private MetaData m_data;		// upload metaData
 		private String localDownloadPath;
 		
@@ -246,7 +257,10 @@ public class FileMngPanel extends JPanel {
 				// create
 				if(status == 2) {
 					if(dirName.indexOf('.')!=-1){
-						JOptionPane.showMessageDialog(null, "Incorrect dirName");
+						JOptionPane.showMessageDialog(null, "Incorrect directory name");
+					}
+					if(dirName.equals("") || dirName==null){
+						JOptionPane.showMessageDialog(null, "Input directory name");
 					}
 					else{
 						ClientLauncher.getFrame().getFileListPanel().create(dirName);
@@ -263,6 +277,7 @@ public class FileMngPanel extends JPanel {
 							localUploadPath = file.getAbsolutePath();
 							uploadFileSize = file.length();
 
+							// 실제 Cloud 업로드
 //							try {
 //								// return 0 = success	failure = -1
 //								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
@@ -276,14 +291,17 @@ public class FileMngPanel extends JPanel {
 //								e.printStackTrace();
 //							}
 							
-							// Cloud 업로드를 안거치고 테스트하기위함
+							// 업로드 Task를 추가 큐가 비어있으면 바로 수행 (다른 Task가 있는경우 그 Task를 기다림)
+							Task task = new UploadTask(localUploadPath,selectedPath,uploadFileSize);
+							task.setFileName(file.getName().toString());
+							ClientLauncher.getTaskMgr().addTask(task);
+							progressFrame.addRow(task);
+							progressFrame.setVisible(true);
+							
+							// Cloud 업로드를 안거치고 테스트하기 위함
 							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 
 						}
-						
-						//MetaData m_data = new MetaData();
-						//ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, m_data);
-						
 					}
 				}
 				// download
@@ -293,27 +311,38 @@ public class FileMngPanel extends JPanel {
 					}
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
-					//	String selectedPath = "/root/hey/test.txt";
-						try {
-							// return 0 = success	failure = -1
-							if(ClientLauncher.getHybrid().download(selectedPath, localDownloadPath) == 0){
-								ClientLauncher.getFrame().getFileListPanel().download();
-							}
-							else
-								JOptionPane.showMessageDialog(null, "download failure");
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 						
-//						ClientLauncher.getFrame().getFileListPanel().download();
+						// 실제 다운로드
+//						try {
+//							// return 0 = success	failure = -1
+//							if(ClientLauncher.getHybrid().download(selectedPath, localDownloadPath) == 0){
+//								ClientLauncher.getFrame().getFileListPanel().download();
+//							}
+//							else
+//								JOptionPane.showMessageDialog(null, "download failure");
+//						} catch (IOException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+						
+						// 업로드 Task를 추가 큐가 비어있으면 바로 수행 (다른 Task가 있는경우 그 Task를 기다림)
+						FileInfo fileInfo= ClientLauncher.getFrame().getFileListPanel().getFileInfo(
+								ClientLauncher.getFrame().getFileListPanel().getSelectedNode());
+						Task task = new DownloadTask(selectedPath, localDownloadPath, Long.parseLong(fileInfo.getSize()));
+						task.setFileName(fileInfo.getName().toString());
+						ClientLauncher.getTaskMgr().addTask(task);
+						progressFrame.addRow(task);
+						progressFrame.setVisible(true);
+						
+						// Cloud 업로드를 안거치고 테스트하기 위함
+						ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+
 					}
 				}
 				// delete
 				else if(status == 5) {
 					// Cloud Delete 코드 추가
 					
-					ClientLauncher.getFrame().getFileListPanel().delete();
 				}
 			}
 

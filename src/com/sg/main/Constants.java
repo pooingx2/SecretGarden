@@ -12,7 +12,7 @@ public class Constants {
 	public static final int frameH = 600;
 	
 	// msg passing server ip, port
-	public static final String serverIP= "112.108.39.217";
+	public static final String serverIP= "112.108.39.244";
 	public static final int serverPort = 12600;
 
 	// 기본 바탕색
@@ -54,7 +54,8 @@ public class Constants {
 		fileMngBG2("img/background/fileMngBG2.jpg"),
 		fileMngBG3("img/background/fileMngBG3.jpg"),
 		fileMngBG4("img/background/fileMngBG4.jpg"),
-		fileMngBG5("img/background/fileMngBG5.jpg");
+		fileMngBG5("img/background/fileMngBG5.jpg"),
+		taskProgressBG("img/background/taskProgressBG.jpg");
 		
 		final private String path;
 		private BackgroudPath(String path) { this.path = path; }
@@ -80,6 +81,8 @@ public class Constants {
 		shareBtn2("img/button/shareBtn2.jpg"),
 		sharingBtn1("img/button/sharingBtn1.jpg"),
 		sharingBtn2("img/button/sharingBtn2.jpg"),
+		progressBtn1("img/button/progressBtn1.jpg"),
+		progressBtn2("img/button/progressBtn2.jpg"),	
 		connectBtn1("img/button/connectBtn1.jpg"), 
 		connectBtn2("img/button/connectBtn2.jpg"),
 		privateBtn1("img/button/privateBtn1.jpg"),
@@ -90,6 +93,8 @@ public class Constants {
 		confirmBtn2("img/button/confirmBtn2.jpg"),
 		cancelBtn1("img/button/cancelBtn1.jpg"), 
 		cancelBtn2("img/button/cancelBtn2.jpg"), 
+		xBtn1("img/button/xBtn1.jpg"), 
+		xBtn2("img/button/xBtn2.jpg"), 
 		createBtn1("img/button/createBtn1.jpg"), 
 		createBtn2("img/button/createBtn2.jpg"), 
 		addBtn1("img/button/addBtn1.jpg"), 

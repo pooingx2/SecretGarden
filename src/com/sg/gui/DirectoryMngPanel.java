@@ -243,17 +243,20 @@ public class DirectoryMngPanel extends JPanel {
 			this.add(sizeBar);
 			break;
 		case 2 : 	// Create 
+			textField[0].setText("");
 			this.add(textField[0]);
 			this.add(btn[1]);
 			this.add(btn[2]);
 			break;
 		case 3 : 	// Access
+			textField[1].setText("");
 			this.add(textField[1]);
 			this.add(btn[0]);
 			this.add(btn[1]);
 			this.add(btn[2]);
 			break;
 		case 4 : 	//	Delete
+			textField[1].setText("");
 			this.add(textField[1]);
 			this.add(btn[0]);
 			this.add(btn[1]);
@@ -287,10 +290,18 @@ public class DirectoryMngPanel extends JPanel {
 
 			// 확인버튼을 누르면 해당 상태에 맞는 함수를 call 
 			if(event.getSource()==btn[1]){
-				dirName=textField[0].getText();
+				// Create
 				if(status == 2) {
-					ClientLauncher.getFrame().getDirectoryListPanel().create(dirName);
+					dirName=textField[0].getText();
+					if(dirName!=null  && !dirName.equals("")){
+						ClientLauncher.getFrame().getDirectoryListPanel().create(dirName);
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Input Directory name");
+						return;
+					}
 				}
+				// Access
 				else if(status == 3) {
 					keyPath = textField[1].getText();
 					key = getKey();
@@ -302,6 +313,7 @@ public class DirectoryMngPanel extends JPanel {
 						return;
 					}
 				}
+				// Delete
 				else if(status == 4) {
 					keyPath = textField[1].getText();
 					key = getKey();
@@ -312,8 +324,8 @@ public class DirectoryMngPanel extends JPanel {
 						JOptionPane.showMessageDialog(null, "Load Key file");
 						return;
 					}
-//					ClientLauncher.getFrame().getDirectoryListPanel().delete(key);
 				}
+				// Setting
 				else if(status == 5) {
 					ClientLauncher.getFrame().getDirectoryListPanel().settings();
 				}

@@ -2,13 +2,16 @@ package com.sg.main;
 
 import java.io.IOException;
 
+import com.amazonaws.services.s3.transfer.Upload;
 import com.sg.cloud.Hybrid;
 import com.sg.controller.Connector;
 import com.sg.controller.FileMgr;
 import com.sg.controller.PacketMgr;
+import com.sg.controller.TaskMgr;
 import com.sg.gui.MainFrame;
 import com.sg.model.Nonce;
 import com.sg.model.UserInfo;
+import com.sg.task.UploadTask;
 
 
 public class ClientLauncher{
@@ -17,6 +20,7 @@ public class ClientLauncher{
 	private static MainFrame frame;
 	private static PacketMgr pkMgr;
 	private static FileMgr fileMgr;
+	private static TaskMgr taskMgr;
 	private static Hybrid hybrid;
 	private static UserInfo user;
 	private static Nonce nonce;
@@ -30,6 +34,8 @@ public class ClientLauncher{
 		fileMgr = new FileMgr();
 		// 받은 패킷을 처리 하는 함수
 		pkMgr = new PacketMgr();
+		// cloud task 실행
+		taskMgr = new TaskMgr();
 		// 통신담당 모듈로 소켓을 연결하고 프로토콜에 맞게 통신을 지원
 		connector = new Connector();
 		// cloud Controller module 실행
@@ -88,6 +94,14 @@ public class ClientLauncher{
 
 	public static void setFileMgr(FileMgr fileMgr) {
 		ClientLauncher.fileMgr = fileMgr;
+	}
+	
+	public static TaskMgr getTaskMgr() {
+		return taskMgr;
+	}
+
+	public static void setTaskMgr(TaskMgr taskMgr) {
+		ClientLauncher.taskMgr = taskMgr;
 	}
 
 	public static Hybrid getHybrid() {

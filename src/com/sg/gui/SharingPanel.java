@@ -30,6 +30,7 @@ public class SharingPanel extends JPanel {
 	private int width;
 	private int height;
 	private boolean isSelected;
+	private boolean editMode;
 	// 0 : Default	1 : Requester	2 : Target
 	private String selectedInfo;
 	
@@ -46,7 +47,6 @@ public class SharingPanel extends JPanel {
 	private Vector<String> row;
 	private ImageIcon shareTo[];
 	private ImageIcon shareFrom[];
-	private boolean editMode;
 
 	public SharingPanel(int w, int h) {
 
@@ -77,7 +77,6 @@ public class SharingPanel extends JPanel {
 		// 이벤트 핸들러 등록
 		handler = new ActionHandler();
 
-		scroll = new JScrollPane();
 		tableModel = new DefaultTableModel(){
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -159,7 +158,7 @@ public class SharingPanel extends JPanel {
 
 		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
 		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));
-		// 버튼 생성 (Create, Access, Delete)
+		
 
 		btn[1] = new JButton(new ImageIcon(Constants.ButtonPath.cancelBtn1.getPath()));
 		btn[1].setRolloverIcon(new ImageIcon(Constants.ButtonPath.cancelBtn2.getPath()));

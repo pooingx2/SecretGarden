@@ -31,6 +31,7 @@ public class ActionBar extends JMenuBar{
 	private JButton backBtn;
 	private JButton forwardBtn;
 	private JButton sharingBtn;
+	private JButton progressBtn;
 	private JButton logoutBtn;
 	
 	public ActionBar(int w, int h) {
@@ -68,6 +69,12 @@ public class ActionBar extends JMenuBar{
 		forwardBtn.setBounds(120,5,40,40);
 		forwardBtn.addActionListener(handler);
 		
+		// task progress 버튼
+		progressBtn = new JButton(new ImageIcon(Constants.ButtonPath.progressBtn1.getPath()));
+		progressBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.progressBtn2.getPath()));
+		progressBtn.setBounds(620,10,30,30);
+		progressBtn.addActionListener(handler);
+		
 		// 공유 버튼
 		sharingBtn = new JButton(new ImageIcon(Constants.ButtonPath.sharingBtn1.getPath()));
 		sharingBtn.setRolloverIcon(new ImageIcon(Constants.ButtonPath.sharingBtn2.getPath()));
@@ -84,6 +91,7 @@ public class ActionBar extends JMenuBar{
 		this.add(backBtn);
 		this.add(forwardBtn);
 		this.add(sharingBtn);
+		this.add(progressBtn);
 		this.add(logoutBtn);
 		this.add(bgImg);
 	}
@@ -124,7 +132,7 @@ public class ActionBar extends JMenuBar{
 	public void setForwardBtnPress(boolean isForwardBtnPress) {
 		this.isForwardBtnPress = isForwardBtnPress;
 	}
-
+	
 
 	// 이벤트 핸들러 등록
 	private class ActionHandler implements ActionListener {
@@ -158,6 +166,11 @@ public class ActionBar extends JMenuBar{
 					JOptionPane.showMessageDialog(null, "Empty Stack");
 				}
 				isForwardBtnPress = false;
+			}	
+			
+			// progress 
+			if(event.getSource()==progressBtn){
+				ClientLauncher.getFrame().getFileListPanel().getFileMngPanel().getProgressFrame().setVisible(true);
 			}	
 			
 			if(event.getSource()==sharingBtn){

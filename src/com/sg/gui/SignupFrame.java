@@ -109,7 +109,7 @@ public class SignupFrame extends JFrame  {
 		
 		// 확인버튼 0 , 취소버튼 1
 		
-		btn = new JButton[2];
+		btn = new JButton[3];
 		
 		btn[0] = new JButton(new ImageIcon(Constants.ButtonPath.confirmBtn1.getPath()));
 		btn[0].setRolloverIcon(new ImageIcon(Constants.ButtonPath.confirmBtn2.getPath()));

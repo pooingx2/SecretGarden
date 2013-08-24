@@ -136,11 +136,13 @@ public class FileListPanel extends JPanel {
 		this.add(fileMngPanel);
 		this.add(bgImg);
 	}
+	
+	public FileMngPanel getFileMngPanel() {
+		return fileMngPanel;
+	}
 
-	@Override
-	public void paint(Graphics g) {
-		// TODO Auto-generated method stub
-		super.paint(g);
+	public void setFileMngPanel(FileMngPanel fileMngPanel) {
+		this.fileMngPanel = fileMngPanel;
 	}
 
 	public void initialize() { 

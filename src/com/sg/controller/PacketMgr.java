@@ -100,6 +100,7 @@ public class PacketMgr {
 		if (type == Constants.PacketType.DirectoryCreateResponse.getType()) {
 			String test = fileMgr.saveKeyFile(token[0]);
 			while(test==null){
+				JOptionPane.showMessageDialog(null, "You have to save the key file");
 				test = fileMgr.saveKeyFile(token[0]);
 			}
 		}
