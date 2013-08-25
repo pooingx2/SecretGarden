@@ -27,6 +27,7 @@ public class UploadTask extends Task{
 	public void run() {
 		ClientLauncher.getTaskMgr().setRunning(true);
 		System.out.println("Upload Task Start");
+		//ClientLauncher.getHybrid().upload(sourceFile, destPath)
 		int i = getProgressBar().getValue();
 		while(i < 100 && getRunable()){
 			try {
