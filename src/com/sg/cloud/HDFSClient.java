@@ -165,6 +165,7 @@ public class HDFSClient implements PrivateUpDown1 {
 			
 			totalBytesRead += bytesRead;
 			System.out.println("sending bytes : " + totalBytesRead);
+			//ClientLauncher.getTaskMgr().getRunningTask().setCur(totalBytesRead);
 			writer.write(buf, 0, bytesRead);
 		}
 		writer.flush();
