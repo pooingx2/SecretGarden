@@ -17,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.StringTokenizer;
 
 public class streamManager {
-	/*split ����*/
+	/*split 정보*/
 	public final static int maxSpliteSize = 10;
 	public final static int sizeKB = 1024 * 1;
 	//public static int streamSize  = 100 * sizeKB;
@@ -109,7 +109,7 @@ public class streamManager {
 		File origFile  = new File(origFilePath);
 
 //		String streamPath = "./tmp/";//origFilePath.substring(0, origFilePath.lastIndexOf('/')) + "/stream/";
-		String streamName = origFilePath.substring(origFilePath.lastIndexOf('/') + 1, origFilePath.length());
+		String streamName = origFilePath.substring(origFilePath.lastIndexOf('\\') + 1, origFilePath.length());
 		
 		//System.out.println("path : " + streamPath);
 		//System.out.println("path : " + streamName);
@@ -126,17 +126,11 @@ public class streamManager {
 			streamSize = 1024;
 		System.out.println(streamSize);
 		
-		/*�ִ� ���� ���� �ʰ� Ȯ��*/
-		/*if(origFile.length() / streamSize >= maxSpliteSize){
-			System.out.println("10�� �̻� ������ �� ����ϴ�.(���� stream ���� : " + origFile.length()/streamSize + ")");
-			System.exit(-1);
-		}*/
-		
-		/*stream ���Ͽ� ���� ����*/
+		/*stream 생성하여 파일 분할*/
 		splitFile(streamPath, streamName, origFI, origFile, privateRatio);
 		
 		try {
-			combineTwoFile(streamPath, streamName);	//��Ʈ�� ������ �ִ� ��ġ�� �Ű������� ���
+			combineTwoFile(streamPath, streamName);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -163,9 +157,9 @@ public class streamManager {
 		else
 			streamSize = 1024;
 		
-		splitTwoFile(streamPath, targetFileName);	//�� ���� ������ �ִ� ��ġ�� �Ű������� ���
+		splitTwoFile(streamPath, targetFileName);	//두 파일을 10개로 분할
 		
-		/*stream�� �����Ͽ� ���� ����*/
+		/*stream들을 하나의 파일로 통합*/
 		try {
 			combineFile(targetFileName, streamPath, savePath);
 		} catch (IOException e) {
@@ -192,15 +186,14 @@ public class streamManager {
 		BufferedWriter out = null;
 		int i;
 		int j0 = 0, j1 = 0, k = 0;
-		
-		/*���� ��*/
+
 		try {
 			out = new BufferedWriter(new FileWriter(path + name + "._metadata"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	    
-		/*meta data ����*/
+		/*meta data 초기화*/
 		//cloud mapping table
 		cloudTable = "";
 		for(i = 0; i<streamCount+1; i++){
@@ -209,7 +202,7 @@ public class streamManager {
 				k = 1;
 			else if(j1 == privateRatio)
 				k = 0;
-			cloudTable += Integer.toString(k);		// Ŭ���� ������ŭ ��ⷯ�Ͽ� ���� ����
+			cloudTable += Integer.toString(k);
 			if(k == 0)
 				j0++;
 			else
@@ -291,37 +284,37 @@ public class streamManager {
 		    in.close();
 		}
 		catch (IOException e) {
-			System.err.println(e); // ������ �ִٸ� �޽��� ���
+			System.err.println(e);
 		    System.exit(1);
 	    }		
 	}
 	
 	/*============================= splite/combine file =============================*/
-	/*InputStream�� �޾� �Ű������� ���� ��ο� stream ���� ��*/
+	/*InputStream을 받아 매개변수로 받은 경로에 stream 파일 생성*/
 	private void splitFile(String streamPath, String streamName, InputStream origFI, File origFile, int privateRatio) {
 		int readCnt = 0;
 		int totCnt = 0;
-		int streamIndex = 0;			//stream �̸��� ���� �ε���
-		byte[] readBuffer = new byte[1024];		//�ּ� stream size�� 1KB
+		int streamIndex = 0;			//stream 이름을 위한 인덱스
+		byte[] readBuffer = new byte[1024];		//최소 stream size는 1KB
 				
 		String hashString = null;		//hash key  
 		String MD5;						//md5 hash value
 
 		try {
 			/*file I/O stream*/
-			BufferedInputStream bufferedFI = new BufferedInputStream(origFI);						//�� ����
+			BufferedInputStream bufferedFI = new BufferedInputStream(origFI);						//원본 파일
 			System.out.println(streamPath + outStreamDir + streamName + streamIndex + "._outStream");
-			File streamFile = new File(streamPath + outStreamDir + streamName + streamIndex + "._outStream");	//stream ����
+			File streamFile = new File(streamPath + outStreamDir + streamName + streamIndex + "._outStream");	//stream 파일
 			FileOutputStream streamFO = new FileOutputStream(streamFile);
 			
 			do {
-				/*�� ���� �б�*/
+				/*원본 파일 읽기*/
 				readCnt = bufferedFI.read(readBuffer);
 				if (readCnt == -1) {
 					break;
 				}
 				
-				/*stream ���Ͽ� write*/
+				/*stream파일에 write*/
 				streamFO.write(readBuffer, 0, readCnt);
 				totCnt += readCnt;
 				
@@ -331,7 +324,7 @@ public class streamManager {
 				//System.out.println(hashString);
 				//System.out.println(MD5);
 				
-				/*���� ��Ʈ��*/
+				/*다음 스트림*/
 				if (totCnt % streamSize == 0) {
 					streamFO.flush();
 					streamFO.close();
@@ -355,14 +348,14 @@ public class streamManager {
 		System.out.println("Split success!");
 	}
 	
-	/*�Ű������� ���� ��ο� �ִ� stream ���ϵ��� �� ���Ϸ� ����*/
+	/*매개변수로 받은 경로에 있는 stream 파일들을 한 파일로 통합*/
 	private void combineFile(String origFileName, String streamPath, String savePath) throws FileNotFoundException, IOException {
 		int readCnt = 0;
 		byte[] buf = null;
 		
 		/*file I/O stream*/
 		File streamFiles = new File(streamPath + inStreamDir );
-		String[] files = streamFiles.list();				//stream ���� ����Ʈ
+		String[] files = streamFiles.list();				//stream 파일 리스트
 		checkDir(savePath);
 		
 		/*파일 중복시 처리*/
@@ -374,20 +367,18 @@ public class streamManager {
 		}
 		
 		/*File write*/
-		FileOutputStream combinedFO = new FileOutputStream(downFile);	//���յ� ����
+		FileOutputStream combinedFO = new FileOutputStream(downFile);
 		FileInputStream streamFI = null;
 
 		for (int i = 0; i < files.length; i++) {
 			if(!files[i].matches(origFileName+"."+"._inStream.")){
 				continue;
 			}
-			
-			/*�� stream ������ InputStream*/
+	
 			streamFI = new FileInputStream(streamPath + inStreamDir + files[i]);
 			buf = new byte[1024];
 			readCnt = 0;
 			
-			/*���յ� ���Ͽ� write*/
 			while ((readCnt = streamFI.read(buf)) > -1) {
 				combinedFO.write(buf, 0, readCnt);
 			}
@@ -420,12 +411,12 @@ public class streamManager {
 	
 	/*============================= splite/combine 2 files =============================*/
 	
-	/*InputStream�� �޾� �Ű������� ���� ��ο� stream ���� ��*/
+	/*InputStream을 받아 매개변수로 받은 경로에 stream 파일 생성*/
 	private void splitTwoFile(String streamPath,  String streamName) {
 		int readCnt = 0;
 		int totCnt = 0;
-		int streamIndex = 0;			//stream �̸��� ���� �ε���
-		byte[] readBuffer = new byte[1024];		//�ּ� stream size�� 1KB
+		int streamIndex = 0;			//stream 이름을 위한 인덱스
+		byte[] readBuffer = new byte[1024];		//최소 stream size는 1KB
 		int public_ok = 0, private_ok = 0;
 		int i = 0;
 	
@@ -446,13 +437,13 @@ public class streamManager {
 			
 			/*first file I/O stream*/
 			BufferedInputStream bufferedFI0 = new BufferedInputStream(privateFI);
-			File streamFile0 = null;//new File(streamPath + streamName + streamIndex + "._inStream");	//stream ����
-			FileOutputStream streamFO0 = null;//new FileOutputStream(streamFile0);
+			File streamFile0 = null;
+			FileOutputStream streamFO0 = null;
 			
 			/*second file I/O stream*/
 			BufferedInputStream bufferedFI1 = new BufferedInputStream(publicFI);
-			File streamFile1 = null;//new File(streamPath + streamName + streamIndex + "._inStream");	//stream ����
-			FileOutputStream streamFO1 = null;//new FileOutputStream(streamFile1);
+			File streamFile1 = null;
+			FileOutputStream streamFO1 = null;
 			
 			do {
 				if(cloudTable.substring(i,i+1).equals("0")){
@@ -460,7 +451,7 @@ public class streamManager {
 					streamFile0 = new File(streamPath + inStreamDir + streamName + (streamIndex++) + "._inStream0");
 					streamFO0 = new FileOutputStream(streamFile0);
 					
-					/*�� ���� �б�*/
+					/*원본 파일 읽기*/
 					while(true){
 						readCnt = bufferedFI0.read(readBuffer);
 						if (readCnt == -1) {
@@ -471,7 +462,7 @@ public class streamManager {
 						if(private_ok == 1)
 							System.out.println("private error!");
 				
-						/*stream ���Ͽ� write*/
+						/*stream write*/
 						streamFO0.write(readBuffer, 0, readCnt);
 						totCnt += readCnt;
 						
@@ -481,7 +472,7 @@ public class streamManager {
 						//System.out.println(hashString);
 						//System.out.println(MD5);
 						
-						/*���� ��Ʈ��*/
+						/*다음 스트림*/
 						if (totCnt % streamSize == 0) {
 							streamFO0.flush();
 							streamFO0.close();
@@ -494,7 +485,7 @@ public class streamManager {
 					streamFile1 = new File(streamPath + inStreamDir + streamName + (streamIndex++) + "._inStream1");
 					streamFO1 = new FileOutputStream(streamFile1);
 					
-					/*�� ���� �б�*/
+					/*원본 파일 읽기*/
 					while(true){
 						readCnt = bufferedFI1.read(readBuffer);
 						if (readCnt == -1) {
@@ -505,7 +496,7 @@ public class streamManager {
 						if(public_ok == 1)
 							System.out.println("public error!");
 					
-						/*stream ���Ͽ� write*/
+						/*stream write*/
 						streamFO1.write(readBuffer, 0, readCnt);
 						totCnt += readCnt;
 
@@ -515,7 +506,7 @@ public class streamManager {
 						//System.out.println(hashString);
 						//System.out.println(MD5);
 						
-						/*���� ��Ʈ��*/
+						/*다음 스트림*/
 						if (totCnt % streamSize == 0) {
 							streamFO1.flush();
 							streamFO1.close();			
@@ -548,14 +539,14 @@ public class streamManager {
 		System.out.println("Split two file success!");
 	}
 	
-	/*�Ű������� ���� ��ο� �ִ� stream ���ϵ��� �� ���Ϸ� ����*/
+	/*매개변수로 받은 경로에 있는 stream 파일들을 한 파일로 통합*/
 	private void combineTwoFile(String  streamPath, String origFileName) throws FileNotFoundException, IOException {
 		int readCnt = 0;
 		byte[] buf = null;
 		int j = 0;
 		
 		File streamFiles = new File(streamPath + outStreamDir );
-		String[] files = streamFiles.list();				//stream ���� ����Ʈ
+		String[] files = streamFiles.list();				//stream파일 리스트
 		
 		/*first file I/O stream*/
 		FileOutputStream combinedFO0 = new FileOutputStream(streamPath + privatePublicDir + origFileName + "._private");	//���յ� ����
@@ -577,7 +568,7 @@ public class streamManager {
 				streamFI0 = new FileInputStream(streamPath + outStreamDir + files[i]);
 				buf = new byte[1024];
 				readCnt = 0;
-				/*���յ� ���Ͽ� write*/
+				/*통합될 파일에  write*/
 				while ((readCnt = streamFI0.read(buf)) > -1) {
 					combinedFO0.write(buf, 0, readCnt);
 				}
@@ -585,11 +576,11 @@ public class streamManager {
 			//if mapping info is second file
 			else{
 				//System.out.println("###1");
-				/*�� stream ������ InputStream*/
+				/*각 stream 파일의 InputStream*/
 				streamFI1 = new FileInputStream(streamPath + outStreamDir  + files[i]);
 				buf = new byte[1024];
 				readCnt = 0;
-				/*���յ� ���Ͽ� write*/
+				/*통합될 파일에  write*/
 				while ((readCnt = streamFI1.read(buf)) > -1) {
 					combinedFO1.write(buf, 0, readCnt);
 				}
