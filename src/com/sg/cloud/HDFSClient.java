@@ -94,8 +94,6 @@ public class HDFSClient implements PrivateUpDown1 {
 		
 		int optionNum = 0; 
 		
-		request.setAccessKey(request.getAccessKey());
-		
 		/*accesskey로 인증*/
 		objOutput.writeObject(request);
 		objOutput.flush();
@@ -114,7 +112,6 @@ public class HDFSClient implements PrivateUpDown1 {
 		//access key 인증(sessionkey 받아오기)
 		if (recievFile.getOptionNum() == 0) {
 			this.sessionKey = recievFile.getSessionKey();
-			System.out.println("sessionkey : " + this.sessionKey);
 		}else if (recievFile.getOptionNum() == -1) {
 			return false;
 		}else if (recievFile.getOptionNum() == 2) {
@@ -186,11 +183,20 @@ public class HDFSClient implements PrivateUpDown1 {
 		connectToHDFS();
 		request.setSessionKey(this.sessionKey);
 		
-		File tmpDir = new File(localPath);
-		if(!tmpDir.exists()) 
-			tmpDir.mkdirs();
-		File tmpFile = new File(localPath+"fileH.tmp");
+		/*tmp file들이 저장될 dir를 구하는 과정*/
+		String streamPath;
+		File workingDir = new File(".");
+		if(!workingDir.exists()) 
+			workingDir.mkdirs();
+		String workingPath = workingDir.getCanonicalPath();
+		streamPath = workingPath + "/tmp/" + "p/";
+		File tmpFile = new File(streamPath + request.getFileName() + "._private");
 		
+//		File tmpDir = new File(localPath);
+//		if(!tmpDir.exists()) 
+//			tmpDir.mkdirs();
+//		File tmpFile = new File(localPath+"fileH.tmp");
+//		
 		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile)) ;
 		

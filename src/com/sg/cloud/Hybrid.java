@@ -6,11 +6,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import com.sg.controller.streamManager;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 import com.sg.model.Files;
 
 public class Hybrid {
+	
 	// 두 파일들이 전부 존재 하는지 확인후에 작업 수행...
 	private HDFSClient hdfsModule;
 	private AWSUpDown aWSModule;
@@ -55,6 +57,7 @@ public class Hybrid {
 			break;
 
 		case Constants.hadoop : 		// hdfs connect
+			
 			String hdfsIp = "211.189.127.91";//id;			// 입력 받아야 함
 			int hdfsPort = 15000;//Integer.parseInt(port);		// 입력 받아야 함
 			String hdfsPw = "aa";//pw;
@@ -118,57 +121,56 @@ public class Hybrid {
 		//upload는 모두 transaction을 지켜야 하기 때문에 redo와 undo 처리가 필요
 		int optionNum = 1;
 		Files sendingFile = new Files();
+		int privateRatio = 5; 						// private cloud에 들어갈 비율, 추후 para로 입력 받아야 함.
+		File[] targetFile = new File[3];
+		
+		streamManager stream = new streamManager();
 		
 		String fileName = getFileName(sourceFile);			//입력 받아야 함 file을 잘라서 맨 마지막꺼
 		
 		String fixedDestPath = destPath.substring(1)+"/";						//유저가 만든 디랙토리 패스
 		String fixedFileName =  makeFileName(fileName)+fileName;
-	
+		System.out.println(sourceFile);
 		
-		File targetFile = new File(sourceFile);
-		sendingFile = new Files(fixedFileName, fixedDestPath, optionNum, ClientLauncher.getUser().getId());
+		/* file divide */
+		targetFile = stream.getSendFiles(sourceFile, privateRatio);
+		
+		
 		//confirm exist or not
 		
-		//devide
+		
 
 		//upload start
 		System.out.println("upload start");
 		System.out.println(targetFile);
+		
+		/*make request*/
+		sendingFile = new Files(fileName, fixedDestPath, optionNum, ClientLauncher.getUser().getId());
+		
 		//aws s3 upload
-		if (aWSModule.upload( sendingFile, targetFile) == -1) {
+		if (aWSModule.upload( sendingFile, targetFile[1]) == -1) {
 			System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
 			return -1;
 			
 		}
 
 		//hdfs upload
-		if (hdfsModule.upload(sendingFile, targetFile) == -1){
+		int isError = hdfsModule.upload(sendingFile, targetFile[2]);
+		if ( isError == -1){
 			System.out.println("Sorry, HDFS file uploader encounters some problems. \nplease try again.");
 			return -1;
-		} else if(hdfsModule.upload(sendingFile, targetFile) == -1) {
+		} else if( isError == 2) {
 			System.out.println("Sorry, HDFS session auth failed. \nplease try again.");
 			return 2;
 		}
 		
 		System.out.println("Upload Successfully");
+		
+		/* tmp내의 모든 파일들 삭제하는 method 삽입*/
 		return 0;
 	}
 	
-	/*다운로드시 localpath에 중복된 파일이 있을경우 처리*/
-	public String fileAlreadyExists(String fileName, int count) {
-		int i = 0;
-		
-		String fixedName;
-		StringTokenizer st = new StringTokenizer(fileName, ".");
-		String[] token = new String[fileName.length()/2];
-		//fileName.substring(fileName.lastIndexOf("."), fileName.length())
-		while(st.hasMoreElements()) {			
-			token[i] = st.nextToken();
-			i++;
-		}
-		fixedName = token[0] + "(" + count + ")." + token[1];
-		return fixedName;
-	}
+	
 
 	/* 각 클라우드에서 다운로드. 
 	 * sourcePath : 클라우드에 위치한 파일의 경로
@@ -177,7 +179,8 @@ public class Hybrid {
 	public int download(String sourcePath, String destPath) throws IOException {
 		
 		int optionNum = 2;
-
+		streamManager stream = new streamManager();
+		
 		/*sourcePath(selected Path에서 파일 이름을 추출해 각 Files객체에 넣어 각 다운로드에 넘겨준다.*/
 		String fileName = getFileName(sourcePath);
 		String fixedFileName = makeFileName(fileName) + fileName;
@@ -190,14 +193,14 @@ public class Hybrid {
 		
 		Files request = new Files();
 		request.setDirPath(fixedSourcePath);
-		request.setFileName(fixedFileName);
+		request.setFileName(fileName);
 		request.setOptionNum(optionNum);
 		request.setUserId(ClientLauncher.getUser().getId());
 		
 
 		File awsTmp = null;
 		File hdfsTmp = null;
-		File downFile = null;
+		//File downFile = null; //awsTmp + hdfsTmp
 		
 		BufferedOutputStream bos = null;
 		
@@ -218,8 +221,8 @@ public class Hybrid {
 		}
 		
 		//combination
+		stream.restoreOrigFiles( localDir, fileName);
 		
-
 		//디렉토리에 동일 파일이 있는지 검사 필요
 		/*합친 파일 쓰*/
 //		downFile = new File( localDir );

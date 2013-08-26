@@ -118,10 +118,19 @@ public class AWSUpDown implements PublicUpDown{
 		System.out.println(request.getDirPath()+request.getFileName());
 		System.out.println("Downloading an object");
 		
-		File tmpDir = new File(localPath);
-		if(!tmpDir.exists()) 
-			tmpDir.mkdirs();
-		File tmpFile = new File(localPath+"fileAWS.tmp");
+		/*tmp file들이 저장될 dir를 구하는 과정*/
+		String streamPath;
+		File workingDir = new File(".");
+		if(!workingDir.exists()) 
+			workingDir.mkdirs();
+		String workingPath = workingDir.getCanonicalPath();
+		streamPath = workingPath + "/tmp/" + "p/";
+		File tmpFile = new File(streamPath + request.getFileName() + "._public");
+		
+//		File tmpDir = new File(localPath);
+//		if(!tmpDir.exists()) 
+//			tmpDir.mkdirs();
+//		File tmpFile = new File(localPath+"fileAWS.tmp");
 		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile));
 		

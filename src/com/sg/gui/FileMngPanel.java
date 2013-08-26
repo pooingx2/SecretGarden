@@ -301,7 +301,7 @@ public class FileMngPanel extends JPanel {
 							progressFrame.setVisible(true);
 							
 							// Cloud 업로드를 안거치고 테스트하기 위함
-							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+//							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 
 						}
 
