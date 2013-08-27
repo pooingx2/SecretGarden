@@ -13,6 +13,7 @@ public class Constants {
 	
 	// msg passing server ip, port
 
+
 //	public static final String serverIP= "112.108.39.244";
 	public static final String serverIP= "211.189.127.27";
 	public static final int serverPort = 12600;

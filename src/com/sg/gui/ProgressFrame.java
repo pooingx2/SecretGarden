@@ -223,7 +223,7 @@ public class ProgressFrame extends JFrame  {
 		Object[] rowData = new Object[4];
 		rowData[0] = task.getType();
 		rowData[1] = task.getFileName();
-		rowData[2] = task.getProgressBar();
+		rowData[2] = task.getThProgress().getProgressBar();
 		rowData[3] = "";
 		
 		tableModel.addRow(rowData);

@@ -94,8 +94,6 @@ public class HDFSClient implements PrivateUpDown1 {
 		
 		int optionNum = 0; 
 		
-		request.setAccessKey(request.getAccessKey());
-		
 		/*accesskey로 인증*/
 		objOutput.writeObject(request);
 		objOutput.flush();
@@ -114,7 +112,6 @@ public class HDFSClient implements PrivateUpDown1 {
 		//access key 인증(sessionkey 받아오기)
 		if (recievFile.getOptionNum() == 0) {
 			this.sessionKey = recievFile.getSessionKey();
-			System.out.println("sessionkey : " + this.sessionKey);
 		}else if (recievFile.getOptionNum() == -1) {
 			return false;
 		}else if (recievFile.getOptionNum() == 2) {
@@ -165,7 +162,7 @@ public class HDFSClient implements PrivateUpDown1 {
 			
 			totalBytesRead += bytesRead;
 			System.out.println("sending bytes : " + totalBytesRead);
-			//ClientLauncher.getTaskMgr().getRunningTask().setCur(totalBytesRead);
+			ClientLauncher.getTaskMgr().getRunningTask().setCur(totalBytesRead);
 			writer.write(buf, 0, bytesRead);
 		}
 		writer.flush();
@@ -186,11 +183,20 @@ public class HDFSClient implements PrivateUpDown1 {
 		connectToHDFS();
 		request.setSessionKey(this.sessionKey);
 		
-		File tmpDir = new File(localPath);
-		if(!tmpDir.exists()) 
-			tmpDir.mkdirs();
-		File tmpFile = new File(localPath+"fileH.tmp");
+		/*tmp file들이 저장될 dir를 구하는 과정*/
+		String streamPath;
+		File workingDir = new File(".");
+		if(!workingDir.exists()) 
+			workingDir.mkdirs();
+		String workingPath = workingDir.getCanonicalPath();
+		streamPath = workingPath + "/tmp/" + "p/";
+		File tmpFile = new File(streamPath + request.getFileName() + "._private");
 		
+//		File tmpDir = new File(localPath);
+//		if(!tmpDir.exists()) 
+//			tmpDir.mkdirs();
+//		File tmpFile = new File(localPath+"fileH.tmp");
+//		
 		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile)) ;
 		
@@ -224,6 +230,7 @@ public class HDFSClient implements PrivateUpDown1 {
 			totalByteRead += bytesRead;
 			System.out.println("recv HDFS length :"+totalByteRead);
 			bos.write(buf, 0, bytesRead);
+			ClientLauncher.getTaskMgr().getRunningTask().setCur(ClientLauncher.getTaskMgr().getRunningTask().getCur()+totalByteRead);
 		}
 		
 		System.out.println("HDFS complete");

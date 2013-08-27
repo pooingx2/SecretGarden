@@ -26,9 +26,11 @@ public class DeleteTask extends Task{
 
 	@Override
 	public void run() {
-		ClientLauncher.getTaskMgr().setRunning(true);
-		
+
 		System.out.println("Delete Task Start");
+		
+		ClientLauncher.getTaskMgr().setRunning(true);
+		getThProgress().getThread().start();
 		
 		try {
 			// return 0 = success failure = -1
@@ -39,23 +41,9 @@ public class DeleteTask extends Task{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		int i = getProgressBar().getValue();
-		while(i < 100){
-			try {
-				int value = getProgressBar().getValue();
-				getProgressBar().setValue(value + 1);
-				ClientLauncher.getFrame().getFileListPanel().getFileMngPanel().getProgressFrame().repaint();
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			i = getProgressBar().getValue();
-		}
 
-		System.out.println("Delete Task End");
 		ClientLauncher.getTaskMgr().endTask();
+		System.out.println("Delete Task End");
 	}
 	
 }

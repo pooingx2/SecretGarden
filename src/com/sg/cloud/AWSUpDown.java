@@ -13,7 +13,9 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.Region;
 import com.amazonaws.services.s3.model.S3Object;
+import com.sg.main.ClientLauncher;
 import com.sg.model.Files;
 
 public class AWSUpDown implements PublicUpDown{
@@ -59,7 +61,7 @@ public class AWSUpDown implements PublicUpDown{
 				System.out.println("This bucket is created when you connect AWS first by using this this program.");
 				System.out.println("Don't delete this bucket arbitrary.");
 				System.out.println("If you delete this bucket, you would lose your original data.");
-				s3.createBucket(bucketName);
+				s3.createBucket(bucketName,Region.AP_Tokyo);
 			}
 		}catch (AmazonS3Exception e1){
 			System.out.println("Check your AWS Access key and Secret key");
@@ -118,10 +120,19 @@ public class AWSUpDown implements PublicUpDown{
 		System.out.println(request.getDirPath()+request.getFileName());
 		System.out.println("Downloading an object");
 		
-		File tmpDir = new File(localPath);
-		if(!tmpDir.exists()) 
-			tmpDir.mkdirs();
-		File tmpFile = new File(localPath+"fileAWS.tmp");
+		/*tmp file들이 저장될 dir를 구하는 과정*/
+		String streamPath;
+		File workingDir = new File(".");
+		if(!workingDir.exists()) 
+			workingDir.mkdirs();
+		String workingPath = workingDir.getCanonicalPath();
+		streamPath = workingPath + "/tmp/" + "p/";
+		File tmpFile = new File(streamPath + request.getFileName() + "._public");
+		
+//		File tmpDir = new File(localPath);
+//		if(!tmpDir.exists()) 
+//			tmpDir.mkdirs();
+//		File tmpFile = new File(localPath+"fileAWS.tmp");
 		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(tmpFile));
 		
@@ -135,7 +146,9 @@ public class AWSUpDown implements PublicUpDown{
 			while (-1 != (bytesRead = object.getObjectContent().read(buf, 0, buf.length))) {
 				totalBytesRead += bytesRead;
 				System.out.println("rect AWS length : "+totalBytesRead);
-				bos.write(buf, 0, bytesRead);				
+				bos.write(buf, 0, bytesRead);
+				ClientLauncher.getTaskMgr().getRunningTask().setCur(totalBytesRead);
+				
 			}
 			System.out.println("AWS complete");
 			bos.flush();

@@ -1,4 +1,7 @@
 .classpath
 .project
 .settings/
+tmp/in
+tmp/out
+tmp/p
 bin/

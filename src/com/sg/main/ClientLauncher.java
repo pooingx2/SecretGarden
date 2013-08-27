@@ -2,15 +2,14 @@ package com.sg.main;
 
 import java.io.IOException;
 
-import com.amazonaws.services.s3.transfer.Upload;
 import com.sg.cloud.Hybrid;
 import com.sg.controller.Connector;
 import com.sg.controller.FileMgr;
 import com.sg.controller.PacketMgr;
+import com.sg.controller.StreamManager;
 import com.sg.controller.TaskMgr;
 import com.sg.gui.MainFrame;
 import com.sg.model.UserInfo;
-import com.sg.task.UploadTask;
 
 
 public class ClientLauncher{
@@ -22,8 +21,9 @@ public class ClientLauncher{
 	private static TaskMgr taskMgr;
 	private static Hybrid hybrid;
 	private static UserInfo user;
+	private static StreamManager streamMgr;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 
 		// 재사용 공격을 막기 위한 nonce 생성
@@ -35,10 +35,13 @@ public class ClientLauncher{
 		taskMgr = new TaskMgr();
 		// 통신담당 모듈로 소켓을 연결하고 프로토콜에 맞게 통신을 지원
 		connector = new Connector();
+		// Stream & Metadata module 실행
+		streamMgr = new StreamManager();
 		// cloud Controller module 실행
 		hybrid = new Hybrid();
 		// user에 대한 정보를 저장
 		user = new UserInfo();
+		
 		
 		// 정상 연결시 frame을 띄움
 		if(connector.getSocket()!=null) {
@@ -117,6 +120,15 @@ public class ClientLauncher{
 		ClientLauncher.user = user;
 	}
 
+	public static StreamManager getStreamMgr() {
+		return streamMgr;
+	}
+
+	public static void setStreamMgr(StreamManager streamMgr) {
+		ClientLauncher.streamMgr = streamMgr;
+	}
+
+	
 	
 	
 }

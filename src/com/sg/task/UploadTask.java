@@ -27,9 +27,11 @@ public class UploadTask extends Task{
 
 	@Override
 	public void run() {
-		ClientLauncher.getTaskMgr().setRunning(true);
 		
 		System.out.println("Upload Task Start");
+		
+		ClientLauncher.getTaskMgr().setRunning(true);
+		getThProgress().getThread().start();
 		
 		try {	
 			if(ClientLauncher.getHybrid().upload(localPath, selectedPath) == 0){
@@ -43,23 +45,9 @@ public class UploadTask extends Task{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		int i = getProgressBar().getValue();
-		while(i < 100 && getRunable()){
-			try {
-				int value = getProgressBar().getValue();
-				getProgressBar().setValue(value + 1);
-				ClientLauncher.getFrame().getFileListPanel().getFileMngPanel().getProgressFrame().repaint();
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			i = getProgressBar().getValue();
-		}
 
-		System.out.println("Upload Task End");
 		ClientLauncher.getTaskMgr().endTask();
+		System.out.println("Upload Task End");
 	}
 	
 }

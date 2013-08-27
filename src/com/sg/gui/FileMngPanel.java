@@ -303,6 +303,7 @@ public class FileMngPanel extends JPanel {
 							progressFrame.addRow(task);
 							progressFrame.setVisible(true);
 							
+
 							// 업로드 task를 안거치고 테스트하기 위함
 //							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 

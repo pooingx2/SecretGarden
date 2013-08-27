@@ -81,12 +81,14 @@ public class FileListPanel extends JPanel {
 			
 			@Override
 			public void valueChanged(TreeSelectionEvent event) {
-				selectedNode = getSelectedNode();
-				selectedNodes = getSelectedNodes();
-				
+
 				fileMngPanel.setStatus(1);
-				if (fileMngPanel.getStatus() == 1 && !editMode) {
+				if (fileMngPanel.getStatus() == 1 && !editMode) {					
+					selectedNode = getSelectedNode();
+					selectedNodes = getSelectedNodes();
+				
 					FileInfo fileInfo = getFileInfo(selectedNode);
+
 					fileMngPanel.getLabel()[0].setText(fileInfo.getName());
 					fileMngPanel.getLabel()[1].setText(fileInfo.getParent());
 					fileMngPanel.getLabel()[2].setText(fileInfo.getDepth());
@@ -203,10 +205,10 @@ public class FileListPanel extends JPanel {
 	// 선택된 트리의 노드를 반환
 	public DefaultMutableTreeNode getSelectedNode() {
 		
-//		return (DefaultMutableTreeNode) fileTree.getLastSelectedPathComponent();
+		return (DefaultMutableTreeNode) fileTree.getLastSelectedPathComponent();
 		
-		TreePath test[] = fileTree.getSelectionPaths();
-		return (DefaultMutableTreeNode) test[test.length-1].getLastPathComponent();
+//		TreePath test[] = fileTree.getSelectionPaths();
+//		return (DefaultMutableTreeNode) test[test.length-1].getLastPathComponent();
 
 	}
 	
