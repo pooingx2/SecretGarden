@@ -1,5 +1,9 @@
 package com.sg.task;
 
+import java.io.IOException;
+
+import javax.swing.JOptionPane;
+
 import com.sg.main.ClientLauncher;
 
 public class DownloadTask extends Task{
@@ -23,7 +27,20 @@ public class DownloadTask extends Task{
 	@Override
 	public void run() {
 		ClientLauncher.getTaskMgr().setRunning(true);
+		
 		System.out.println("Download Task Start");
+		
+		try {
+			// return 0 = success	failure = -1
+			if(ClientLauncher.getHybrid().download(selectedPath, localPath) == 0){
+				ClientLauncher.getFrame().getFileListPanel().download();
+			}
+			else
+				JOptionPane.showMessageDialog(null, "download failure");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		int i = getProgressBar().getValue();
 		while(i < 100){
 			try {

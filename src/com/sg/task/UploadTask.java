@@ -1,9 +1,11 @@
 package com.sg.task;
 
-import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
+import java.io.IOException;
+
+import javax.swing.JOptionPane;
 
 import com.sg.main.ClientLauncher;
+import com.sg.model.MetaData;
 
 public class UploadTask extends Task{
 	
@@ -26,8 +28,22 @@ public class UploadTask extends Task{
 	@Override
 	public void run() {
 		ClientLauncher.getTaskMgr().setRunning(true);
+		
 		System.out.println("Upload Task Start");
-		//ClientLauncher.getHybrid().upload(sourceFile, destPath)
+		
+		try {	
+			if(ClientLauncher.getHybrid().upload(localPath, selectedPath) == 0){
+				MetaData m_data = new MetaData();
+				ClientLauncher.getFrame().getFileListPanel().upload(localPath, getMax(), m_data);
+			}
+			else
+				JOptionPane.showMessageDialog(null, "upload failure");
+
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		int i = getProgressBar().getValue();
 		while(i < 100 && getRunable()){
 			try {

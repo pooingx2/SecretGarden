@@ -21,6 +21,7 @@ import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 import com.sg.model.FileInfo;
 import com.sg.model.MetaData;
+import com.sg.task.DeleteTask;
 import com.sg.task.DownloadTask;
 import com.sg.task.Task;
 import com.sg.task.UploadTask;
@@ -239,7 +240,7 @@ public class FileMngPanel extends JPanel {
 		private String localUploadPath;	// upload filePath
 		private long uploadFileSize;	// upload fileSize
 		private MetaData m_data;		// upload metaData
-		private String localDownloadPath;
+		private String localPath;
 		
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -253,7 +254,7 @@ public class FileMngPanel extends JPanel {
 			if(event.getSource()==btn[1]){
 				
 				dirName	= textField[0].getText();
-				localDownloadPath = textField[2].getText();
+				localPath = textField[2].getText();
 								
 				// create
 				if(status == 2) {
@@ -279,11 +280,11 @@ public class FileMngPanel extends JPanel {
 							localUploadPath = file.getAbsolutePath();
 							uploadFileSize = file.length();
 
+							/*
 							// 실제 Cloud 업로드
 							try {
 								// return 0 = success	failure = -1
 								if(ClientLauncher.getHybrid().upload(localUploadPath,selectedPath) == 0){
-									/* 메타데이터 전송 */
 //									MetaData m_data = new MetaData();
 									ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 								}
@@ -292,6 +293,8 @@ public class FileMngPanel extends JPanel {
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
+							//Task 객체로 이동
+							*/
 
 							// 업로드 Task를 추가 큐가 비어있으면 바로 수행 (다른 Task가 있는경우 그 Task를 기다림)
 							Task task = new UploadTask(localUploadPath,selectedPath,uploadFileSize);
@@ -300,8 +303,8 @@ public class FileMngPanel extends JPanel {
 							progressFrame.addRow(task);
 							progressFrame.setVisible(true);
 							
-							// Cloud 업로드를 안거치고 테스트하기 위함
-							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
+							// 업로드 task를 안거치고 테스트하기 위함
+//							ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
 
 						}
 
@@ -309,12 +312,13 @@ public class FileMngPanel extends JPanel {
 				}
 				// download
 				else if(status == 4) {
-					if(localDownloadPath.equals("")){
+					if(localPath.equals("")){
 						JOptionPane.showMessageDialog(null, "Load file");
 					}
 					else{
 						String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
 
+						/*
 						try {
 							// return 0 = success	failure = -1
 							if(ClientLauncher.getHybrid().download(selectedPath, localDownloadPath) == 0){
@@ -325,25 +329,27 @@ public class FileMngPanel extends JPanel {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
+						// Task 객체로 이동
+						*/
 						
 						// 업로드 Task를 추가 큐가 비어있으면 바로 수행 (다른 Task가 있는경우 그 Task를 기다림)
 						FileInfo fileInfo= ClientLauncher.getFrame().getFileListPanel().getFileInfo(
 								ClientLauncher.getFrame().getFileListPanel().getSelectedNode());
-						Task task = new DownloadTask(selectedPath, localDownloadPath, Long.parseLong(fileInfo.getSize()));
+						Task task = new DownloadTask(selectedPath, localPath, Long.parseLong(fileInfo.getSize()));
 						task.setFileName(fileInfo.getName().toString());
 						ClientLauncher.getTaskMgr().addTask(task);
 						progressFrame.addRow(task);
 						progressFrame.setVisible(true);
 						
-						// Cloud 업로드를 안거치고 테스트하기 위함
-						ClientLauncher.getFrame().getFileListPanel().upload(localUploadPath, uploadFileSize, m_data);
-
+						// task를 안거치고 뷰 테스트
+						// ClientLauncher.getHybrid().download(selectedPath, localDownloadPath)
 					}
 				}
 				// delete
 				else if(status == 5) {
 					// Cloud Delete 코드 추가
 					String selectedPath = ClientLauncher.getFrame().getFileListPanel().getSelectedPath();
+					/*
 					try {
 						// return 0 = success failure = -1
 						if (ClientLauncher.getHybrid().delete(selectedPath) == 0) {
@@ -354,8 +360,19 @@ public class FileMngPanel extends JPanel {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+					// DelteTask 객체로 이동
+					*/
 					
-
+					FileInfo fileInfo= ClientLauncher.getFrame().getFileListPanel().getFileInfo(
+							ClientLauncher.getFrame().getFileListPanel().getSelectedNode());
+					Task task = new DeleteTask(selectedPath, localPath, Long.parseLong(fileInfo.getSize()));
+					task.setFileName(fileInfo.getName().toString());
+					ClientLauncher.getTaskMgr().addTask(task);
+					progressFrame.addRow(task);
+					progressFrame.setVisible(true);
+					
+					// task를 안거치고 뷰 테스트
+					// ClientLauncher.getFrame().getFileListPanel().delete();
 				}
 			}
 

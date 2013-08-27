@@ -20,6 +20,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
@@ -47,6 +48,7 @@ public class FileListPanel extends JPanel {
 	private DefaultMutableTreeNode root;
 	private Vector<FileInfo> fileInfoList;
 	private DefaultMutableTreeNode selectedNode;
+	private DefaultMutableTreeNode[] selectedNodes;
 	
 	public FileListPanel(int w, int h) {
 
@@ -67,13 +69,21 @@ public class FileListPanel extends JPanel {
 		root = new DefaultMutableTreeNode("root");
 		model = new DefaultTreeModel(root);
 		
+		
+		
+
+		
 		// File view Tree 등록
 		fileTree = new JTree(model);
 		fileTree.setRowHeight(20);
 		fileTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {	
+			
+			
 			@Override
 			public void valueChanged(TreeSelectionEvent event) {
 				selectedNode = getSelectedNode();
+				selectedNodes = getSelectedNodes();
+				
 				fileMngPanel.setStatus(1);
 				if (fileMngPanel.getStatus() == 1 && !editMode) {
 					FileInfo fileInfo = getFileInfo(selectedNode);
@@ -90,6 +100,8 @@ public class FileListPanel extends JPanel {
 				}
 			}
 		});
+		
+		
 		
 		fileTree.setEditable(false);
 		fileTree.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
@@ -190,8 +202,30 @@ public class FileListPanel extends JPanel {
 	
 	// 선택된 트리의 노드를 반환
 	public DefaultMutableTreeNode getSelectedNode() {
-		return (DefaultMutableTreeNode) fileTree.getLastSelectedPathComponent();
+		
+//		return (DefaultMutableTreeNode) fileTree.getLastSelectedPathComponent();
+		
+		TreePath test[] = fileTree.getSelectionPaths();
+		return (DefaultMutableTreeNode) test[test.length-1].getLastPathComponent();
+
 	}
+	
+	
+	// 선택된 트리의 노드를 반환
+	public DefaultMutableTreeNode[] getSelectedNodes() {
+
+		TreePath test[] = fileTree.getSelectionPaths();
+		DefaultMutableTreeNode[] result;
+		
+		result = new DefaultMutableTreeNode[test.length];
+		
+		for(int i=0;i<test.length;i++) {
+			result[i] = (DefaultMutableTreeNode) test[i].getLastPathComponent();
+		}
+		return result;
+
+	}
+	
 	
 	// 파일트리에서 해당 노드의 정보를 반환
 	public FileInfo getFileInfo(DefaultMutableTreeNode temp){
@@ -264,6 +298,26 @@ public class FileListPanel extends JPanel {
 		return path;
 	}
 	
+	public Vector<String> getSelectedPaths(){
+		
+		String path;
+		
+		Vector<String> result;
+		result = new Vector<>();
+		
+		for(DefaultMutableTreeNode item : selectedNodes) {
+			path = "";
+			for(int i=0;i<(item.getPath().length);i++){
+				path += "/" + item.getPath()[i];
+			}
+			System.out.println("\t\t\t path : "+ path);
+			result.add(path);
+		}
+		
+		//return path;
+		return result;
+	}
+	
 	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
 		this.removeAll();
@@ -300,7 +354,7 @@ public class FileListPanel extends JPanel {
 		}
 	}
 	
-	public void upload(String filePath, Long fileSize, MetaData Object){
+	public void upload(String filePath, Long fileSize, MetaData obj){
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a parent directory");
 		else {
@@ -315,15 +369,15 @@ public class FileListPanel extends JPanel {
 	}
 	
 	
-	public void download()
-	{
+	public void download() {
+		
 		if (selectedNode == null)
 			JOptionPane.showMessageDialog(null, "Choose a file");
 		else
 		{
-			int type;		 // 패킷 타입
-			int length;	 // 패킷 길이
-			String data; 	 // 전송 데이터
+			int type;		// 패킷 타입
+			int length;		// 패킷 길이
+			String data;	// 전송 데이터
 			FileInfo fileInfo = getFileInfo(selectedNode);
 			
 			type = Constants.PacketType.FileDownloadRequest.getType();

@@ -41,7 +41,7 @@ public class PacketMgr {
 		}
 
 		// 로그인 요청 응답에 대한 패킷을 처리 (LoginPanel -> ConnectionPanel)
-		if(type==Constants.PacketType.LoginResponse.getType()){
+		else if(type==Constants.PacketType.LoginResponse.getType()){
 			JOptionPane.showMessageDialog(null, "Welcome");
 
 			ClientLauncher.getUser().setId(token[0]);
@@ -55,7 +55,7 @@ public class PacketMgr {
 		}
 
 		// 로그아웃 응답에 대한 패킷을 처리 (현재 패널 -> LoginPanel)
-		if(type==Constants.PacketType.LogoutResponse.getType()){
+		else if(type==Constants.PacketType.LogoutResponse.getType()){
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getLoginPanel());
 //			ClientLauncher.exit();
 			ClientLauncher.getConnector().newConnector();
@@ -63,14 +63,14 @@ public class PacketMgr {
 		}
 
 		// 회원가입 응답에 대한 패킷을 처리 (회원가입 프레임을 초기화 하고 없앰)
-		if(type==Constants.PacketType.SignupResponse.getType()){
+		else if(type==Constants.PacketType.SignupResponse.getType()){
 			JOptionPane.showMessageDialog(null, "Thank you");
 			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().initialize();
 			ClientLauncher.getFrame().getLoginPanel().getSigupFrame().dispose();
 		}
 
 		// 디렉토리 리스트 요청 응답에 대한 패킷을 처리(디렉토리 정보들을 테이블에 저장)
-		if(type==Constants.PacketType.DirectoryListResponse.getType()) {
+		else if(type==Constants.PacketType.DirectoryListResponse.getType()) {
 
 			StringTokenizer tokenizer2;
 			String token2[];
@@ -88,6 +88,10 @@ public class PacketMgr {
 
 				while(tokenizer2.hasMoreTokens()) {
 					token2[k] = tokenizer2.nextToken();
+					
+					if(k == 3) {
+						token2[k] = token2[k] + " : " + (10 - Integer.parseInt(token2[k]));
+					}
 					row.add(token2[k]);
 					k++;
 				}
@@ -97,7 +101,7 @@ public class PacketMgr {
 		}
 
 		// 디렉토리 생성에 따른 키 데이터를 수신하여 파일로 변환하는 과정
-		if (type == Constants.PacketType.DirectoryCreateResponse.getType()) {
+		else if (type == Constants.PacketType.DirectoryCreateResponse.getType()) {
 			String test = fileMgr.saveKeyFile(token[0]);
 			while(test==null){
 				JOptionPane.showMessageDialog(null, "You have to save the key file");
@@ -106,7 +110,7 @@ public class PacketMgr {
 		}
 
 		// 디렉토리 액세스 리스판스(Key file 인증에 따른 디렉토리 접속 키 부여)
-		if (type == Constants.PacketType.DirectoryAccessResponse.getType()) {
+		else if (type == Constants.PacketType.DirectoryAccessResponse.getType()) {
 
 			ClientLauncher.getFileMgr().init();
 
@@ -119,7 +123,7 @@ public class PacketMgr {
 		}
 
 		// 폴더 생성
-		if (type == Constants.PacketType.FolderCreateResponse.getType()) {
+		else if (type == Constants.PacketType.FolderCreateResponse.getType()) {
 			ClientLauncher.getFileMgr().init();
 
 			for (int j = 0; j < i; j++) {
@@ -130,7 +134,7 @@ public class PacketMgr {
 		}
 
 		// 메타데이터 업로드
-		if (type == Constants.PacketType.FileUploadResponse.getType()) {
+		else if (type == Constants.PacketType.FileUploadResponse.getType()) {
 			ClientLauncher.getFileMgr().init();
 
 			for (int j = 0; j < i; j++) {
@@ -141,25 +145,25 @@ public class PacketMgr {
 		}
 
 		// 메타데이터 다운로드
-		if (type == Constants.PacketType.FileDownloadResponse.getType()) {
+		else if (type == Constants.PacketType.FileDownloadResponse.getType()) {
 			System.out.println("meta data is : " + token[0]);
 		}
 
 		// 존재하는 아이디인지 확인
-		if (type == Constants.PacketType.IdCheckResponse.getType()) {
+		else if (type == Constants.PacketType.IdCheckResponse.getType()) {
 			String userId = token[0];
 			ClientLauncher.getFrame().getDirectoryListPanel().getDirMngPanel().getShareFrame().getTextArea().append(userId+"\n");
 		}
 		
 		// 공유가 완료 되었는지 확인
-		if (type == Constants.PacketType.ShareResponse.getType()) {
+		else if (type == Constants.PacketType.ShareResponse.getType()) {
 			ClientLauncher.getFrame().getDirectoryListPanel().getDirMngPanel().getShareFrame().dispose();
 			ClientLauncher.getFrame().getDirectoryListPanel().getDirMngPanel().getShareFrame().initialize();
 			JOptionPane.showMessageDialog(null, token[0]);
 		}
 		
 		// 공유 목록 리스트 확인
-		if (type == Constants.PacketType.ShareListResponse.getType()) {
+		else if (type == Constants.PacketType.ShareListResponse.getType()) {
 			
 			StringTokenizer tokenizer2;
 			String token2[];
@@ -186,6 +190,7 @@ public class PacketMgr {
 			ClientLauncher.getFrame().getSharingPanel().initialize();
 			ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getSharingPanel());
 		}
+
 		
 		// 프로그램 종료
 		if (type == Constants.PacketType.PROGRAM_EXIT_RESPONSE.getType()) {
