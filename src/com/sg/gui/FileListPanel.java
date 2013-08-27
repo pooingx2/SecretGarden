@@ -307,7 +307,7 @@ public class FileListPanel extends JPanel {
 			int type = Constants.PacketType.FileUploadRequest.getType();
 			String data = filePath + "\t" + selectedNode.toString() + "\t" + 
 					((selectedNode.getLevel()+1)+"") + "\t" + 
-					ClientLauncher.getFileMgr().getRootDirID() +"\t"+fileSize+"\t"+"defaultMetadata";
+					ClientLauncher.getFileMgr().getRootDirID() +"\t"+fileSize+"\t"+Object.toString();
 			int length = data.length();
 			
 			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
