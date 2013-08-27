@@ -13,6 +13,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.Region;
 import com.amazonaws.services.s3.model.S3Object;
 import com.sg.model.Files;
 
@@ -50,7 +51,6 @@ public class AWSUpDown implements PublicUpDown{
 	public boolean auth(String userId) {
 		// TODO Auto-generated method stub
 		//키 , 키아이디 입력
-		
 		s3 = new AmazonS3Client(new MyAWSCredentials(keyId, key));
 		try {
 			String bucketName = "secretgarden"+userId;
@@ -59,7 +59,7 @@ public class AWSUpDown implements PublicUpDown{
 				System.out.println("This bucket is created when you connect AWS first by using this this program.");
 				System.out.println("Don't delete this bucket arbitrary.");
 				System.out.println("If you delete this bucket, you would lose your original data.");
-				s3.createBucket(bucketName);
+				s3.createBucket(bucketName, Region.AP_Tokyo);
 			}
 		}catch (AmazonS3Exception e1){
 			System.out.println("Check your AWS Access key and Secret key");
@@ -163,21 +163,21 @@ public class AWSUpDown implements PublicUpDown{
 		//키파일 인증 후 메타데이터 변경 포함
 		//디렉토리를 지
 		String bucketName = "secretgarden" + request.getUserId();//입력 받아야 함. 키파일과 연결도 해야 함
-		String fileDir = getFileDir(request.getFileName());
+//		String fileDir = getFileDir(request.getFileName());
 		
-		System.out.println("Deleting an object\n");
-		System.out.println(request.getDirPath()+fileDir);
-		s3.deleteObject(bucketName, request.getDirPath()+fileDir);
+		System.out.println("Deleting an object");
+		System.out.println(request.getDirPath()+request.getFileName() + "\n");
+		s3.deleteObject(bucketName, request.getDirPath()+request.getFileName());
 				//+request.getFileName());
 
 		
 		return true;
 	}
-	private String getFileDir(String fileName){
-		String fileDir;		
-		fileDir = fileName.substring(0, fileName.lastIndexOf("/")+1);
-		return fileDir;
-	}
+//	private String getFileDir(String fileName){
+//		String fileDir;		
+//		fileDir = fileName.substring(0, fileName.lastIndexOf("/")+1);
+//		return fileDir;
+//	}
 	@Override
 	public int upload() throws IOException {
 		return 0;
