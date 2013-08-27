@@ -5,24 +5,28 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import com.sg.main.ClientLauncher;
+import com.sg.model.FileInfo;
 
 public class DownloadTask extends Task{
 	
 	private String localPath;
 	private String selectedPath;
+	private FileInfo fileInfo;
 		
 	public DownloadTask(){
 		super();
 	}
 	
-	public DownloadTask(String selectedPath, String localPath, long fileSize){
+	public DownloadTask(String selectedPath, String localPath, long fileSize, FileInfo fileInfo){
 		
 		super();
 		this.setType("Download");
 		this.localPath = localPath;
 		this.selectedPath = selectedPath;
 		this.setMax(fileSize);
+		this.fileInfo = fileInfo;
 	}
+
 
 	@Override
 	public void run() {
@@ -35,7 +39,7 @@ public class DownloadTask extends Task{
 		try {
 			// return 0 = success	failure = -1
 			if(ClientLauncher.getHybrid().download(selectedPath, localPath) == 0){
-				ClientLauncher.getFrame().getFileListPanel().download();
+				ClientLauncher.getFrame().getFileListPanel().download(fileInfo);
 			}
 			else
 				JOptionPane.showMessageDialog(null, "download failure");

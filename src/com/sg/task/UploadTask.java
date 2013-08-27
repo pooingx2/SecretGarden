@@ -3,26 +3,30 @@ package com.sg.task;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.sg.main.ClientLauncher;
+import com.sg.model.FileInfo;
 import com.sg.model.MetaData;
 
 public class UploadTask extends Task{
 	
 	private String localPath;
 	private String selectedPath;
+	private FileInfo fileInfo;
 	
 	public UploadTask(){
 		super();
 	}
 	
-	public UploadTask(String localPath, String selectedPath, long fileSize){
+	public UploadTask(String localPath, String selectedPath, long fileSize, FileInfo fileInfo){
 
 		super();
 		this.setType("Upload");
 		this.localPath = localPath;
 		this.selectedPath = selectedPath;
 		this.setMax(fileSize);
+		this.fileInfo = fileInfo;
 	}
 
 	@Override
@@ -35,8 +39,8 @@ public class UploadTask extends Task{
 		
 		try {	
 			if(ClientLauncher.getHybrid().upload(localPath, selectedPath) == 0){
-				MetaData m_data = new MetaData();
-				ClientLauncher.getFrame().getFileListPanel().upload(localPath, getMax(), m_data);
+				MetaData metaData = ClientLauncher.getStreamMgr().getMetaData();
+				ClientLauncher.getFrame().getFileListPanel().upload(localPath, getMax(), metaData, fileInfo);
 			}
 			else
 				JOptionPane.showMessageDialog(null, "upload failure");

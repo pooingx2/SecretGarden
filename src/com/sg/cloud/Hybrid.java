@@ -1,6 +1,5 @@
 package com.sg.cloud;
 
-import java.io.FileOutputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -169,8 +168,8 @@ public class Hybrid {
 			return 2;
 		}
 		
-		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setValue(100);
-		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Upload Success");
+//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setValue(100);
+//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Upload Success");
 		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().setRunable(false);
 		System.out.println("Upload Successfully");
 		
@@ -254,9 +253,11 @@ public class Hybrid {
 //		} 
 //		bos.close();
 		
-		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setValue(100);
-		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Download Success");
+//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setValue(100);
+//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Download Success");
 		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().setRunable(false);
+//		ClientLauncher.getFrame().getFileListPanel().getFileMngPanel().getProgressFrame().repaint();
+		
 		System.out.println("Download Successfully");
 		
 		return 0;
@@ -293,9 +294,11 @@ public class Hybrid {
 			return -1;
 		}
 		
-		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setValue(100);
-		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Delete Success");
+//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setValue(100);
+//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Delete Success");
 		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().setRunable(false);
+//		ClientLauncher.getFrame().getFileListPanel().getFileMngPanel().getProgressFrame().repaint();
+		
 		System.out.println("Delete Successfully");
 		
 		return 0;

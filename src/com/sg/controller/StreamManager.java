@@ -235,6 +235,18 @@ public class StreamManager {
 		String lastStream_size = Long.toString(origFile.length() % (long)streamSize);
 		String stream_count = Integer.toString(streamCount + 1);
 		*/
+		
+
+		filePath = path;
+		fileName = name;
+		fileType = getType(name);
+		file_size = Long.toString(origFile.length());
+		stream_size = Integer.toString(streamSize);
+		lastStream_size = Long.toString(origFile.length() % (long)streamSize);
+		stream_count = Integer.toString(streamCount + 1);
+
+		
+		getMetaData().setCloudTable(cloudTable);
 		getMetaData().setFilePath(path);
 		getMetaData().setFileName(name);
 		getMetaData().setFileType(getType(name));
@@ -554,12 +566,16 @@ public class StreamManager {
 
 			
 			privateFI.close();
-			streamFO0.flush();
-			streamFO0.close();
+			if(streamFO0 != null){
+				streamFO0.flush();
+				streamFO0.close();
+			}
 			
 			publicFI.close();
-			streamFO1.flush();
-			streamFO1.close();
+			if(streamFO1 != null) {
+				streamFO1.flush();
+				streamFO1.close();
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();

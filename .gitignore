@@ -1,6 +1,7 @@
 .classpath
 .project
 .settings/
+tmp/
 tmp/in
 tmp/out
 tmp/p
