@@ -44,11 +44,10 @@ public class HDFSClient implements PrivateUpDown1 {
 //		System.out.println("sending Request");
 //		try {
 //			String accessKey = "aa";	//generateRandomKey();
-//			request.setAccessKey(accessKey);
 //			objOutput.writeObject(request);
 //			objOutput.flush();
 //			
-//		/*결과를 얻어온다*/
+//		/*寃곌낵瑜��살뼱�⑤떎*/
 //			Files recvFile = new Files();
 //			recvFile = (Files) objInput.readObject();
 //			this.accessKey = recvFile.getAccessKey();
@@ -84,8 +83,8 @@ public class HDFSClient implements PrivateUpDown1 {
 	}
 
 	
-	/*accessKey를 통해 인증 후 sessionKey 받아*/
-	/*login시*/
+	/*accessKey瑜��듯빐 �몄쬆 ��sessionKey 諛쏆븘*/
+	/*login��*/
 	@Override
 	public boolean auth(Files request) throws IOException {
 		boolean isConnected;
@@ -94,28 +93,28 @@ public class HDFSClient implements PrivateUpDown1 {
 		
 		int optionNum = 0; 
 		
-		/*accesskey로 인증*/
+		/*accesskey濡��몄쬆*/
 		objOutput.writeObject(request);
 		objOutput.flush();
 
-		/*session키를 받아옴*/
+		/*session�ㅻ� 諛쏆븘�*/
 		try {
 			recievFile = (Files) objInput.readObject();
 		
 		} catch (ClassNotFoundException e) {
-			System.out.println("클래스를 찾지 못했습니다. 왜???");
+			System.out.println("�대옒�ㅻ� 李얠� 紐삵뻽�듬땲�� ��??");
 			return false;
 		}
 		
 		System.out.println("recv option : " + recievFile.getOptionNum());
 		System.out.println("recv sessionKey : " + recievFile.getSessionKey());
-		//access key 인증(sessionkey 받아오기)
+		//access key 확인(sessionkey 획득)
 		if (recievFile.getOptionNum() == 0) {
 			this.sessionKey = recievFile.getSessionKey();
 		}else if (recievFile.getOptionNum() == -1) {
 			return false;
 		}else if (recievFile.getOptionNum() == 2) {
-			System.out.println("인증 실패");
+			System.out.println("�몄쬆 �ㅽ뙣");
 			return false;
 		}
 		
@@ -126,14 +125,14 @@ public class HDFSClient implements PrivateUpDown1 {
 	@Override
 	public int upload(Files fileDescript, File targetFile) throws IOException {
 		/*
-		 * 디렉토리 중복 여부 확인 필요
+		 * �붾젆�좊━ 以묐났 �щ� �뺤씤 �꾩슂
 		 */		
 		int optionNum = 1;
 		int bytesRead = 0;
 		byte[] buf = new byte[10240];
 		readFile = new BufferedInputStream(new FileInputStream(targetFile));
 
-		/*인증 후 재 연결*/
+		/*�몄쬆 �����곌껐*/
 		connectToHDFS();
 		fileDescript.setSessionKey(this.sessionKey);
 
@@ -145,15 +144,15 @@ public class HDFSClient implements PrivateUpDown1 {
 			recievFile = (Files) objInput.readObject();
 		
 		} catch (ClassNotFoundException e) {
-			System.out.println("클래스를 찾지 못했습니다. 왜???");
+			System.out.println("�대옒�ㅻ� 李얠� 紐삵뻽�듬땲�� ��??");
 
 		}
 		if (recievFile.getOptionNum() == -1) {
-			System.out.println("업로드 실패");
+			System.out.println("�낅줈���ㅽ뙣");
 			return -1;
 		}
 		if (recievFile.getOptionNum() == 2) {
-			System.out.println("session 인증 실패");
+			System.out.println("session �몄쬆 �ㅽ뙣");
 			return 2;
 		}
 		//test
@@ -183,7 +182,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		connectToHDFS();
 		request.setSessionKey(this.sessionKey);
 		
-		/*tmp file들이 저장될 dir를 구하는 과정*/
+		/*tmp dir가 있는지 확인 후 작업*/
 		String streamPath;
 		File workingDir = new File(".");
 		if(!workingDir.exists()) 
@@ -210,14 +209,14 @@ public class HDFSClient implements PrivateUpDown1 {
 			recievFile = (Files) objInput.readObject();
 		
 		} catch (ClassNotFoundException e) {
-			System.out.println("클래스를 찾지 못했습니다. 왜???");
+			System.out.println("�대옒�ㅻ� 李얠� 紐삵뻽�듬땲�� ��??");
 
 		}
 		if (recievFile.getOptionNum() == -1) {
-			System.out.println("HDFS에 파일이 존재하지 않음");
+			System.out.println("HDFS���뚯씪��議댁옱�섏� �딆쓬");
 			return null;
 		}else if (recievFile.getOptionNum() == 2) {
-			System.out.println("session 인증 실패");
+			System.out.println("session �몄쬆 �ㅽ뙣");
 			return null;
 		}
 		
@@ -250,6 +249,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		}
 	}
 
+	
 	@Override
 	public boolean delete(Files request) throws IOException {
 
@@ -263,17 +263,17 @@ public class HDFSClient implements PrivateUpDown1 {
 		try {
 			recievFile = (Files) objInput.readObject();
 		} catch (IOException e) {
-			System.out.println("object 수신 실패");
+			System.out.println("file을 찾을 수 없습니다.");
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			System.out.println("클래스를 찾지 못했습니다. 왜???");
+			System.out.println("classNotFound??");
 
 		}
 		if (recievFile.getOptionNum() == 1) {
-			System.out.println("HDFS에 파일이 존재하지 않음");
+			System.out.println("HDFS delete 실패");
 			return false;
 		} else if (recievFile.getOptionNum() == 2) {
-			System.out.println("session 인증 실패");
+			System.out.println("session auth failed");
 			return false;
 		} 
 		return true;
@@ -282,7 +282,7 @@ public class HDFSClient implements PrivateUpDown1 {
 
 	private String generateRandomKey() {
 		
-		/*디비에 저장*/
+		/*�붾퉬����옣*/
 		
 		char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 		StringBuilder sb = new StringBuilder();

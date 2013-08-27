@@ -272,7 +272,7 @@ public class Hybrid {
 		
 		Files request = new Files();
 		request.setDirPath(fixedSourcePath);
-		request.setFileName(fixedFileName);
+		request.setFileName(fileName);
 		request.setOptionNum(optionNum);
 		request.setUserId(ClientLauncher.getUser().getId());
 		

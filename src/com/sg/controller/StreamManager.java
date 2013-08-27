@@ -3,7 +3,6 @@ package com.sg.controller;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,8 +16,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.StringTokenizer;
 
 import com.sg.main.ClientLauncher;
+import com.sg.model.MetaData;
+
 
 public class StreamManager {
+
 	/*split 정보*/
 	public final static int maxSpliteSize = 10;
 	public final static int sizeKB = 1024 * 1;
@@ -65,6 +67,8 @@ public class StreamManager {
 	private String stream_size;
 	private String lastStream_size;
 	
+	private MetaData metaData;
+	
 	public StreamManager() throws IOException {
 		projDir = "";
 		outStreamDir = "out/";
@@ -72,6 +76,7 @@ public class StreamManager {
 		privatePublicDir = "p/";
 		
 
+		metaData = new MetaData();
 		/*추후에 static으로 박아놓으면 편함*/
 		/*현재 dir를 구하는 과정*/
 		
@@ -83,6 +88,15 @@ public class StreamManager {
 		streamPath = checkDir(".") + "/tmp/";
 		
 	}
+	
+	public MetaData getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(MetaData metaData) {
+		this.metaData = metaData;
+	}
+
 	/*폴더가 존재하는지 확인후 없으면 폴더 생성*/
 	private String checkDir(String dirPath) throws IOException {
 		File checkDir = new File(dirPath);
@@ -90,6 +104,8 @@ public class StreamManager {
 			checkDir.mkdirs();
 		return checkDir.getCanonicalPath();
 	}
+	
+	
 	/*main*/
 //	public static void main(String[] args) {
 //		/*================================ Send to server ================================*/
@@ -210,6 +226,7 @@ public class StreamManager {
 			else
 				j1++;
 		}
+		/*
 		String filePath = path;
 		String fileName = name;
 		String fileType = getType(name);
@@ -217,7 +234,14 @@ public class StreamManager {
 		String stream_size = Integer.toString(streamSize);
 		String lastStream_size = Long.toString(origFile.length() % (long)streamSize);
 		String stream_count = Integer.toString(streamCount + 1);
-		
+		*/
+		getMetaData().setFilePath(path);
+		getMetaData().setFileName(name);
+		getMetaData().setFileType(getType(name));
+		getMetaData().setFile_size(Long.toString(origFile.length()));
+		getMetaData().setStream_size(Integer.toString(streamSize));
+		getMetaData().setLastStream_size(Long.toString(origFile.length() % (long)streamSize));
+		getMetaData().setStream_count(Integer.toString(streamCount + 1));
 				
 		/*account info*/
 		String account_id = getUserID();
@@ -272,6 +296,7 @@ public class StreamManager {
 			stream_size = in.readLine();
 			lastStream_size = in.readLine();
 			stream_count = in.readLine();
+			
 		    /*
 			System.out.println(cloudTable);
 			System.out.println(filePath);
