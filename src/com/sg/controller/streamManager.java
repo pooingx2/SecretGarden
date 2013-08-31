@@ -166,6 +166,9 @@ public class streamManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		deleteTmpMetaFiles();
+		
 		return true;
 	}
 	
@@ -176,7 +179,7 @@ public class streamManager {
 
 	private static String getType(String fileName){
 		String typeStart = ".";
-		String typeName = fileName.substring(fileName.indexOf(typeStart)+1);
+		String typeName = fileName.substring(fileName.lastIndexOf(typeStart)+1);
 
 		return typeName;
 	}
@@ -218,10 +221,7 @@ public class streamManager {
 		
 				
 		/*account info*/
-		String account_id = getUserID();
-		
-		//System.out.println(stream_count);
-		
+		String account_id = getUserID();		
 		
 	    try {
 	    	out.write(cloudTable);		//1. cloud mapping table
@@ -240,10 +240,6 @@ public class streamManager {
 	    	out.newLine();				//token
 	    	out.write(stream_count);	//8. stream count
 	    	out.newLine();				//token
-	    	
-	    	out.write(account_id);		//9. user ID
-	    	out.newLine();				//token
-
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
@@ -253,7 +249,6 @@ public class streamManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	
 	}
 	
 	private void getMetadata(String path, String name){
@@ -270,16 +265,6 @@ public class streamManager {
 			stream_size = in.readLine();
 			lastStream_size = in.readLine();
 			stream_count = in.readLine();
-		    /*
-			System.out.println(cloudTable);
-			System.out.println(filePath);
-			System.out.println(fileName);
-			System.out.println(fileType);
-			System.out.println(file_size);
-			System.out.println(stream_size);
-			System.out.println(lastStream_size);
-			System.out.println(stream_count);
-			*/
 			
 		    in.close();
 		}
@@ -382,14 +367,14 @@ public class streamManager {
 			while ((readCnt = streamFI.read(buf)) > -1) {
 				combinedFO.write(buf, 0, readCnt);
 			}
-			// System.out.println("##########");
+			streamFI.close();
 		}
-		// System.out.println("1");
-		
+
 		combinedFO.flush();
 		combinedFO.close();
 		
-		
+		//in 디렉토리 tmp 파일들 삭제
+		deleteTmpInFiles();
 		System.out.println("Combine success!");	
 	}
 	
@@ -531,6 +516,9 @@ public class streamManager {
 			streamFO1.flush();
 			streamFO1.close();
 			
+			//temp private, public 파일 삭제
+			deletePFile();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -572,6 +560,7 @@ public class streamManager {
 				while ((readCnt = streamFI0.read(buf)) > -1) {
 					combinedFO0.write(buf, 0, readCnt);
 				}
+				streamFI0.close();
 			}
 			//if mapping info is second file
 			else{
@@ -584,6 +573,7 @@ public class streamManager {
 				while ((readCnt = streamFI1.read(buf)) > -1) {
 					combinedFO1.write(buf, 0, readCnt);
 				}
+				streamFI1.close();
 			}
 			j++;
 			// System.out.println("##########");
@@ -595,24 +585,70 @@ public class streamManager {
 		combinedFO1.flush();
 		combinedFO1.close();
 		
-		//delete temp files
-/*		for(int i = 0; i < 6; i++){
-			System.out.println(streamPath + origFileName + i + "._secretgarden");
-			deleteTmpFiles(streamPath + origFileName + i + "._secretgarden");
-		}
-*/
+		deleteTmpOutFiles();
 		System.out.println("Combine two file success!");	
 	}
 	
-	private void deleteTmpFiles(String filePath){
+	/*============================= delete files =============================*/
+	private void _deleteTmpFiles(String filePath){
 		File target = new File(filePath);
-		
-		if(target.delete())
-			System.out.println("Delete seccess!");
-		else
-			System.out.println("Delete fail!");
+		if(target.exists()){
+			if(target.delete())
+				System.out.println("Delete seccess!");
+			else
+				System.out.println("Delete fail!");
+		}else
+			System.out.println("no file!");
 	}
 	
+	
+	public void deleteTmpOutFiles(){
+		/*out*/
+		File streamFiles = new File(streamPath + outStreamDir );
+		
+		String[] files = streamFiles.list();				//stream파일 리스트
+				
+		for (int i = 0; i < files.length; i++) {
+			System.out.println(streamPath + outStreamDir +files[i]);
+			_deleteTmpFiles(streamPath + outStreamDir + files[i]);
+		}
+	}
+	
+	public void deleteTmpInFiles(){
+		/*in*/
+		File streamFiles = new File(streamPath + inStreamDir);
+		String[] files = streamFiles.list();				//stream파일 리스트
+
+		for (int i = 0; i < files.length; i++) {
+			System.out.println(streamPath + inStreamDir +files[i]);
+			_deleteTmpFiles(streamPath + inStreamDir + files[i]);
+		}
+	}
+
+	public void deletePFile(){
+		File streamFiles = new File(streamPath + privatePublicDir);
+		String[] files = streamFiles.list();
+		
+		for (int i = 0; i < files.length; i++) {
+			if(files[i].matches(".*._private")){
+				_deleteTmpFiles(streamPath + privatePublicDir + files[i]);
+			}
+			if(files[i].matches(".*._public")){
+				_deleteTmpFiles(streamPath + privatePublicDir + files[i]);
+			}
+		}
+	}
+	
+	public void deleteTmpMetaFiles(){
+		File streamFiles = new File(streamPath);
+		String[] files = streamFiles.list();
+		
+		for (int i = 0; i < files.length; i++) {
+			if(files[i].matches(".*._metadata")){
+				_deleteTmpFiles(streamPath + files[i]);
+			}
+		}
+	}
 	
 	/*============================= md5 hash =============================*/
 	
@@ -639,6 +675,7 @@ public class streamManager {
 
 		return hashMD5;
 	}
+	
 	public int getStreamSize() {
 		return streamSize;
 	}
@@ -836,4 +873,5 @@ public class streamManager {
 		
 		
 	}
+	
 }
