@@ -135,6 +135,8 @@ public class Hybrid {
 		/* file divide */
 		targetFile = stream.getSendFiles(sourceFile, privateRatio);
 		
+		//stream.deletePFile();
+		//stream.deleteTmpMetaFiles();
 		
 		//confirm exist or not
 		
