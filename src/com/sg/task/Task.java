@@ -6,18 +6,17 @@ public class Task implements Runnable{
 	
 	private String type;
 	private String fileName;
-	private JProgressBar progressBar;
 	private long max;
 	private long cur;
 	private boolean runable;
 	
+	private ThreadProgress thProgress;
 	private Thread task;
 	
 	public Task(){
 		task = new Thread(this);
-		progressBar = new JProgressBar(0,100);
-		progressBar.setStringPainted(true);
 		runable = true;
+		thProgress = new ThreadProgress();
 	}
 	
 	public String getType() {
@@ -56,21 +55,12 @@ public class Task implements Runnable{
 		return task;
 	}
 
-
 	public void setTask(Thread task) {
 		this.task = task;
 	}
 
 	public void threadStart(){
 		this.getTask().start();
-	}
-	
-	public JProgressBar getProgressBar() {
-		return progressBar;
-	}
-
-	public void setProgressBar(JProgressBar progressBar) {
-		this.progressBar = progressBar;
 	}
 
 	public boolean getRunable() {
@@ -79,6 +69,14 @@ public class Task implements Runnable{
 
 	public void setRunable(boolean runable) {
 		this.runable = runable;
+	}
+
+	public ThreadProgress getThProgress() {
+		return thProgress;
+	}
+
+	public void setThProgress(ThreadProgress thProgress) {
+		this.thProgress = thProgress;
 	}
 
 	@Override

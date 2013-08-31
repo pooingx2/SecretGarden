@@ -13,7 +13,9 @@ public class Constants {
 	
 	// msg passing server ip, port
 
-	public static final String serverIP= "211.189.127.27";
+
+//	public static final String serverIP= "112.108.39.244";
+	public static final String serverIP= "10.8.0.1";
 	public static final int serverPort = 12600;
 
 	// 기본 바탕색
@@ -197,8 +199,7 @@ public class Constants {
 		SharingCancelRequest(27),
 		DirectoryDeleteRequest(28),
 		FileDeleteRequest(29),
-//		ShareID
-		
+				
 		// 파일 업로드, 파일 다운로드, 디렉토리 서버 전송, 바인딩 프로토콜
 		FROM_DIR_TO_HDFS_FOR_UPLOAD_METADATA(30),
 		FROM_HDFS_TO_DIR_FOR_MODIFY_MEATAPATH(31),
@@ -206,7 +207,11 @@ public class Constants {
 		FROM_HDFS_TO_DIR_FOR_SEND_METADATA(33),
 
 		PROGRAM_EXIT_REQUEST(50), 
-		PROGRAM_EXIT_RESPONSE(51); 
+		PROGRAM_EXIT_RESPONSE(51),
+		
+		SetDirectoryRequest(70),
+		SetDirectoryResponse(71);
+		
 		
 		final private int type;
 		private PacketType(int type) {

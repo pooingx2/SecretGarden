@@ -108,7 +108,7 @@ public class ProgressFrame extends JFrame  {
 
 
 		// table 헤더 설정
-		tableModel.setColumnIdentifiers(new String[] { " Task", "      File Name", "  Progress bar",""});
+		tableModel.setColumnIdentifiers(new String[] { "  Task", "     File Name", "  Progress bar",""});
 
 		table = new JTable(){
             //  Returning the Class of each column will allow different
@@ -125,8 +125,8 @@ public class ProgressFrame extends JFrame  {
 
 		// columnSize 지정
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.getColumnModel().getColumn(0).setPreferredWidth(70);
-		table.getColumnModel().getColumn(1).setPreferredWidth(170);
+		table.getColumnModel().getColumn(0).setPreferredWidth(80);
+		table.getColumnModel().getColumn(1).setPreferredWidth(160);
 		table.getColumnModel().getColumn(2).setPreferredWidth(160);
 		table.getColumnModel().getColumn(3).setPreferredWidth(40);
 
@@ -223,7 +223,7 @@ public class ProgressFrame extends JFrame  {
 		Object[] rowData = new Object[4];
 		rowData[0] = task.getType();
 		rowData[1] = task.getFileName();
-		rowData[2] = task.getProgressBar();
+		rowData[2] = task.getThProgress().getProgressBar();
 		rowData[3] = "";
 		
 		tableModel.addRow(rowData);

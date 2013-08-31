@@ -291,7 +291,17 @@ public class DirectoryListPanel extends JPanel {
 		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 	}
 
-	public void settings() {
+	public void settings(int privateValue) {
+		String id = getDirectoryID();
+		String data = id + "\t" + privateValue +"\t" +ClientLauncher.getUser().getId() 
+				+ "\t" + ClientLauncher.getFrame().getConnectionPanel().getPrivate() 
+				+ "\t" + ClientLauncher.getFrame().getConnectionPanel().getPublic();
+		
+		int type = Constants.PacketType.SetDirectoryRequest.getType();
+		int length = data.length();
+		
+		// 비율의 왼쪽 privateValue만 전송
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 	}
 
 	public String getDirectoryID() {

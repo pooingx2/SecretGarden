@@ -34,30 +34,7 @@ public class Connector implements Runnable {
 			// 패킷을 받기 위한 스레드
 			client = new Thread(this);
 			client.start();
-
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void newConnector()
-	{
-		System.out.println("new Connection");
-		pkMgr = ClientLauncher.getPkMgr();
-
-		try {
-			socket = new Socket(Constants.serverIP, Constants.serverPort);
-			dis = new DataInputStream(socket.getInputStream());
-			dos = new DataOutputStream(socket.getOutputStream());
 			
-			runable = true;
-			
-			// 패킷을 받기 위한 스레드
-			client = new Thread(this);
-			client.start();
-
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -85,7 +62,7 @@ public class Connector implements Runnable {
 	public void sendPacket(int type, int redesc, int length, String data) {
 		
 		data = data +"\t";
-		length = data.length();
+		length = data.getBytes().length;
 		
 		byte[] sendbuf = new byte[length + 12];
 

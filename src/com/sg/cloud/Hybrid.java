@@ -1,12 +1,11 @@
 package com.sg.cloud;
 
-import java.io.FileOutputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import com.sg.controller.streamManager;
+import com.sg.controller.StreamManager;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 import com.sg.model.Files;
@@ -124,7 +123,7 @@ public class Hybrid {
 		int privateRatio = 5; 						// private cloud에 들어갈 비율, 추후 para로 입력 받아야 함.
 		File[] targetFile = new File[3];
 		
-		streamManager stream = new streamManager();
+		StreamManager stream = ClientLauncher.getStreamMgr();
 		
 		String fileName = getFileName(sourceFile);			//입력 받아야 함 file을 잘라서 맨 마지막꺼
 		
@@ -150,13 +149,18 @@ public class Hybrid {
 		sendingFile = new Files(fileName, fixedDestPath, optionNum, ClientLauncher.getUser().getId());
 		
 		//aws s3 upload
+		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Public cloud upload");
 		if (aWSModule.upload( sendingFile, targetFile[1]) == -1) {
 			System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
 			return -1;
 			
 		}
+		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setValue(50);
+
+		
 
 		//hdfs upload
+		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Private cloud upload");
 		int isError = hdfsModule.upload(sendingFile, targetFile[2]);
 		if ( isError == -1){
 			System.out.println("Sorry, HDFS file uploader encounters some problems. \nplease try again.");
@@ -166,6 +170,7 @@ public class Hybrid {
 			return 2;
 		}
 		
+		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().setRunable(false);
 		System.out.println("Upload Successfully");
 		
 		/* tmp내의 모든 파일들 삭제하는 method 삽입*/
@@ -181,7 +186,7 @@ public class Hybrid {
 	public int download(String sourcePath, String destPath) throws IOException {
 		
 		int optionNum = 2;
-		streamManager stream = new streamManager();
+		StreamManager stream = ClientLauncher.getStreamMgr();
 		
 		/*sourcePath(selected Path에서 파일 이름을 추출해 각 Files객체에 넣어 각 다운로드에 넘겨준다.*/
 		String fileName = getFileName(sourcePath);
@@ -248,6 +253,10 @@ public class Hybrid {
 //		} 
 //		bos.close();
 		
+		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().setRunable(false);
+		
+		System.out.println("Download Successfully");
+		
 		return 0;
 	}
 	
@@ -261,7 +270,7 @@ public class Hybrid {
 		
 		Files request = new Files();
 		request.setDirPath(fixedSourcePath);
-		request.setFileName(fixedFileName);
+		request.setFileName(fileName);
 		request.setOptionNum(optionNum);
 		request.setUserId(ClientLauncher.getUser().getId());
 		
@@ -281,6 +290,11 @@ public class Hybrid {
 			System.out.println("삭제 실패");
 			return -1;
 		}
+		
+		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().setRunable(false);
+		
+		System.out.println("Delete Successfully");
+		
 		return 0;
 	}
 

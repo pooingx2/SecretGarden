@@ -39,7 +39,7 @@ public class DirectoryMngPanel extends JPanel {
 	private Font inputFont;
 	private JLabel bgImg[];
 	private JLabel label[];
-	private JLabel settingsLabel[];
+	private JLabel settingsLabel;
 	private JTextField textField[];
 	private JButton btn[];
 	private ActionHandler handler;
@@ -108,15 +108,10 @@ public class DirectoryMngPanel extends JPanel {
 		textField[1].setFont(inputFont);
 
 		// cloud settings 정보를 보여주기 위한 label
-		settingsLabel = new JLabel[2];
-		for(int i=0;i<2;i++){
-			settingsLabel[i] = new JLabel();
-			settingsLabel[i].setBounds(30,70+(i*40),250,30);
-			settingsLabel[i].setFont(Constants.Font1);
-		}
-		
-		settingsLabel[0].setText("Block Count : ");
-		settingsLabel[1].setText("Cloud Rate :  ( 5 : 5 )");
+		settingsLabel = new JLabel();
+		settingsLabel.setBounds(30,70,250,30);
+		settingsLabel.setFont(Constants.Font1);
+		settingsLabel.setText("Cloud Rate :  ( 5 : 5 )");
 		
 		// private와 public storage 비율 설정을 위한 slider
 	    slider = new JSlider(0,10,5);
@@ -125,11 +120,11 @@ public class DirectoryMngPanel extends JPanel {
 	    slider.setPaintTicks(true);
 	    slider.setFocusable(false);
 	    slider.setPaintLabels(true);
-	    slider.setBounds(25,140,250,50);
+	    slider.setBounds(25,120,250,50);
 	    slider.setBackground(Color.WHITE);
 	    slider.addChangeListener(new ChangeListener() {
 	    	public void stateChanged(ChangeEvent e) {
-	    		settingsLabel[1].setText("Cloud Rate :  ( "+
+	    		settingsLabel.setText("Cloud Rate :  ( "+
 	    				slider.getValue() + " : " + (10-slider.getValue())+ " )");
 	    	}
 	    });
@@ -263,8 +258,7 @@ public class DirectoryMngPanel extends JPanel {
 			this.add(btn[2]);
 			break;
 		case 5 : 	//	Settings
-		    this.add(settingsLabel[0]);
-		    this.add(settingsLabel[1]);
+		    this.add(settingsLabel);
 		    this.add(slider);
 			this.add(btn[1]);
 			this.add(btn[2]);
@@ -327,7 +321,9 @@ public class DirectoryMngPanel extends JPanel {
 				}
 				// Setting
 				else if(status == 5) {
-					ClientLauncher.getFrame().getDirectoryListPanel().settings();
+					int privateValue;
+					privateValue = slider.getValue();
+					ClientLauncher.getFrame().getDirectoryListPanel().settings(privateValue);
 				}
 				initialize();
 			}

@@ -117,7 +117,12 @@ public class FileMgr {
 		int isSelected = fileDialog.showSaveDialog(null);
 		if(isSelected == JFileChooser.APPROVE_OPTION) {
 			File file = fileDialog.getSelectedFile();
-			path = file.getAbsolutePath()+".key";
+			path = file.getAbsolutePath();
+			if(path.indexOf('.') != -1)
+				path = path.substring(0, path.indexOf('.'));
+			
+			path += ".key";
+		
 			BufferedOutputStream out = null;
 
 			if(file != null) {

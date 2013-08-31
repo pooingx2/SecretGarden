@@ -20,6 +20,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
@@ -47,6 +48,7 @@ public class FileListPanel extends JPanel {
 	private DefaultMutableTreeNode root;
 	private Vector<FileInfo> fileInfoList;
 	private DefaultMutableTreeNode selectedNode;
+	private DefaultMutableTreeNode[] selectedNodes;
 	
 	public FileListPanel(int w, int h) {
 
@@ -67,16 +69,26 @@ public class FileListPanel extends JPanel {
 		root = new DefaultMutableTreeNode("root");
 		model = new DefaultTreeModel(root);
 		
+		
+		
+
+		
 		// File view Tree 등록
 		fileTree = new JTree(model);
 		fileTree.setRowHeight(20);
 		fileTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {	
+			
+			
 			@Override
 			public void valueChanged(TreeSelectionEvent event) {
-				selectedNode = getSelectedNode();
+
 				fileMngPanel.setStatus(1);
-				if (fileMngPanel.getStatus() == 1 && !editMode) {
+				if (fileMngPanel.getStatus() == 1 && !editMode) {					
+					selectedNode = getSelectedNode();
+					selectedNodes = getSelectedNodes();
+				
 					FileInfo fileInfo = getFileInfo(selectedNode);
+
 					fileMngPanel.getLabel()[0].setText(fileInfo.getName());
 					fileMngPanel.getLabel()[1].setText(fileInfo.getParent());
 					fileMngPanel.getLabel()[2].setText(fileInfo.getDepth());
@@ -90,6 +102,8 @@ public class FileListPanel extends JPanel {
 				}
 			}
 		});
+		
+		
 		
 		fileTree.setEditable(false);
 		fileTree.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
@@ -191,7 +205,26 @@ public class FileListPanel extends JPanel {
 	// 선택된 트리의 노드를 반환
 	public DefaultMutableTreeNode getSelectedNode() {
 		return (DefaultMutableTreeNode) fileTree.getLastSelectedPathComponent();
+//		TreePath test[] = fileTree.getSelectionPaths();
+//		return (DefaultMutableTreeNode) test[test.length-1].getLastPathComponent();
 	}
+	
+	
+	// 선택된 트리의 노드를 반환
+	public DefaultMutableTreeNode[] getSelectedNodes() {
+
+		TreePath test[] = fileTree.getSelectionPaths();
+		DefaultMutableTreeNode[] result;
+		
+		result = new DefaultMutableTreeNode[test.length];
+		
+		for(int i=0;i<test.length;i++) {
+			result[i] = (DefaultMutableTreeNode) test[i].getLastPathComponent();
+		}
+		return result;
+
+	}
+	
 	
 	// 파일트리에서 해당 노드의 정보를 반환
 	public FileInfo getFileInfo(DefaultMutableTreeNode temp){
@@ -264,6 +297,14 @@ public class FileListPanel extends JPanel {
 		return path;
 	}
 	
+	public String getNodePath(DefaultMutableTreeNode node){
+		String path="";
+		for(int i=0;i<(node.getPath().length);i++){
+			path += "/" + node.getPath()[i];
+		}
+		return path;
+	}
+	
 	// Component 추가 및 제거를 반영하기 위한 새로고침
 	public void changePanel() { 
 		this.removeAll();
@@ -284,82 +325,58 @@ public class FileListPanel extends JPanel {
 		return false;
 	}
 
-	public void create(String folderName){
-		if (selectedNode == null)
-			JOptionPane.showMessageDialog(null, "Choose a parent directory");
-		else if(isExistNode(folderName)) {
-			JOptionPane.showMessageDialog(null, folderName + " is already exist");
-		}
-		else{
-			int type = Constants.PacketType.FolderCreateRequest.getType();
-			String data = folderName + "\t" + selectedNode.toString() + "\t" + 
-					((selectedNode.getLevel()+1)+"") + "\t" + ClientLauncher.getFileMgr().getRootDirID();
-			int length = data.length();
-			
-			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-		}
+	public void create(String folderName, FileInfo fileInfo){
+
+		int type = Constants.PacketType.FolderCreateRequest.getType();
+		String data = folderName + "\t" + fileInfo.getName() + "\t" + 
+				(Integer.parseInt(fileInfo.getDepth())+1) + "\t" + ClientLauncher.getFileMgr().getRootDirID();
+		int length = data.length();
+		
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+
 	}
 	
-	public void upload(String filePath, Long fileSize, MetaData Object){
-		if (selectedNode == null)
-			JOptionPane.showMessageDialog(null, "Choose a parent directory");
-		else {
-			int type = Constants.PacketType.FileUploadRequest.getType();
-			String data = filePath + "\t" + selectedNode.toString() + "\t" + 
-					((selectedNode.getLevel()+1)+"") + "\t" + 
-					ClientLauncher.getFileMgr().getRootDirID() +"\t"+fileSize+"\t"+"defaultMetadata";
-			int length = data.length();
-			
-			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-		}
+	public void upload(String filePath, Long fileSize, MetaData metaData, FileInfo fileInfo){
+
+		int type = Constants.PacketType.FileUploadRequest.getType();
+		String data = filePath + "\t" + fileInfo.getName() + "\t" + 
+				(Integer.parseInt(fileInfo.getDepth())+1) + "\t" + ClientLauncher.getFileMgr().getRootDirID() +"\t"+fileSize
+				+ "\t" + metaData.getCloudTable() + "\n"+ metaData.getFilePath() + "\n"+ metaData.getFileName()
+				+ "\n"+ metaData.getFileType() + "\n"+ metaData.getFile_size() + "\n"+ metaData.getStream_size()
+				+ "\n"+ metaData.getLastStream_size() + "\n"+ metaData.getStream_count();
+		int length = data.length();
+		
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+
 	}
 	
 	
-	public void download()
-	{
-		if (selectedNode == null)
-			JOptionPane.showMessageDialog(null, "Choose a file");
-		else
-		{
-			int type;		 // 패킷 타입
-			int length;	 // 패킷 길이
-			String data; 	 // 전송 데이터
-			FileInfo fileInfo = getFileInfo(selectedNode);
-			
-			type = Constants.PacketType.FileDownloadRequest.getType();
-			data = fileInfo.getName() + "\t" + fileInfo.getParent() + "\t" + 
-					fileInfo.getDepth() + "\t" + fileInfo.getRootID(); 	// 차후에 메타데이터도 같이 전송되도록 할 예정
-			length = data.length();
-			
-			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-		}
+	public void download(FileInfo fileInfo) {
+
+		int type;		// 패킷 타입
+		int length;		// 패킷 길이
+		String data;	// 전송 데이터
+		
+		type = Constants.PacketType.FileDownloadRequest.getType();
+		data = fileInfo.getName() + "\t" + fileInfo.getParent() + "\t" + 
+				fileInfo.getDepth() + "\t" + fileInfo.getRootID(); 	// 차후에 메타데이터도 같이 전송되도록 할 예정
+		length = data.length();
+		
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
 	}
 	
-	public void delete(){
-		if (selectedNode == null)
-			JOptionPane.showMessageDialog(null, "Choose a file or directory");
-		else if( selectedNode == root )
-			JOptionPane.showMessageDialog(null, "Can't delete root directory");
-		else {
-			int type;		 // 패킷 타입
-			int length;	 // 패킷 길이
-			String data; 	 // 전송 데이터
-			FileInfo fileInfo = getFileInfo(selectedNode);
-			
-			// childData : 모든 자식의 수와 각 자식의 fileID정보 (자식의 자식도 포함)
-			Vector<DefaultMutableTreeNode> allChild= getAllChildList(selectedNode);
-			String childData = allChild.size()+"";
-			for(DefaultMutableTreeNode item : allChild){
-				FileInfo childFileInfo = getFileInfo(item);
-				childData += "\t" + childFileInfo.getFileID();
-			}
-			
-			type = Constants.PacketType.FileDeleteRequest.getType();
-			data = fileInfo.getRootID() + "\t" + fileInfo.getFileID() + "\t" + childData;
-			length = data.length();
-			
-			ClientLauncher.getConnector().sendPacket(type, 0, length, data);
-		}
+	public void delete(FileInfo fileInfo){
+		int type;		 // 패킷 타입
+		int length;	 // 패킷 길이
+		String data; 	 // 전송 데이터
+		
+		type = Constants.PacketType.FileDeleteRequest.getType();
+		data = fileInfo.getRootID() + "\t" + fileInfo.getFileID() + "\t" + "0";
+		//+ "\t" + childData;
+		length = data.length();
+		
+		ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+
 	}
 
 	// 버튼 이벤트, 마우스 이벤트 리스너 등록
@@ -375,40 +392,80 @@ public class FileListPanel extends JPanel {
 		public void actionPerformed(ActionEvent event) {
 
 			selectedNode = getSelectedNode();
+			selectedNodes = getSelectedNodes();
 			
-			if(selectedNode == null){
+			if(selectedNode == null || selectedNodes == null){
 				JOptionPane.showMessageDialog(null, "Not Selected");
 			}
 			
 			// Create
 			else if(event.getSource()==btn[0]){
-				if(selectedNode.toString().indexOf('.') == -1){
+				if(selectedNode.toString().indexOf('.') != -1){
+					JOptionPane.showMessageDialog(null, "Select create directory path");
+				}
+				else if(selectedNodes.length > 1) {
+					JOptionPane.showMessageDialog(null, "Select one directory path");
+				}
+				else {
 					fileMngPanel.setStatus(2);
 					fileMngPanel.changePanel();
 				}
-				else
-					JOptionPane.showMessageDialog(null, "Select create directory path");
+					
 			}
 			// Upload
 			else if(event.getSource()==btn[1]){
-				if(selectedNode.toString().indexOf('.') == -1){
+				if(selectedNode.toString().indexOf('.') != -1){
+					JOptionPane.showMessageDialog(null, "Select upload directory path");
+				}
+				else if(selectedNodes.length > 1) {
+					JOptionPane.showMessageDialog(null, "Select one directory path");
+				}
+				else {
 					fileMngPanel.setStatus(3);
 					fileMngPanel.changePanel();
 				}
-				else
-					JOptionPane.showMessageDialog(null, "Select upload directory path");
 				
 			}
 			// Download
 			else if(event.getSource()==btn[2]){
-				fileMngPanel.setStatus(4);
-				fileMngPanel.changePanel();
+				
+				boolean hasChild = false;
+				boolean isForder = false;
+				
+				for ( DefaultMutableTreeNode item : selectedNodes) {
+					if(item.children().hasMoreElements() == true) 
+						hasChild = true;
+					if(item.toString().indexOf(".") == -1)
+						isForder = true;
+				}
+				
+				if(hasChild || isForder) {
+					JOptionPane.showMessageDialog(null, "Can't download direcoty");
+				}
+				
+				else {
+					fileMngPanel.setStatus(4);
+					fileMngPanel.changePanel();
+				}
 			}
 
 			// Delete
 			else if(event.getSource()==btn[3]){
-				fileMngPanel.setStatus(5);
-				fileMngPanel.changePanel();
+				boolean hasChild = false;
+				
+				for ( DefaultMutableTreeNode item : selectedNodes) {
+					if(item.children().hasMoreElements() == true) 
+						hasChild = true;
+				}
+				
+				if(hasChild) {
+					JOptionPane.showMessageDialog(null, "Directory has child file");
+				}
+				
+				else {
+					fileMngPanel.setStatus(5);
+					fileMngPanel.changePanel();
+				}
 			}
 			
 		}
