@@ -23,6 +23,24 @@ public class streamManager {
 
 	/*split 정보*/
 	public final static int maxSpliteSize = 10;
+	public final static int sizeKB = 1024 * 1;
+	//public static int streamSize  = 100 * sizeKB;
+//	public int streamSize;
+//	
+//	/*source file*/
+//	public String sourceFilePath = "d:/test/";
+//	public String sourceFileName = "png.png";
+//	
+//	/*destination stream*/
+//	public String projDir = "d:/test/";
+//	public String streamPath;
+////	public static String streamPath = projDir + "stream/";	//setting
+//	public String streamName = sourceFileName;		//temp
+//	
+//	public String saveDir = "d:/";		//temp
+//	public String outStreamDir = "out/";				//setting
+//	public String inStreamDir = "in/";				//setting
+//	public String privatePublicDir = "p/";			//setting
 	public int streamSize;
 	
 	/*source file*/
@@ -32,6 +50,7 @@ public class streamManager {
 	/*destination stream*/
 	private String projDir;
 	private String streamPath;
+//	public static String streamPath = projDir + "stream/";	//setting
 	private String streamName;		//temp
 	
 	private String saveDir;		//temp
@@ -229,7 +248,7 @@ public class streamManager {
 		lastStream_size = Long.toString(origFile.length() % (long)streamSize);
 		stream_count = Integer.toString(streamCount + 1);
 
-		/*
+		
 		getMetaData().setCloudTable(cloudTable);
 		getMetaData().setFilePath(path);
 		getMetaData().setFileName(name);
@@ -238,14 +257,14 @@ public class streamManager {
 		getMetaData().setStream_size(Integer.toString(streamSize));
 		getMetaData().setLastStream_size(Long.toString(origFile.length() % (long)streamSize));
 		getMetaData().setStream_count(Integer.toString(streamCount + 1));
-		*/
-		
+				
 		/*account info*/
 		String account_id = getUserID();
 		
 		//System.out.println(stream_count);
 		
-	
+		/*
+		
 	    try {
 	    	out.write(cloudTable);		//1. cloud mapping table
 	    	out.newLine();				//token
@@ -273,6 +292,8 @@ public class streamManager {
 			e.printStackTrace();
 		}
 
+		*/
+	
 	}
 	
 	private void getMetadata(String path, String name){
