@@ -1,0 +1,72 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 3 (0x3)
+    Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=SM, ST=SSM, L=SSM, O=SSM23, OU=SSM, CN=Jeong/name=Il hwan/emailAddress=bonjhua@naver.com
+        Validity
+            Not Before: Aug 29 20:39:45 2013 GMT
+            Not After : Aug 27 20:39:45 2023 GMT
+        Subject: C=SM, ST=SSM, L=SSM, O=SSM, OU=SSM, CN=Jeong/name=Il Hwan/emailAddress=bonjhua@naver.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (1024 bit)
+                Modulus:
+                    00:d3:9a:9f:0a:10:7b:c0:f0:cd:fa:64:34:08:43:
+                    8c:85:85:b2:76:5b:8f:94:8a:d4:e2:a3:56:25:1d:
+                    36:ba:48:3d:7c:a3:94:a8:c7:ce:7e:f8:ff:4d:e3:
+                    a1:68:9e:eb:60:ce:0c:6d:07:6d:c7:07:7f:37:5e:
+                    0f:92:ad:b5:69:63:e4:d8:5b:6d:f7:73:54:19:f7:
+                    bb:7f:f6:8b:f7:04:6c:22:e4:58:29:ac:78:24:59:
+                    0c:4f:14:0c:c0:ed:b3:2c:a2:9c:26:2e:59:b9:20:
+                    46:31:36:f7:2e:f8:c1:ca:59:e1:ee:4d:ae:a9:10:
+                    c9:1b:77:9b:3d:30:46:b7:91
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                Easy-RSA Generated Certificate
+            X509v3 Subject Key Identifier: 
+                BD:A1:38:17:73:03:74:B7:11:56:23:A2:25:E2:06:C4:E8:4F:C1:41
+            X509v3 Authority Key Identifier: 
+                keyid:86:F7:53:4E:06:A1:EE:FC:3F:5F:F8:C0:D6:88:12:00:39:64:90:F3
+                DirName:/C=SM/ST=SSM/L=SSM/O=SSM23/OU=SSM/CN=Jeong/name=Il hwan/emailAddress=bonjhua@naver.com
+                serial:C2:01:FC:E2:93:3A:20:D0
+
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication
+            X509v3 Key Usage: 
+                Digital Signature
+    Signature Algorithm: sha1WithRSAEncryption
+         d2:0e:4b:80:37:f5:0d:65:d8:6b:93:56:cc:49:58:3a:a9:65:
+         3f:dc:96:e2:c1:f6:13:36:02:82:ab:41:6f:34:4d:69:d6:d2:
+         b7:5c:16:a9:b5:62:18:e9:60:c6:e8:4d:45:47:e7:33:54:f6:
+         4c:9d:30:0d:47:17:3c:74:9b:1b:82:7a:d6:6d:c0:cf:58:78:
+         4c:17:5b:69:51:28:0b:00:a0:ef:32:f5:74:fd:55:5d:9c:e1:
+         ea:2b:f8:e5:59:fa:a1:d0:03:20:c1:b1:cd:69:88:2a:0d:e5:
+         a4:ef:ad:a4:02:3e:5b:1d:b6:4a:78:51:d8:7f:1e:a2:7e:2b:
+         89:2a
+-----BEGIN CERTIFICATE-----
+MIID0DCCAzmgAwIBAgIBAzANBgkqhkiG9w0BAQUFADCBizELMAkGA1UEBhMCU00x
+DDAKBgNVBAgTA1NTTTEMMAoGA1UEBxMDU1NNMQ4wDAYDVQQKEwVTU00yMzEMMAoG
+A1UECxMDU1NNMQ4wDAYDVQQDEwVKZW9uZzEQMA4GA1UEKRMHSWwgaHdhbjEgMB4G
+CSqGSIb3DQEJARYRYm9uamh1YUBuYXZlci5jb20wHhcNMTMwODI5MjAzOTQ1WhcN
+MjMwODI3MjAzOTQ1WjCBiTELMAkGA1UEBhMCU00xDDAKBgNVBAgTA1NTTTEMMAoG
+A1UEBxMDU1NNMQwwCgYDVQQKEwNTU00xDDAKBgNVBAsTA1NTTTEOMAwGA1UEAxMF
+SmVvbmcxEDAOBgNVBCkTB0lsIEh3YW4xIDAeBgkqhkiG9w0BCQEWEWJvbmpodWFA
+bmF2ZXIuY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTmp8KEHvA8M36
+ZDQIQ4yFhbJ2W4+UitTio1YlHTa6SD18o5Sox85++P9N46FonutgzgxtB23HB383
+Xg+SrbVpY+TYW233c1QZ97t/9ov3BGwi5FgprHgkWQxPFAzA7bMsopwmLlm5IEYx
+Nvcu+MHKWeHuTa6pEMkbd5s9MEa3kQIDAQABo4IBQjCCAT4wCQYDVR0TBAIwADAt
+BglghkgBhvhCAQ0EIBYeRWFzeS1SU0EgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0G
+A1UdDgQWBBS9oTgXcwN0txFWI6Il4gbE6E/BQTCBwAYDVR0jBIG4MIG1gBSG91NO
+BqHu/D9f+MDWiBIAOWSQ86GBkaSBjjCBizELMAkGA1UEBhMCU00xDDAKBgNVBAgT
+A1NTTTEMMAoGA1UEBxMDU1NNMQ4wDAYDVQQKEwVTU00yMzEMMAoGA1UECxMDU1NN
+MQ4wDAYDVQQDEwVKZW9uZzEQMA4GA1UEKRMHSWwgaHdhbjEgMB4GCSqGSIb3DQEJ
+ARYRYm9uamh1YUBuYXZlci5jb22CCQDCAfzikzog0DATBgNVHSUEDDAKBggrBgEF
+BQcDAjALBgNVHQ8EBAMCB4AwDQYJKoZIhvcNAQEFBQADgYEA0g5LgDf1DWXYa5NW
+zElYOqllP9yW4sH2EzYCgqtBbzRNadbSt1wWqbViGOlgxuhNRUfnM1T2TJ0wDUcX
+PHSbG4J61m3Az1h4TBdbaVEoCwCg7zL1dP1VXZzh6iv45Vn6odADIMGxzWmIKg3l
+pO+tpAI+Wx22SnhR2H8eon4riSo=
+-----END CERTIFICATE-----

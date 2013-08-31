@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 import com.sg.model.FileInfo;
+import com.sg.model.MetaData;
 
 public class PacketMgr {
 	private StringTokenizer tokenizer;
@@ -143,7 +144,34 @@ public class PacketMgr {
 
 		// 메타데이터 다운로드
 		else if (type == Constants.PacketType.FileDownloadResponse.getType()) {
-			System.out.println("meta data is : " + token[0]);
+			StringTokenizer tokenizer2;
+			String token2[];
+			token2= new String[100];
+			
+			MetaData metaData = new MetaData();
+			
+			System.out.println("\t\t\t\t" + token[0]);
+
+			tokenizer2 = new StringTokenizer(token[0],"\n");
+			int k = 0;
+
+			while(tokenizer2.hasMoreTokens()) {
+				token2[k] = tokenizer2.nextToken();
+				k++;
+				
+				switch(k) {
+					case 1 : metaData.setCloudTable(token2[k-1]); break;
+					case 2 : metaData.setFilePath(token2[k-1]); break;
+					case 3 : metaData.setFileName(token2[k-1]); break;
+					case 4 : metaData.setFileType(token2[k-1]); break;
+					case 5 : metaData.setFile_size(token2[k-1]); break;
+					case 6 : metaData.setStream_size(token2[k-1]); break;
+					case 7 : metaData.setLastStream_size(token2[k-1]); break;
+					case 8 : metaData.setStream_count(token2[k-1]);	break;
+					default : break;
+				}
+			}
+			ClientLauncher.getStreamMgr().setMetaData(metaData);
 		}
 
 		// 존재하는 아이디인지 확인

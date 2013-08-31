@@ -205,11 +205,11 @@ public class StreamManager {
 		int i;
 		int j0 = 0, j1 = 0, k = 0;
 
-		try {
-			out = new BufferedWriter(new FileWriter(path + name + "._metadata"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			out = new BufferedWriter(new FileWriter(path + name + "._metadata"));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	    
 		/*meta data 초기화*/
 		//cloud mapping table
@@ -260,6 +260,7 @@ public class StreamManager {
 		
 		//System.out.println(stream_count);
 		
+		/*
 		
 	    try {
 	    	out.write(cloudTable);		//1. cloud mapping table
@@ -291,41 +292,44 @@ public class StreamManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		*/
 	
 	}
 	
 	private void getMetadata(String path, String name){
-		BufferedReader in = null;
-		
-		try {
-		    in = new BufferedReader(new FileReader(path + name + "._metadata"));
 
-		    cloudTable = in.readLine();
-		    filePath = in.readLine();
-			fileName = in.readLine();
-			fileType = in.readLine();
-			file_size = in.readLine();
-			stream_size = in.readLine();
-			lastStream_size = in.readLine();
-			stream_count = in.readLine();
-			
-		    /*
-			System.out.println(cloudTable);
-			System.out.println(filePath);
-			System.out.println(fileName);
-			System.out.println(fileType);
-			System.out.println(file_size);
-			System.out.println(stream_size);
-			System.out.println(lastStream_size);
-			System.out.println(stream_count);
-			*/
-			
-		    in.close();
-		}
-		catch (IOException e) {
-			System.err.println(e);
-		    System.exit(1);
-	    }		
+//		BufferedReader in = null;
+//		
+//		try {
+//		    in = new BufferedReader(new FileReader(path + name + "._metadata"));
+//
+//		    cloudTable = in.readLine();
+//		    filePath = in.readLine();
+//			fileName = in.readLine();
+//			fileType = in.readLine();
+//			file_size = in.readLine();
+//			stream_size = in.readLine();
+//			lastStream_size = in.readLine();
+//			stream_count = in.readLine();
+//			
+//		    /*
+//			System.out.println(cloudTable);
+//			System.out.println(filePath);
+//			System.out.println(fileName);
+//			System.out.println(fileType);
+//			System.out.println(file_size);
+//			System.out.println(stream_size);
+//			System.out.println(lastStream_size);
+//			System.out.println(stream_count);
+//			*/
+//			
+//		    in.close();
+//		}
+//		catch (IOException e) {
+//			System.err.println(e);
+//		    System.exit(1);
+//	    }	
+		
 	}
 	
 	/*============================= splite/combine file =============================*/

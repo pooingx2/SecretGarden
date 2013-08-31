@@ -168,8 +168,6 @@ public class Hybrid {
 			return 2;
 		}
 		
-//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setValue(100);
-//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Upload Success");
 		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().setRunable(false);
 		System.out.println("Upload Successfully");
 		
@@ -253,10 +251,7 @@ public class Hybrid {
 //		} 
 //		bos.close();
 		
-//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setValue(100);
-//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Download Success");
 		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().setRunable(false);
-//		ClientLauncher.getFrame().getFileListPanel().getFileMngPanel().getProgressFrame().repaint();
 		
 		System.out.println("Download Successfully");
 		
@@ -294,10 +289,7 @@ public class Hybrid {
 			return -1;
 		}
 		
-//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setValue(100);
-//		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Delete Success");
 		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().setRunable(false);
-//		ClientLauncher.getFrame().getFileListPanel().getFileMngPanel().getProgressFrame().repaint();
 		
 		System.out.println("Delete Successfully");
 		

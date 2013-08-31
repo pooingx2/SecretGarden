@@ -1,5 +1,6 @@
 package com.sg.main;
 
+import java.io.File;
 import java.io.IOException;
 
 import com.sg.cloud.Hybrid;
@@ -25,7 +26,7 @@ public class ClientLauncher{
 	
 	public static void main(String[] args) throws IOException {
 
-
+		
 		// 재사용 공격을 막기 위한 nonce 생성
 		// file을 load 및 save
 		fileMgr = new FileMgr();
@@ -47,6 +48,7 @@ public class ClientLauncher{
 		if(connector.getSocket()!=null) {
 			frame = new MainFrame(Constants.frameW,Constants.frameH);
 		}
+		
 	}
 	
 	// 프로그램 종료시 리소스 반환
