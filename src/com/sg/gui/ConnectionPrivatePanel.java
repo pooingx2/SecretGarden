@@ -186,40 +186,41 @@ public class ConnectionPrivatePanel extends JPanel {
 				port = textField[1].getText();
 				pwd = pwdField.getText();
 
-				textField[0].setText("");
-				textField[1].setText("");
-				pwdField.setText("");
-
-
-				ClientLauncher.getFrame().getConnectionPanel().setPrivate(ip);
-				connection = ClientLauncher.getHybrid().auth(Constants.hadoop, ip, port, pwd);
-				//connection = true;
-
-				if(connection){
-					changeStatusPanel();
-					ClientLauncher.getFrame().getConnectionPanel().setP_ip(ip);
-					/*port넘버를 받는거로 바꿔줘야 함.*/
-					ClientLauncher.getFrame().getConnectionPanel().setP_portNum(15000);
+				if( ip.equals("") || port.equals("") || pwd.equals("")) {
+					JOptionPane.showMessageDialog(null, "Input text");
 				}
 				else {
-					JOptionPane.showMessageDialog(null, "Connect Error");
-				}
-				// private 과 public모두 연결되어 있다면 실행
-				if(isConnection() && ClientLauncher.getFrame().
-						getConnectionPanel().getPublicPanel().isConnection()){
-					
-					String id = ClientLauncher.getFrame().getLoginPanel().getId();
-					String private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
-					String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
-
-					String data = id + "\t" + private_cloud + "\t" + public_cloud;
-					int type = Constants.PacketType.DirectoryListRequest.getType();
-					int length = data.length();
-
-					// 메인 프레임을 디렉토리 프레임으로 변경
-					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
-					// 디렉토리 리스트 요청 패킷을 전송
-					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+	
+					ClientLauncher.getFrame().getConnectionPanel().setPrivate(ip);
+					connection = ClientLauncher.getHybrid().auth(Constants.hadoop, ip, port, pwd);
+					//connection = true;
+	
+					if(connection){
+						changeStatusPanel();
+						ClientLauncher.getFrame().getConnectionPanel().setP_ip(ip);
+						/*port넘버를 받는거로 바꿔줘야 함.*/
+						ClientLauncher.getFrame().getConnectionPanel().setP_portNum(15000);
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Connect Error");
+					}
+					// private 과 public모두 연결되어 있다면 실행
+					if(isConnection() && ClientLauncher.getFrame().
+							getConnectionPanel().getPublicPanel().isConnection()){
+						
+						String id = ClientLauncher.getFrame().getLoginPanel().getId();
+						String private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
+						String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
+	
+						String data = id + "\t" + private_cloud + "\t" + public_cloud;
+						int type = Constants.PacketType.DirectoryListRequest.getType();
+						int length = data.length();
+	
+						// 메인 프레임을 디렉토리 프레임으로 변경
+						ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
+						// 디렉토리 리스트 요청 패킷을 전송
+						ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+					}
 				}
 
 			}

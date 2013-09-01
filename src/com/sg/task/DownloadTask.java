@@ -32,14 +32,14 @@ public class DownloadTask extends Task{
 	public void run() {
 
 		System.out.println("Download Task Start");
-		
+		ClientLauncher.getFrame().getFileListPanel().download(fileInfo);
 		ClientLauncher.getTaskMgr().setRunning(true);
 		getThProgress().getThread().start();
 		
 		try {
 			// return 0 = success	failure = -1
 			if(ClientLauncher.getHybrid().download(selectedPath, localPath) == 0){
-				ClientLauncher.getFrame().getFileListPanel().download(fileInfo);
+				
 			}
 			else
 				JOptionPane.showMessageDialog(null, "download failure");

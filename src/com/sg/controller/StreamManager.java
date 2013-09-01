@@ -1,14 +1,11 @@
 package com.sg.controller;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -19,7 +16,7 @@ import com.sg.main.ClientLauncher;
 import com.sg.model.MetaData;
 
 
-public class streamManager {
+public class StreamManager {
 
 	/*split 정보*/
 	public final static int maxSpliteSize = 10;
@@ -57,8 +54,9 @@ public class streamManager {
 	private String outStreamDir;				//setting
 	private String inStreamDir;				//setting
 	private String privatePublicDir;		
-	
+
 	/*metadata*/
+
 	private String cloudTable;
 	private String filePath;
 	private String fileName;
@@ -66,10 +64,10 @@ public class streamManager {
 	private String file_size;
 	private String stream_size;
 	private String lastStream_size;
-	
+
 	private MetaData metaData;
 	
-	public streamManager() throws IOException {
+	public StreamManager() throws IOException {
 		projDir = "";
 		outStreamDir = "out/";
 		inStreamDir = "in/";
@@ -167,6 +165,7 @@ public class streamManager {
 		
 		int fileSize;
 		getMetadata(streamPath, targetFileName);
+		System.out.println(file_size);
 		
 		fileSize = Integer.parseInt(file_size);
 		
@@ -247,7 +246,6 @@ public class streamManager {
 		stream_size = Integer.toString(streamSize);
 		lastStream_size = Long.toString(origFile.length() % (long)streamSize);
 		stream_count = Integer.toString(streamCount + 1);
-
 		
 		getMetaData().setCloudTable(cloudTable);
 		getMetaData().setFilePath(path);
@@ -298,6 +296,14 @@ public class streamManager {
 	
 	private void getMetadata(String path, String name){
 
+		cloudTable = metaData.getCloudTable();
+		filePath = metaData.getFilePath();
+		fileName = metaData.getFileName();
+		fileType = metaData.getFileType();
+		file_size = metaData.getFile_size();
+		stream_size = metaData.getStream_size();
+		lastStream_size = metaData.getLastStream_size();
+		/*
 		BufferedReader in = null;
 
 		try {
@@ -317,7 +323,9 @@ public class streamManager {
 		catch (IOException e) {
 			System.err.println(e);
 		    System.exit(1);
-	    }		
+	    }
+	    */
+		
 	}
 	
 	/*============================= splite/combine file =============================*/
@@ -927,10 +935,7 @@ public class streamManager {
 
 	private String stream_count;
 	
-	streamManager(String path){
+	StreamManager(String path){
 		streamPath = "./tmp/";
-		
-		
 	}
-	
 }

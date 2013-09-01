@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
@@ -64,6 +66,7 @@ public class AWSUpDown implements PublicUpDown{
 			}
 		}catch (AmazonS3Exception e1){
 			System.out.println("Check your AWS Access key and Secret key");
+			JOptionPane.showMessageDialog(null, "Check your AWS Access key and Secret key");
 			return false;
 		}
 		return true;

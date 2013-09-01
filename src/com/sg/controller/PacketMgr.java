@@ -150,8 +150,6 @@ public class PacketMgr {
 			
 			MetaData metaData = new MetaData();
 			
-			System.out.println("\t\t\t\t" + token[0]);
-
 			tokenizer2 = new StringTokenizer(token[0],"\n");
 			int k = 0;
 
@@ -171,6 +169,7 @@ public class PacketMgr {
 					default : break;
 				}
 			}
+			System.out.println(metaData.getFile_size());
 			ClientLauncher.getStreamMgr().setMetaData(metaData);
 		}
 

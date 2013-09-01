@@ -170,35 +170,39 @@ public class ConnectionPublicPanel extends JPanel {
 				id = textField.getText();
 				pwd = pwdField.getText();
 
-				ClientLauncher.getFrame().getConnectionPanel().setPublic(id);
-
-				connection = ClientLauncher.getHybrid().auth(Constants.amazon,id, null,pwd);
-				//connection = true;
-
-				if(connection){
-					changeStatusPanel();
+				if( id.equals("") || pwd.equals("")) {
+					JOptionPane.showMessageDialog(null, "Input text");
 				}
 				else {
-					JOptionPane.showMessageDialog(null, "Connect Error");
-				}
-				
-				// private 과 public모두 연결되어 있다면 실행
-				if(isConnection() && ClientLauncher.getFrame().
-						getConnectionPanel().getPrivatePanel().isConnection()){
-
-					String id = ClientLauncher.getFrame().getLoginPanel().getId();
-					String private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
-					String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
-					
-					String data = id + "\t" + private_cloud + "\t" + public_cloud;;
-					int type = Constants.PacketType.DirectoryListRequest.getType();
-					int length = data.length();
-			
-					// 메인 프레임을 디렉토리 프레임으로 변경
-					ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
-					// 디렉토리 리스트 요청 패킷을 전송
-					ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+					ClientLauncher.getFrame().getConnectionPanel().setPublic(id);
+					connection = ClientLauncher.getHybrid().auth(Constants.amazon,id, null,pwd);
+					//connection = true;
 	
+					if(connection){
+						changeStatusPanel();
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Connect Error");
+					}
+					
+					// private 과 public모두 연결되어 있다면 실행
+					if(isConnection() && ClientLauncher.getFrame().
+							getConnectionPanel().getPrivatePanel().isConnection()){
+	
+						String id = ClientLauncher.getFrame().getLoginPanel().getId();
+						String private_cloud = ClientLauncher.getFrame().getConnectionPanel().getPrivate();
+						String public_cloud  = ClientLauncher.getFrame().getConnectionPanel().getPublic();
+						
+						String data = id + "\t" + private_cloud + "\t" + public_cloud;;
+						int type = Constants.PacketType.DirectoryListRequest.getType();
+						int length = data.length();
+				
+						// 메인 프레임을 디렉토리 프레임으로 변경
+						ClientLauncher.getFrame().changePanel(ClientLauncher.getFrame().getDirectoryListPanel());
+						// 디렉토리 리스트 요청 패킷을 전송
+						ClientLauncher.getConnector().sendPacket(type, 0, length, data);
+		
+					}
 				}
 			}
 			

@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import javax.swing.JOptionPane;
+
 import com.sg.controller.StreamManager;
 import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
@@ -47,8 +49,8 @@ public class Hybrid {
 		switch (type){
 
 		case Constants.amazon : 		// aws s3 connect
-			String AWSkeyId = "AKIAIUXPHCYBAHGUZGEQ";//id;			// 입력 받아야 함
-			String AWSkey = "z3L3XdNwpWPx0R37bToPR+O85cmSoZTJrucfb4xE";//pw;			// 입력 받아야 함
+			String AWSkeyId = id;			// 입력 받아야 함
+			String AWSkey = pw;			// 입력 받아야 함
 			aWSModule.setKey(AWSkey);
 			aWSModule.setKeyId(AWSkeyId);
 			
@@ -57,9 +59,9 @@ public class Hybrid {
 
 		case Constants.hadoop : 		// hdfs connect
 			
-			String hdfsIp = "211.189.127.91";//id;			// 입력 받아야 함
-			int hdfsPort = 15000;//Integer.parseInt(port);		// 입력 받아야 함
-			String hdfsPw = "aa";//pw;
+			String hdfsIp = id;			// 입력 받아야 함
+			int hdfsPort = Integer.parseInt(port);		// 입력 받아야 함
+			String hdfsPw = pw;
 			hdfsModule.setDestIp(hdfsIp);
 			hdfsModule.setDestPort(hdfsPort);
 			hdfsModule.setAccessKey(hdfsPw);
@@ -152,6 +154,7 @@ public class Hybrid {
 		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Public cloud upload");
 		if (aWSModule.upload( sendingFile, targetFile[1]) == -1) {
 			System.out.println("Sorry, aws file uploader encounters some problems. \nplease try again.");
+			JOptionPane.showMessageDialog(null, "Sorry, aws file uploader encounters some problems. \nplease try again.");
 			return -1;
 			
 		}
@@ -164,9 +167,11 @@ public class Hybrid {
 		int isError = hdfsModule.upload(sendingFile, targetFile[2]);
 		if ( isError == -1){
 			System.out.println("Sorry, HDFS file uploader encounters some problems. \nplease try again.");
+			JOptionPane.showMessageDialog(null, "Sorry, HDFS file uploader encounters some problems. \nplease try again.");
 			return -1;
 		} else if( isError == 2) {
 			System.out.println("Sorry, HDFS session auth failed. \nplease try again.");
+			JOptionPane.showMessageDialog(null, "Sorry, HDFS session auth failed. \nplease try again.");
 			return 2;
 		}
 		
