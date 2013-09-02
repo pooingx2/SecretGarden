@@ -147,7 +147,7 @@ public class AWSUpDown implements PublicUpDown{
 			
 			while (-1 != (bytesRead = object.getObjectContent().read(buf, 0, buf.length))) {
 				totalBytesRead += bytesRead;
-				System.out.println("rect AWS length : "+totalBytesRead);
+				//System.out.println("rect AWS length : "+totalBytesRead);
 				bos.write(buf, 0, bytesRead);
 				ClientLauncher.getTaskMgr().getRunningTask().setCur(totalBytesRead);
 				

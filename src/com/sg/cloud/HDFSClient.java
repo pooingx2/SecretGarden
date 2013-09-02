@@ -227,7 +227,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		int totalByteRead = 0;
 		while(-1 != (bytesRead = reader.read(buf, 0,buf.length))) {
 			totalByteRead += bytesRead;
-			System.out.println("recv HDFS length :"+totalByteRead);
+			//System.out.println("recv HDFS length :"+totalByteRead);
 			bos.write(buf, 0, bytesRead);
 			ClientLauncher.getTaskMgr().getRunningTask().setCur(ClientLauncher.getTaskMgr().getRunningTask().getCur()+totalByteRead);
 		}

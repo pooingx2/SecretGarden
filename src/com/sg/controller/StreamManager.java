@@ -165,7 +165,6 @@ public class StreamManager {
 		
 		int fileSize;
 		getMetadata(streamPath, targetFileName);
-		System.out.println(file_size);
 		
 		fileSize = Integer.parseInt(file_size);
 		
@@ -303,6 +302,7 @@ public class StreamManager {
 		file_size = metaData.getFile_size();
 		stream_size = metaData.getStream_size();
 		lastStream_size = metaData.getLastStream_size();
+		stream_count = metaData.getStream_count();
 		/*
 		BufferedReader in = null;
 
