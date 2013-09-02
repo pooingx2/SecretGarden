@@ -11,6 +11,7 @@ public class MetaData {
 	private String stream_size;
 	private String lastStream_size;
 	private String stream_count;
+	private String hash;
 	
 
 	public MetaData() {
@@ -92,6 +93,14 @@ public class MetaData {
 
 	public void setStream_count(String stream_count) {
 		this.stream_count = stream_count;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 	
 	

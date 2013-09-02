@@ -15,7 +15,8 @@ public class Constants {
 
 
 //	public static final String serverIP= "112.108.39.244";
-	public static final String serverIP= "10.8.0.1";
+//	public static final String serverIP= "10.8.0.1";
+	public static final String serverIP= "211.189.127.27";
 	public static final int serverPort = 12600;
 
 	// 기본 바탕색

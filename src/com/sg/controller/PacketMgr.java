@@ -167,6 +167,7 @@ public class PacketMgr {
 					case 6 : metaData.setStream_size(token2[k-1]); break;
 					case 7 : metaData.setLastStream_size(token2[k-1]); break;
 					case 8 : metaData.setStream_count(token2[k-1]);	break;
+					case 9 : metaData.setHash(token2[k-1]);	break;
 					default : break;
 				}
 			}

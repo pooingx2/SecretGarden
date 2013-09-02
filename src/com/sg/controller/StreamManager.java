@@ -64,7 +64,8 @@ public class StreamManager {
 	private String file_size;
 	private String stream_size;
 	private String lastStream_size;
-
+	private String md5hash;
+	
 	private MetaData metaData;
 	
 	public StreamManager() throws IOException {
@@ -201,7 +202,7 @@ public class StreamManager {
 	}
 	
 	/*============================= metadata =============================*/
-	private void mkMetadata(String path, String name, int streamCount, File origFile, int privateRatio){
+	private void mkMetadata(String path, String name, int streamCount, File origFile, int privateRatio, String md5){
 		BufferedWriter out = null;
 		int i;
 		int j0 = 0, j1 = 0, k = 0;
@@ -245,6 +246,7 @@ public class StreamManager {
 		stream_size = Integer.toString(streamSize);
 		lastStream_size = Long.toString(origFile.length() % (long)streamSize);
 		stream_count = Integer.toString(streamCount + 1);
+		md5hash = md5;
 		
 		getMetaData().setCloudTable(cloudTable);
 		getMetaData().setFilePath(path);
@@ -254,7 +256,7 @@ public class StreamManager {
 		getMetaData().setStream_size(Integer.toString(streamSize));
 		getMetaData().setLastStream_size(Long.toString(origFile.length() % (long)streamSize));
 		getMetaData().setStream_count(Integer.toString(streamCount + 1));
-				
+		getMetaData().setHash(md5hash);
 		/*account info*/
 		String account_id = getUserID();
 		
@@ -305,6 +307,7 @@ public class StreamManager {
 		stream_size = metaData.getStream_size();
 		lastStream_size = metaData.getLastStream_size();
 		stream_count = metaData.getStream_count();
+		md5hash = metaData.getHash();
 		
 		/*
 		BufferedReader in = null;
@@ -338,8 +341,6 @@ public class StreamManager {
 		int totCnt = 0;
 		int streamIndex = 0;			//stream 이름을 위한 인덱스
 		byte[] readBuffer = new byte[1024];		//최소 stream size는 1KB
-				
-		String hashString = null;		//hash key  
 		String MD5;						//md5 hash value
 		
 		ClientLauncher.getTaskMgr().getRunningTask().getThProgress().getProgressBar().setString("Splitting File...");
@@ -352,6 +353,11 @@ public class StreamManager {
 			File streamFile = new File(streamPath + outStreamDir + streamName + streamIndex + "._outStream");	//stream 파일
 			FileOutputStream streamFO = new FileOutputStream(streamFile);
 			
+			byte[] contents = new byte[bufferedFI.available()];
+			
+			MD5 = new java.math.BigInteger(md5(contents)).toString(16);
+			System.out.println(MD5);
+			
 			do {
 				/*원본 파일 읽기*/
 				readCnt = bufferedFI.read(readBuffer);
@@ -363,12 +369,6 @@ public class StreamManager {
 				streamFO.write(readBuffer, 0, readCnt);
 				totCnt += readCnt;
 				
-				//get hash for each stream
-				hashString = readBuffer.toString();
-				MD5 = getHashMD5(hashString);
-				//System.out.println(hashString);
-				//System.out.println(MD5);
-				
 				/*다음 스트림*/
 				if (totCnt % streamSize == 0) {
 					streamFO.flush();
@@ -379,7 +379,7 @@ public class StreamManager {
 			} while (true);
 			
 			/*metadata*/
-			mkMetadata(streamPath, streamName, streamIndex, origFile, privateRatio);
+			mkMetadata(streamPath, streamName, streamIndex, origFile, privateRatio, MD5);
 			
 			origFI.close();
 			streamFO.flush();
@@ -437,6 +437,22 @@ public class StreamManager {
 		
 		//in 디렉토리 tmp 파일들 삭제
 		deleteTmpInFiles();
+		
+		FileInputStream origFI = new FileInputStream(savePath + origFileName);
+		System.out.println(savePath + origFileName);
+		BufferedInputStream bufferedFI = new BufferedInputStream(origFI);
+		byte[] contents = new byte[bufferedFI.available()];
+		String MD5 = "";						//md5 hash value
+		
+		try {
+			MD5 = new java.math.BigInteger(md5(contents)).toString(16);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(MD5);
+		bufferedFI.close();
+		
 		System.out.println("Combine success!");
 	}
 	
@@ -746,6 +762,12 @@ public class StreamManager {
 		return hashMD5;
 	}
 	
+	public static byte[] md5(byte input[]) throws NoSuchAlgorithmException {
+		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+		return messageDigest.digest(input);
+	}
+	
+	/*============================= getter / setter =============================*/
 	public int getStreamSize() {
 		return streamSize;
 	}
