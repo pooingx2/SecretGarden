@@ -10,6 +10,7 @@ import com.sg.main.ClientLauncher;
 import com.sg.main.Constants;
 import com.sg.model.FileInfo;
 import com.sg.model.MetaData;
+import com.sg.task.Task;
 
 public class PacketMgr {
 	private StringTokenizer tokenizer;
@@ -169,8 +170,22 @@ public class PacketMgr {
 					default : break;
 				}
 			}
-			System.out.println(metaData.getFile_size());
-			ClientLauncher.getStreamMgr().setMetaData(metaData);
+			
+			int count=0;
+			Vector<Task> taskList = ClientLauncher.getTaskMgr().getTaskList();
+			for (Task task : taskList){
+				if(task.getType().equals("Download")) {
+					if(task.getMetaData() == null) {
+						ClientLauncher.getTaskMgr().getTaskList().get(count).setMetaData(metaData);
+						break;
+					}
+					System.out.println("\t\t\t\t\t"+task.getMetaData());
+				}
+				count++;
+			}
+
+//			ClientLauncher.getStreamMgr().setMetaData(metaData);
+			ClientLauncher.getTaskMgr().nextStart();
 		}
 
 		// 존재하는 아이디인지 확인

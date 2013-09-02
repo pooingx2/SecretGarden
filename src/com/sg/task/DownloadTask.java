@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 import com.sg.main.ClientLauncher;
 import com.sg.model.FileInfo;
+import com.sg.model.MetaData;
 
 public class DownloadTask extends Task{
 	
@@ -32,7 +33,7 @@ public class DownloadTask extends Task{
 	public void run() {
 
 		System.out.println("Download Task Start");
-		ClientLauncher.getFrame().getFileListPanel().download(fileInfo);
+//		ClientLauncher.getFrame().getFileListPanel().download(fileInfo);
 		ClientLauncher.getTaskMgr().setRunning(true);
 		getThProgress().getThread().start();
 		

@@ -2,6 +2,8 @@ package com.sg.task;
 
 import javax.swing.JProgressBar;
 
+import com.sg.model.MetaData;
+
 public class Task implements Runnable{
 	
 	private String type;
@@ -9,6 +11,7 @@ public class Task implements Runnable{
 	private long max;
 	private long cur;
 	private boolean runable;
+	private MetaData metaData;
 	
 	private ThreadProgress thProgress;
 	private Thread task;
@@ -60,7 +63,7 @@ public class Task implements Runnable{
 	}
 
 	public void threadStart(){
-		this.getTask().start();
+		this.task.start();
 	}
 
 	public boolean getRunable() {
@@ -77,6 +80,14 @@ public class Task implements Runnable{
 
 	public void setThProgress(ThreadProgress thProgress) {
 		this.thProgress = thProgress;
+	}
+
+	public MetaData getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(MetaData metaData) {
+		this.metaData = metaData;
 	}
 
 	@Override

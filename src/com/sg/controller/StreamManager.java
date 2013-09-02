@@ -295,6 +295,8 @@ public class StreamManager {
 	
 	private void getMetadata(String path, String name){
 
+		metaData = ClientLauncher.getTaskMgr().getRunningTask().getMetaData();
+		
 		cloudTable = metaData.getCloudTable();
 		filePath = metaData.getFilePath();
 		fileName = metaData.getFileName();
@@ -303,6 +305,7 @@ public class StreamManager {
 		stream_size = metaData.getStream_size();
 		lastStream_size = metaData.getLastStream_size();
 		stream_count = metaData.getStream_count();
+		
 		/*
 		BufferedReader in = null;
 

@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -322,6 +321,7 @@ public class FileMngPanel extends JPanel {
 							Task task = new UploadTask(localUploadPath,selectedPath,uploadFileSize,fileInfo);
 							task.setFileName(file.getName().toString());
 							ClientLauncher.getTaskMgr().addTask(task);
+							ClientLauncher.getTaskMgr().nextStart();
 							progressFrame.addRow(task);
 							progressFrame.setVisible(true);
 						
@@ -336,7 +336,7 @@ public class FileMngPanel extends JPanel {
 				else if(status == 4) {
 					
 					if(localPath.equals("")){
-						JOptionPane.showMessageDialog(null, "Load file");
+						JOptionPane.showMessageDialog(null, "Local path error");
 					}
 					else{
 
@@ -347,11 +347,15 @@ public class FileMngPanel extends JPanel {
 							String selectedPath = ClientLauncher.getFrame().getFileListPanel().getNodePath(node);
 							FileInfo fileInfo= ClientLauncher.getFrame().getFileListPanel().getFileInfo(node);
 							
+							ClientLauncher.getFrame().getFileListPanel().download(fileInfo);
+							
 							Task task = new DownloadTask(selectedPath, localPath, Long.parseLong(fileInfo.getSize()), fileInfo);
 							task.setFileName(fileInfo.getName().toString());
 							ClientLauncher.getTaskMgr().addTask(task);
+
 							progressFrame.addRow(task);
 							progressFrame.setVisible(true);
+
 						}
 						
 						// task를 안거치고 뷰 테스트
@@ -371,6 +375,7 @@ public class FileMngPanel extends JPanel {
 						Task task = new DeleteTask(selectedPath, localPath, Long.parseLong(fileInfo.getSize()), fileInfo);
 						task.setFileName(fileInfo.getName().toString());
 						ClientLauncher.getTaskMgr().addTask(task);
+						ClientLauncher.getTaskMgr().nextStart();
 						progressFrame.addRow(task);
 						progressFrame.setVisible(true);
 					}

@@ -109,7 +109,7 @@ public class TaskMgr {
 //		taskList.offer(task);
 		taskList.add(task);
 		// 실행 할 수 있는지 판단 후 실행
-		nextStart();
+//		nextStart();
 	}
 	
 	

@@ -83,8 +83,8 @@ public class HDFSClient implements PrivateUpDown1 {
 	}
 
 	
-	/*accessKey瑜��듯빐 �몄쬆 ��sessionKey 諛쏆븘*/
-	/*login��*/
+	/*accessKey auth sessionKey receive*/
+	/*login request*/
 	@Override
 	public boolean auth(Files request) throws IOException {
 		boolean isConnected;
@@ -93,28 +93,28 @@ public class HDFSClient implements PrivateUpDown1 {
 		
 		int optionNum = 0; 
 		
-		/*accesskey濡��몄쬆*/
+		/*accesskey send*/
 		objOutput.writeObject(request);
 		objOutput.flush();
 
-		/*session�ㅻ� 諛쏆븘�*/
+		/*sessionkey receive*/
 		try {
 			recievFile = (Files) objInput.readObject();
 		
 		} catch (ClassNotFoundException e) {
-			System.out.println("�대옒�ㅻ� 李얠� 紐삵뻽�듬땲�� ��??");
+			System.out.println("what's the proplem??");
 			return false;
 		}
 		
 		System.out.println("recv option : " + recievFile.getOptionNum());
 		System.out.println("recv sessionKey : " + recievFile.getSessionKey());
-		//access key 확인(sessionkey 획득)
+		//access key auth(sessionkey receive)
 		if (recievFile.getOptionNum() == 0) {
 			this.sessionKey = recievFile.getSessionKey();
 		}else if (recievFile.getOptionNum() == -1) {
 			return false;
 		}else if (recievFile.getOptionNum() == 2) {
-			System.out.println("�몄쬆 �ㅽ뙣");
+			System.out.println("accesskey auth fail");
 			return false;
 		}
 		
@@ -124,15 +124,13 @@ public class HDFSClient implements PrivateUpDown1 {
 
 	@Override
 	public int upload(Files fileDescript, File targetFile) throws IOException {
-		/*
-		 * �붾젆�좊━ 以묐났 �щ� �뺤씤 �꾩슂
-		 */		
+			
 		int optionNum = 1;
 		int bytesRead = 0;
 		byte[] buf = new byte[10240];
 		readFile = new BufferedInputStream(new FileInputStream(targetFile));
 
-		/*�몄쬆 �����곌껐*/
+		
 		connectToHDFS();
 		fileDescript.setSessionKey(this.sessionKey);
 
@@ -144,15 +142,15 @@ public class HDFSClient implements PrivateUpDown1 {
 			recievFile = (Files) objInput.readObject();
 		
 		} catch (ClassNotFoundException e) {
-			System.out.println("�대옒�ㅻ� 李얠� 紐삵뻽�듬땲�� ��??");
+			System.out.println("WTF??");
 
 		}
 		if (recievFile.getOptionNum() == -1) {
-			System.out.println("�낅줈���ㅽ뙣");
+			System.out.println("upload fail");
 			return -1;
 		}
 		if (recievFile.getOptionNum() == 2) {
-			System.out.println("session �몄쬆 �ㅽ뙣");
+			System.out.println("session auth fail");
 			return 2;
 		}
 		//test
@@ -160,7 +158,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		while (-1 != (bytesRead = readFile.read(buf, 0, buf.length))) {
 			
 			totalBytesRead += bytesRead;
-			System.out.println("sending bytes : " + totalBytesRead);
+//			System.out.println("sending bytes : " + totalBytesRead);
 			ClientLauncher.getTaskMgr().getRunningTask().setCur(totalBytesRead);
 			writer.write(buf, 0, bytesRead);
 		}
@@ -182,7 +180,7 @@ public class HDFSClient implements PrivateUpDown1 {
 		connectToHDFS();
 		request.setSessionKey(this.sessionKey);
 		
-		/*tmp dir가 있는지 확인 후 작업*/
+		/*check working dir exists*/
 		String streamPath;
 		File workingDir = new File(".");
 		if(!workingDir.exists()) 
@@ -209,14 +207,14 @@ public class HDFSClient implements PrivateUpDown1 {
 			recievFile = (Files) objInput.readObject();
 		
 		} catch (ClassNotFoundException e) {
-			System.out.println("�대옒�ㅻ� 李얠� 紐삵뻽�듬땲�� ��??");
+			System.out.println("WTF??");
 
 		}
 		if (recievFile.getOptionNum() == -1) {
-			System.out.println("HDFS���뚯씪��議댁옱�섏� �딆쓬");
+			System.out.println("HDFS download fail");
 			return null;
 		}else if (recievFile.getOptionNum() == 2) {
-			System.out.println("session �몄쬆 �ㅽ뙣");
+			System.out.println("session auth fail");
 			return null;
 		}
 		
@@ -263,14 +261,14 @@ public class HDFSClient implements PrivateUpDown1 {
 		try {
 			recievFile = (Files) objInput.readObject();
 		} catch (IOException e) {
-			System.out.println("file을 찾을 수 없습니다.");
+			System.out.println("file cannot find.");
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			System.out.println("classNotFound??");
 
 		}
 		if (recievFile.getOptionNum() == 1) {
-			System.out.println("HDFS delete 실패");
+			System.out.println("HDFS delete fail");
 			return false;
 		} else if (recievFile.getOptionNum() == 2) {
 			System.out.println("session auth failed");
